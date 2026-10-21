@@ -2,7 +2,7 @@
 target/
 
 # Datos generados al ejecutar la aplicación
-datos/
+/datos/
 
 # IDEs
 .idea/
@@ -16,3 +16,6 @@ datos/
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# El ZIP del anexo se sube a la plataforma, no al repo
+entrega/*.zip
