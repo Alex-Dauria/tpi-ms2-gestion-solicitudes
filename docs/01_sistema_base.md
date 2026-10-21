@@ -98,7 +98,7 @@ Valores de clasificación:
 | F6 | Reporte resumen | `GET /reportes/resumen` | Totales por estado, tipo y prioridad, cantidad de vencidas y solicitudes abiertas por responsable |
 | F7 | Catálogos | `GET /estudiantes`, `GET /responsables` | Listados de referencia |
 
-Los errores se devuelven como `{"error": "mensaje"}` con código `400` (dato inválido), `404` (no existe) o `409` (viola una regla de negocio).
+Los errores se devuelven como `{"error": "mensaje"}`, en general con código `400` (dato inválido), `404` (no existe) o `409` (viola una regla de negocio). Hay excepciones en la versión inicial: un estado inexistente al cambiar de estado responde `409` como "transición no permitida", y un legajo enviado como número en lugar de texto produce un error `500`. Se registran como hallazgos en las secciones 2 y 6.
 
 ## 1.6 Reglas de negocio
 
@@ -108,7 +108,7 @@ Estas reglas definen el **comportamiento externo** que el refactoring tiene que 
 |---|---|---|
 | RN-01 | El legajo es obligatorio y tiene 5 dígitos | `400` |
 | RN-02 | El tipo es obligatorio y debe ser uno de los válidos (no distingue mayúsculas) | `400` |
-| RN-03 | La descripción tiene entre 10 y 500 caracteres | `400` |
+| RN-03 | La descripción tiene entre 10 y 500 caracteres (el mínimo se cuenta sin los espacios de los extremos; el máximo, con ellos) | `400` |
 | RN-04 | Si no se indica prioridad, se calcula por tipo: `REVISION_NOTA` → ALTA; `EQUIVALENCIA` y `CAMBIO_COMISION` → MEDIA; el resto → BAJA | — |
 | RN-05 | Si el estudiante no existe, se da de alta: requiere nombre y un email válido | `400` |
 | RN-06 | Un estudiante no puede tener dos solicitudes abiertas (`PENDIENTE` o `EN_REVISION`) del mismo tipo | `409` |
@@ -117,7 +117,7 @@ Estas reglas definen el **comportamiento externo** que el refactoring tiene que 
 | RN-09 | Para rechazar una solicitud hay que indicar un comentario | `400` |
 | RN-10 | No se asigna responsable a una solicitud `RECHAZADA` o `CERRADA` | `409` |
 | RN-11 | El responsable debe existir y estar activo | `404` / `409` |
-| RN-12 | Un responsable no puede tener más de 5 solicitudes abiertas | `409` |
+| RN-12 | No se asigna un responsable que ya tiene 5 solicitudes abiertas (sin contar la que se asigna). El control se hace solo al asignar: al reabrir una solicitud resuelta no se verifica | `409` |
 | RN-13 | Al asignar responsable a una solicitud `PENDIENTE`, pasa automáticamente a `EN_REVISION` | — |
 | RN-14 | Una solicitud abierta está vencida si pasaron más de 3 (ALTA), 7 (MEDIA) o 15 (BAJA) días desde su creación | — |
 | RN-15 | Cada cambio queda registrado en el historial de la solicitud con la fecha | — |

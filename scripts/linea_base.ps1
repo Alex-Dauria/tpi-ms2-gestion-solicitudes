@@ -103,7 +103,7 @@ try {
     if (Test-Path datos) { Remove-Item -Recurse -Force datos }
 
     Write-Host 'Compilando...'
-    & .\mvnw.cmd -q -DskipTests package
+    & .\mvnw.cmd -q -DskipTests clean package
     if ($LASTEXITCODE -ne 0) { throw 'Falló la compilación.' }
     $jar = Get-ChildItem target\*.jar | Where-Object { $_.Name -notlike '*.original' } | Select-Object -First 1
 

@@ -18,7 +18,7 @@
 | `etapa-diagnostico` | Diagnóstico y catálogo de deuda técnica | <https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/tree/etapa-diagnostico> |
 | `etapa-refactoring` | Refactorings aplicados | <https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/tree/etapa-refactoring> |
 | `etapa-pruebas` | Pruebas y evidencia antes/después | <https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/tree/etapa-pruebas> |
-| `estado-refactorizado` | Versión final del código | <https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/tree/estado-refactorizado> |
+| `estado-refactorizado` (también `estadorefactorizado`, como lo escribe la consigna) | Versión final del código | <https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/tree/estado-refactorizado> |
 | `etapa-docs` | Documentación completa | <https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/tree/etapa-docs> |
 
 Comparación completa del código: <https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/compare/estado-inicial...estado-refactorizado>

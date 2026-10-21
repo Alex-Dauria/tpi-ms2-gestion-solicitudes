@@ -29,15 +29,17 @@ La fecha del día se reemplaza por `<HOY>` para que se puedan comparar corridas 
 
 | Corrida | Archivo | Resultado |
 |---|---|---|
-| Versión inicial | `docs/evidencias/pruebas/linea_base_estado_inicial.md` | Referencia |
-| Versión final | `docs/evidencias/pruebas/linea_base_estado_refactorizado.md` | _completar_ |
+| Versión inicial (`estado-inicial`) | `docs/evidencias/pruebas/linea_base_estado_inicial.md` | Referencia |
+| Después del refactoring (`etapa-refactoring`) | `docs/evidencias/pruebas/linea_base_etapa_refactoring.md` | _completar_ |
+| Versión final (`estado-refactorizado`) | `docs/evidencias/pruebas/linea_base_estado_refactorizado.md` | _completar_ |
 
 ### Qué significa "antes" y "después"
 
 Las pruebas se escriben **después** de crear el tag `estado-inicial`, así que en ese tag no existen. Por eso:
 
 - **Antes** = `main` con los PR de pruebas de las tres zonas ya mergeados y **antes del primer PR de refactoring**. El código del sistema (`src/main`) es idéntico al de `estado-inicial`; solo se agregaron las pruebas. Hay que anotar el commit en el que se corrieron.
-- **Después** = el tag `estado-refactorizado`.
+- **Después del refactoring** = el tag `etapa-refactoring` (las tres zonas mergeadas). Ahí se corren las pruebas y la línea base para la sección 6 (#13).
+- **Versión final** = el tag `estado-refactorizado`, que se crea después del code review final (#14). Como el code review puede generar correcciones, en #14 se vuelven a correr las pruebas y la línea base sobre ese tag.
 
 ## 6.2 Casos de prueba
 
@@ -63,12 +65,13 @@ _Un caso por regla o flujo. Tomar como base F1–F7 y RN-01 a RN-15 de la secci�
 
 ## 6.3 Evidencia antes / después
 
-_Salida de `.\mvnw.cmd test` en los dos momentos (texto o captura), guardada en `docs/evidencias/pruebas/`._
+_Salida de `.\mvnw.cmd test` en cada momento (texto o captura), guardada en `docs/evidencias/pruebas/`. Junto con cada corrida se guarda también la carpeta `target/surefire-reports`, el informe que genera Maven automáticamente al correr las pruebas._
 
-| Momento | Commit / tag | Pruebas ejecutadas | OK | Fallidas | Evidencia |
-|---|---|---|---|---|---|
-| Antes (código inicial + pruebas) | _commit_ | | | | |
-| Después | `estado-refactorizado` | | | | |
+| Momento | Commit / tag | Pruebas ejecutadas | OK | Fallidas | Línea base | Evidencia |
+|---|---|---|---|---|---|---|
+| Antes (código inicial + pruebas) | _commit_ | | | | Referencia | |
+| Después del refactoring | `etapa-refactoring` | | | | _x de 12 iguales_ | |
+| Versión final | `estado-refactorizado` | | | | _x de 12 iguales_ | |
 
 ## 6.4 Cómo se verificó que el refactoring no alteró el comportamiento
 

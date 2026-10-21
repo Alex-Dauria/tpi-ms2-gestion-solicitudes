@@ -7,7 +7,7 @@ La consigna considera entregado el TPI cuando están cargados los cuatro recurso
 | Recurso | Dónde queda | Issue |
 |---|---|---|
 | Informe PDF único | `entrega/TPI_MSII_Gestion_Solicitudes_Academicas.pdf` (en el repo) y en la plataforma | #17 |
-| Repositorio GitHub | <https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes>, con los seis tags | #17 |
+| Repositorio GitHub | <https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes>, con los seis tags (más el alias `estadorefactorizado`) | #17 |
 | Anexo ZIP | `Anexo_TPI_MSII_Gestion_Solicitudes_Academicas.zip`, solo en la plataforma (se genera desde `docs/evidencias/` y no se versiona) | #16 |
 | Video | Enlace en el PDF, en el README y en la plataforma | #18 |
 
@@ -46,14 +46,14 @@ Las imágenes se referencian con rutas relativas a `docs/` (por ejemplo, `eviden
 
 ## 3. Contenido del ZIP
 
-El ZIP se arma copiando `docs/evidencias/` y sumando lo que no está en el repo:
+El ZIP se arma al final, cuando ya están las capturas del code review (#14), copiando `docs/evidencias/` y sumando lo que no está en el repo:
 
 ```text
 Anexo_TPI_MSII_Gestion_Solicitudes_Academicas.zip
 ├── LEEME.txt                ← índice del contenido
 ├── etapa1/                  ← capturas del sistema base
 ├── etapa2/                  ← capturas del análisis de calidad externa
-├── pruebas/                 ← líneas base y salidas de mvnw test, antes y después
+├── pruebas/                 ← líneas base, salidas de mvnw test e informes surefire-reports, antes y después
 ├── code-review/             ← capturas de las revisiones en los PR
 ├── diagramas/               ← diagramas exportados, si hay
 └── ia/                      ← evidencia de uso de IA: registros curados o conversaciones (IA-01, IA-02…)
