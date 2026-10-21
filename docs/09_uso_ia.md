@@ -25,5 +25,5 @@ _En orden cronológico. Para cada uno: fecha, integrante, prompt (textual o resu
 ### IA-01 – Organización del TPI y versión inicial (Alex, 2026-10-20)
 
 - **Prompt (resumen):** se le pasaron la consigna (PDF y texto del aula), el modelo de presentación de la cátedra y los repositorios de trabajos anteriores del equipo, y se le pidió organizar el TPI: dividir tareas de forma pareja, crear el repositorio, los issues y el tablero, y dejar avanzada una parte importante del trabajo, con documentos en Markdown para corregir antes de armar el PDF.
-- **Qué devolvió:** propuesta de tecnología (Spring Boot), división del código en tres zonas, plan de trabajo, prototipo funcional de la versión inicial, evidencia de ejecución de la API, borrador de la sección 1, plantillas de las secciones 2 a 8 y los issues del tablero.
+- **Qué devolvió:** propuesta de tecnología (Spring Boot), división del código en tres zonas, plan de trabajo, prototipo funcional de la versión inicial, script de línea base del comportamiento externo (`scripts/linea_base.ps1`), borrador de la sección 1, plantillas de las secciones 2 a 8 y los issues del tablero.
 - **Qué hizo el equipo:** _completar: qué se revisó, qué se cambió y qué se aprobó._
