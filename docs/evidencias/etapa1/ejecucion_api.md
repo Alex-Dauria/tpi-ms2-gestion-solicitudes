@@ -1,12 +1,23 @@
-# Evidencia de funcionamiento – versión inicial
+# Registro de ejecución – versión inicial
 
-Ejecución de las operaciones del sistema sobre la versión inicial (tag `estado-inicial`), partiendo de los datos de prueba sintéticos (se borró `datos/` antes de arrancar).
+Registro completo de las operaciones del sistema sobre la versión inicial (tag `estado-inicial`): 12 pedidos HTTP con su respuesta textual y su código. Complementa las capturas de Swagger UI de esta carpeta, que se muestran en la sección 1.10 del informe. Este registro incluye además los casos de error que no se capturaron, y va en el anexo.
 
 - **Fecha de ejecución:** 2026-10-20
-- **Comando:** `java -jar target/gestion-solicitudes-0.1.0.jar` y pedidos HTTP con `curl`
+- **Cómo se generó:** se levantó la aplicación con `java -jar target/gestion-solicitudes-0.1.0.jar`, partiendo de los datos de prueba sintéticos (se borró `datos/` antes de arrancar), y se ejecutaron los pedidos con `curl`. La ejecución la hizo Claude Code como parte de IA-01 (ver `docs/09_uso_ia.md`); la salida es la respuesta real del sistema.
 - Las fechas `2026-10-20` del historial corresponden al día de la ejecución.
 
-> Las capturas de Swagger UI se agregan en esta misma carpeta (`docs/evidencias/etapa1/`).
+| Caso | Operación | Código |
+|---|---|---|
+| 1, 2 | Registrar solicitud (estudiante existente y estudiante nuevo) | 201 |
+| 3 | Registrar con descripción corta | 400 |
+| 4 | Registrar una solicitud duplicada | 409 |
+| 5 | Asignar responsable | 200 |
+| 6 | Asignar responsable inactivo | 409 |
+| 7 | Cambiar estado | 200 |
+| 8 | Transición no permitida | 409 |
+| 9, 10 | Filtrar por prioridad y vencidas | 200 |
+| 11 | Consultar solicitud inexistente | 404 |
+| 12 | Reporte resumen | 200 |
 
 ### 1. Registrar solicitud de un estudiante existente (prioridad calculada por tipo)
 

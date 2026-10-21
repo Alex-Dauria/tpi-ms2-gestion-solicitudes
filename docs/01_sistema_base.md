@@ -176,7 +176,7 @@ La versión inicial es un **prototipo construido por el equipo para este trabajo
 
 ## 1.10 Evidencia de funcionamiento
 
-La ejecución completa de las operaciones, con cada pedido y su respuesta, está en [evidencias/etapa1/ejecucion_api.md](evidencias/etapa1/ejecucion_api.md). Estas capturas muestran el sistema funcionando desde Swagger UI.
+Las capturas muestran las operaciones principales funcionando desde Swagger UI. El registro completo, con los casos de error que no se capturaron (solicitud duplicada, responsable inactivo, transición no permitida, solicitud inexistente), está en [evidencias/etapa1/ejecucion_api.md](evidencias/etapa1/ejecucion_api.md) y va en el anexo.
 
 **Endpoints disponibles**
 
@@ -189,6 +189,18 @@ La ejecución completa de las operaciones, con cada pedido y su respuesta, está
 **F1 – Validación.** Una descripción de menos de 10 caracteres se rechaza con `400` y un mensaje claro (RN-03).
 
 ![Rechazo por descripción corta con respuesta 400](evidencias/etapa1/03_error_validacion.png)
+
+**F5 – Asignar responsable.** Al asignar un responsable a una solicitud `PENDIENTE`, pasa automáticamente a `EN_REVISION` (RN-13) y los dos cambios quedan en el historial (RN-15).
+
+![Asignación de responsable con respuesta 200](evidencias/etapa1/05_asignar_responsable.png)
+
+**F4 – Cambiar estado.** La solicitud pasa de `EN_REVISION` a `RESUELTA`, una transición permitida (RN-07), y el comentario queda registrado en el historial.
+
+![Cambio de estado a RESUELTA con respuesta 200](evidencias/etapa1/06_cambiar_estado.png)
+
+**F2 – Buscar y filtrar.** Los filtros se combinan: estado `PENDIENTE` y prioridad `ALTA` devuelve solo la solicitud 5.
+
+![Búsqueda con filtros combinados con respuesta 200](evidencias/etapa1/07_filtrar_solicitudes.png)
 
 **F6 – Reporte resumen.** Totales por estado, tipo y prioridad, solicitudes vencidas y solicitudes abiertas por responsable.
 
