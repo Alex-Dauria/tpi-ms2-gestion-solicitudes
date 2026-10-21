@@ -5,6 +5,16 @@
 
 > La consigna pide mejoras vinculadas a SRP, OCP, LSP, ISP y DIP **cuando corresponda**, y mejoras de nombres, funciones, manejo de errores, cohesión, acoplamiento y límites entre componentes. Si un principio no aplica, hay que justificar por qué; no se fuerza.
 
+## Aportes por zona
+
+_Cada una escribe acá, al terminar su refactoring (fase 3 de #8, #9 y #10), un párrafo corto: qué principios y prácticas de Clean Code aplicó en su zona, sobre qué smell y con qué refactoring. Con esos aportes, Alex completa las tablas de abajo en #11._
+
+### Zona A – Registro (Alex)
+
+### Zona B – Ciclo de vida (Marina)
+
+### Zona C – Consultas y persistencia (Silvia)
+
 ## 4.1 Principios SOLID
 
 | Principio | Problema en la versión inicial (smell S-xx) | Mejora aplicada | Refactoring (R-xx) | Zona |

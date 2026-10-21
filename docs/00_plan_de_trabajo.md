@@ -2,6 +2,18 @@
 
 Este documento organiza el trabajo: quién hace qué, en qué orden y cómo nos revisamos. No forma parte del informe final tal cual, pero de acá sale el apartado de participación de cada integrante.
 
+## Qué hace cada una en cada hito
+
+| Hito | Alex | Silvia | Marina |
+|---|---|---|---|
+| **1. Estado inicial** | Sistema base y sección 1 (#1) | Revisa el plan de trabajo | Revisa el sistema base, la sección 1 y el plan |
+| **2. Diagnóstico** | Smells de la zona A (#3) | Calidad externa/interna (#2) · smells de la zona C (#5) · checklist de code review (#7) | Smells de la zona B (#4) · une los smells de las tres en el catálogo (#6) |
+| **3. Refactoring y pruebas** | Pruebas y refactoring de la zona A (#8) · sección SOLID (#11) | Pruebas y refactoring de la zona C (#10) · sección de pruebas (#13) | Pruebas y refactoring de la zona B (#9) · sección de refactorings (#12) |
+| **4. Code review y documentación** | Uso de IA y ZIP (#16) | Conclusiones (#15) | Code review final (#14) |
+| **5. Entrega** | Video (#18) | Participa en el PDF y el video | Revisión integral y PDF (#17) |
+
+En todos los hitos, además, cada una revisa el trabajo de otra (sección 3).
+
 ## 1. Producto a entregar
 
 | Entregable | Dónde se arma |
@@ -37,15 +49,29 @@ Los demás refactorings de cada zona se eligen **a partir del diagnóstico**, no
 
 ## 4. Hitos y tags
 
-| Hito | Issues | Tag al cerrar |
-|---|---|---|
-| 1. Estado inicial | #1 | `estado-inicial` |
-| 2. Diagnóstico | #2 a #7 | `etapa-diagnostico` |
-| 3. Refactoring y pruebas | #8 a #13 | `etapa-refactoring` y `etapa-pruebas` |
-| 4. Code review y documentación | #14 a #16 | `estado-refactorizado` (código final) |
-| 5. Entrega | #17 y #18 | `etapa-docs` (documentación completa) |
+**Entrega: domingo 8 de noviembre de 2026.**
 
-Fechas: _completar con las de la pestaña Evaluaciones del aula._
+| Hito | Issues | Fechas | Tag al cerrar |
+|---|---|---|---|
+| 1. Estado inicial | #1 | hasta el jue 22/10 | `estado-inicial` |
+| 2. Diagnóstico | #2 a #7 | vie 23/10 al mar 27/10 | `etapa-diagnostico` |
+| 3. Refactoring y pruebas | #8 a #13 | mié 28/10 al mar 3/11 | `etapa-refactoring` y `etapa-pruebas` |
+| 4. Code review y documentación | #14 a #16 | mié 4/11 al jue 5/11 | `estado-refactorizado` (código final) |
+| 5. Entrega | #17 y #18 | vie 6/11 al sáb 7/11 | `etapa-docs` (documentación completa) |
+
+El domingo 8/11 queda como margen para subir todo a la plataforma.
+
+Fechas internas de los hitos 2 y 3:
+
+| Tarea | Fecha límite |
+|---|---|
+| Diagnóstico de cada zona (#3, #4, #5), calidad externa/interna (#2) y checklist de code review (#7) | dom 25/10 |
+| Catálogo consolidado (#6) | mar 27/10 |
+| Pruebas de caracterización de las tres zonas (fase 1 de #8, #9, #10). Se pueden empezar apenas exista el tag `estado-inicial` | mar 27/10 |
+| Refactoring zona A (#8) | jue 29/10 |
+| Refactoring zona B (#9) | sáb 31/10 |
+| Refactoring zona C (#10) | lun 2/11 |
+| Secciones de SOLID, refactorings y pruebas (#11, #12, #13) | mar 3/11 |
 
 ## 5. Orden del refactoring
 

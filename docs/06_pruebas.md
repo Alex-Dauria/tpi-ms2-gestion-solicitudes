@@ -32,23 +32,43 @@ La fecha del día se reemplaza por `<HOY>` para que se puedan comparar corridas 
 | Versión inicial | `docs/evidencias/pruebas/linea_base_estado_inicial.md` | Referencia |
 | Versión final | `docs/evidencias/pruebas/linea_base_estado_refactorizado.md` | _completar_ |
 
+### Qué significa "antes" y "después"
+
+Las pruebas se escriben **después** de crear el tag `estado-inicial`, así que en ese tag no existen. Por eso:
+
+- **Antes** = `main` con los PR de pruebas de las tres zonas ya mergeados y **antes del primer PR de refactoring**. El código del sistema (`src/main`) es idéntico al de `estado-inicial`; solo se agregaron las pruebas. Hay que anotar el commit en el que se corrieron.
+- **Después** = el tag `estado-refactorizado`.
+
 ## 6.2 Casos de prueba
 
-_Un caso por regla o flujo. Tomar como base F1–F7 y RN-01 a RN-15 de la sección 1._
+_Un caso por regla o flujo. Tomar como base F1–F7 y RN-01 a RN-15 de la sección 1. Cada zona carga sus casos en su tabla, así se pueden escribir en paralelo sin pisarse. Silvia unifica la numeración en #13._
 
-| ID | Zona | Operación | Entrada / situación | Resultado esperado | Regla | Antes (`estado-inicial`) | Después (`estado-refactorizado`) |
-|---|---|---|---|---|---|---|---|
-| CP-01 | A | Registrar | | | | | |
-| CP-02 | | | | | | | |
+### 6.2.A Zona A – Registro (Alex)
+
+| ID | Operación | Entrada / situación | Resultado esperado | Regla | Antes | Después |
+|---|---|---|---|---|---|---|
+| CP-A01 | | | | | | |
+
+### 6.2.B Zona B – Ciclo de vida (Marina)
+
+| ID | Operación | Entrada / situación | Resultado esperado | Regla | Antes | Después |
+|---|---|---|---|---|---|---|
+| CP-B01 | | | | | | |
+
+### 6.2.C Zona C – Consultas y persistencia (Silvia)
+
+| ID | Operación | Entrada / situación | Resultado esperado | Regla | Antes | Después |
+|---|---|---|---|---|---|---|
+| CP-C01 | | | | | | |
 
 ## 6.3 Evidencia antes / después
 
-_Salida de `mvnw test` sobre `estado-inicial` y sobre `estado-refactorizado` (texto o captura), guardada en `docs/evidencias/pruebas/`._
+_Salida de `.\mvnw.cmd test` en los dos momentos (texto o captura), guardada en `docs/evidencias/pruebas/`._
 
-| Versión | Pruebas ejecutadas | OK | Fallidas | Evidencia |
-|---|---|---|---|---|
-| `estado-inicial` | | | | |
-| `estado-refactorizado` | | | | |
+| Momento | Commit / tag | Pruebas ejecutadas | OK | Fallidas | Evidencia |
+|---|---|---|---|---|---|
+| Antes (código inicial + pruebas) | _commit_ | | | | |
+| Después | `estado-refactorizado` | | | | |
 
 ## 6.4 Cómo se verificó que el refactoring no alteró el comportamiento
 
