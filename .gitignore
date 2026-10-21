@@ -2,7 +2,7 @@
 target/
 
 # Datos generados al ejecutar la aplicación
-datos/
+/datos/
 
 # IDEs
 .idea/
