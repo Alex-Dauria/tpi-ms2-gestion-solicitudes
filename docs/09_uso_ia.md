@@ -27,11 +27,7 @@ Consultas puntuales hechas durante el trabajo, con el enlace a cada conversació
 
 | # | Etapa | Integrante | Herramienta | Consulta | Grado | Enlace |
 |---|---|---|---|---|---|---|
-| IA-03 | 2 – Calidad externa/interna | | | | | |
-| IA-04 | 3 – Code smells | | | | | |
-| IA-05 | 4 – SOLID y Clean Code | | | | | |
-| IA-06 | 5 – Refactoring | | | | | |
-| IA-07 | 6 – Pruebas | | | | | |
-| IA-08 | 7 – Code review | | | | | |
+| IA-03 | 3 – Code smells y 5 – Refactoring | Alex | Claude (chat) | Diagnóstico de code smells del método `registrarSolicitud` (zona A): identificación según Fowler y Clean Code, priorización para la zona y reparto de los smells de frontera con las otras zonas. Después, criterio para aplicar Extract Method de forma segura: orden de extracción, cuidados con el orden de las validaciones y comparación con Replace Error Code with Exception. El integrante corrigió un hallazgo que no correspondía al código original (indentación alterada al pegar) | Bajo | [Conversación](https://claude.ai/share/b1753be3-72ba-442b-b159-9dc406abb747) |
+| IA-04 | | | | | | |
 
 _Los enlaces deben ser públicos (enlace compartido de la conversación) y estar accesibles al momento de la corrección. Además, conviene exportar cada conversación a `docs/evidencias/ia/` por si el enlace deja de funcionar._
