@@ -176,8 +176,23 @@ La versión inicial es un **prototipo construido por el equipo para este trabajo
 
 ## 1.10 Evidencia de funcionamiento
 
-- Ejecución de todas las operaciones con sus respuestas: [evidencias/etapa1/ejecucion_api.md](evidencias/etapa1/ejecucion_api.md)
-- Capturas de Swagger UI: _pendiente de agregar en `docs/evidencias/etapa1/`_
+La ejecución completa de las operaciones, con cada pedido y su respuesta, está en [evidencias/etapa1/ejecucion_api.md](evidencias/etapa1/ejecucion_api.md). Estas capturas muestran el sistema funcionando desde Swagger UI.
+
+**Endpoints disponibles**
+
+![Endpoints de la API en Swagger UI](evidencias/etapa1/01_swagger_endpoints.png)
+
+**F1 – Registrar solicitud.** El sistema responde `201`, asigna el id, calcula la prioridad a partir del tipo (RN-04) y deja la solicitud en `PENDIENTE` con su primera entrada en el historial.
+
+![Registro de una solicitud con respuesta 201](evidencias/etapa1/02_registrar_solicitud.png)
+
+**F1 – Validación.** Una descripción de menos de 10 caracteres se rechaza con `400` y un mensaje claro (RN-03).
+
+![Rechazo por descripción corta con respuesta 400](evidencias/etapa1/03_error_validacion.png)
+
+**F6 – Reporte resumen.** Totales por estado, tipo y prioridad, solicitudes vencidas y solicitudes abiertas por responsable.
+
+![Reporte resumen con respuesta 200](evidencias/etapa1/04_reporte_resumen.png)
 
 ## 1.11 Repositorio
 
