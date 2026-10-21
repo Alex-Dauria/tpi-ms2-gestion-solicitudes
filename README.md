@@ -55,13 +55,19 @@ Los datos se guardan en `datos/solicitudes.json`. La primera vez que se ejecuta,
 
 Requisito: tener instalado un JDK 17 o superior.
 
-```bash
-# Windows
-mvnw.cmd spring-boot:run
+Desde la carpeta del proyecto:
 
+```powershell
+# Windows (PowerShell)
+.\mvnw.cmd spring-boot:run
+```
+
+```bash
 # Linux / macOS
 ./mvnw spring-boot:run
 ```
+
+La primera vez tarda porque descarga Maven y las dependencias. La aplicación está lista cuando aparece `Started SolicitudesApplication`. Para frenarla: `Ctrl+C`.
 
 Con la aplicación levantada:
 
@@ -72,8 +78,11 @@ Para volver a los datos de prueba iniciales, borrar la carpeta `datos/` antes de
 
 Ejecutar las pruebas:
 
+```powershell
+.\mvnw.cmd test      # Windows (PowerShell)
+```
+
 ```bash
-mvnw.cmd test        # Windows
 ./mvnw test          # Linux / macOS
 ```
 

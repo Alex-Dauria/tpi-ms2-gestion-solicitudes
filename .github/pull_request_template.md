@@ -6,7 +6,7 @@ Closes #
 
 ## Cómo se verificó
 
-- [ ] `mvnw.cmd test` en verde (si toca código)
+- [ ] `.\mvnw.cmd test` en verde (si toca código)
 - [ ] La aplicación levanta y las operaciones afectadas responden igual que antes (si toca código)
 - [ ] Los documentos se ven bien en la vista previa de GitHub (si toca docs)
 

@@ -60,7 +60,7 @@ Las tres zonas tocan `SolicitudController`. Para no pisarnos:
 
 ## 6. Reglas de refactoring seguro
 
-- Antes de empezar: `mvnw.cmd test` en verde.
+- Antes de empezar: `.\mvnw.cmd test` en verde (en PowerShell hace falta el `.\` adelante).
 - Pasos chicos: **un commit por refactoring**, con las pruebas en verde después de cada uno.
 - Mensaje de commit con el identificador del refactoring: `refactor(zona-a): extraigo la validación del registro (R-01)`.
 - No se cambia el comportamiento externo (respuestas, códigos HTTP, mensajes). Si al refactorizar aparece un comportamiento que conviene corregir, se discute en el issue y, si se acepta, se hace en un commit aparte y se documenta como **cambio intencional**.

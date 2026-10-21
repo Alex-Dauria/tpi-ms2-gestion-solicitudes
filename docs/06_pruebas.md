@@ -9,7 +9,7 @@ _Explicar el enfoque. Propuesta:_ **pruebas de caracterización**. Antes de refa
 
 - Herramientas: JUnit 5 + MockMvc (`@SpringBootTest` + `@AutoConfigureMockMvc`).
 - Aislamiento: en `@BeforeEach` llamar a `BaseDeDatos.cargarDatosDePrueba()` para que cada prueba empiece con los mismos datos.
-- Ejecución: `mvnw.cmd test` (Windows) o `./mvnw test`.
+- Ejecución: `.\mvnw.cmd test` (Windows, PowerShell) o `./mvnw test`.
 
 ## 6.2 Casos de prueba
 
