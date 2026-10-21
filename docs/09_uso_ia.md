@@ -16,7 +16,7 @@
 
 | # | Integrante | Herramienta | Etapa | Finalidad | Grado | Evidencia |
 |---|---|---|---|---|---|---|
-| IA-01 | Alex | Claude Code (modelo Claude Opus 5.5) | Organización y Etapa 1 | Analizar la consigna y el modelo de la cátedra; proponer la división del trabajo en zonas, issues y revisión cruzada; generar el prototipo de la versión inicial en estilo "prototipo rápido" (sin cuidar el diseño, para tener problemas reales que diagnosticar); redactar el borrador de la sección 1 y las plantillas de las demás secciones | Alto | `docs/evidencias/ia/IA-01_organizacion_y_sistema_base.md` (pendiente de exportar) |
+| IA-01 | Alex | Claude Code (modelo Claude Opus 5.5) | Organización y Etapa 1 | Analizar la consigna y el modelo de la cátedra; proponer la división del trabajo en zonas, issues y revisión cruzada; generar el prototipo de la versión inicial en estilo "prototipo rápido" (sin cuidar el diseño, para tener problemas reales que diagnosticar); redactar el borrador de la sección 1 y las plantillas de las demás secciones | Alto | Registro curado de prompts: `docs/evidencias/ia/IA-01_organizacion_y_sistema_base.md` (pendiente) |
 
 ## Registro de prompts
 

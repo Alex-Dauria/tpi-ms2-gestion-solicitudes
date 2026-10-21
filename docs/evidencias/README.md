@@ -9,7 +9,7 @@ Capturas y salidas que respaldan el informe. Al final, esta carpeta se copia ent
 | `pruebas/` | Líneas base de comportamiento (`scripts/linea_base.ps1`) y salidas de `mvnw test`, antes y después | Las tres; consolida Silvia | #1, #8–#10, #13 |
 | `code-review/` | Capturas de las revisiones en los PR | Las tres; consolida Marina | #14 |
 | `diagramas/` | Diagramas exportados, si hacen falta fuera de Mermaid | Quien los haga | — |
-| `ia/` | Conversaciones con IA exportadas, con el nombre del id de `docs/09_uso_ia.md` (por ejemplo, `IA-01_...`) | Cada integrante | #16 |
+| `ia/` | Evidencia de cada uso de IA: la conversación exportada o un registro curado de los prompts relevantes, con el id de `docs/09_uso_ia.md` en el nombre (por ejemplo, `IA-01_...`) | Cada integrante | #16 |
 
 **Nombres de archivo:** número de orden + descripción corta en minúsculas con guiones bajos, por ejemplo `05_asignar_responsable.png`.
 
