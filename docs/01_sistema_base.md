@@ -176,7 +176,7 @@ La versión inicial es un **prototipo construido por el equipo para este trabajo
 
 ## 1.10 Evidencia de funcionamiento
 
-Las capturas muestran las operaciones principales funcionando desde Swagger UI. El registro completo, con los casos de error que no se capturaron (solicitud duplicada, responsable inactivo, transición no permitida, solicitud inexistente), está en [evidencias/etapa1/ejecucion_api.md](evidencias/etapa1/ejecucion_api.md) y va en el anexo.
+Las capturas muestran las operaciones principales funcionando desde Swagger UI. Los casos de error que no se capturaron (solicitud duplicada, responsable inactivo, transición no permitida, solicitud inexistente) quedan registrados en la línea base de comportamiento de la sección 6.
 
 **Endpoints disponibles**
 
