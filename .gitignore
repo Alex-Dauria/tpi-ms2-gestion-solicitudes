@@ -1,0 +1,18 @@
+# Maven
+target/
+
+# Datos generados al ejecutar la aplicación
+datos/
+
+# IDEs
+.idea/
+*.iml
+.vscode/
+.classpath
+.project
+.settings/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+desktop.ini
