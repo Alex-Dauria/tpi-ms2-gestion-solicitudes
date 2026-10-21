@@ -12,18 +12,26 @@
 | Medio | La IA propuso alternativas o borradores que el equipo evaluó, eligió y modificó |
 | Alto | La IA generó el contenido o el código, y el equipo lo revisó, lo probó y lo adoptó |
 
-## Declaración por integrante
+## Uso en la organización y en la versión inicial
 
-| # | Integrante | Herramienta | Etapa | Finalidad | Grado | Evidencia |
+| # | Integrante | Herramienta | Finalidad | Grado | Qué hizo el equipo |
+|---|---|---|---|---|---|
+| IA-01 | Alex | Claude Code | Analizar la consigna y proponer la organización del trabajo: división del código en zonas, reparto de tareas, orden del refactoring, estructura del repositorio y plantillas de las secciones | Medio | Revisó y ajustó el plan, que aprobaron las tres integrantes en el PR de la Etapa 1 |
+| IA-02 | Alex | Claude Code | Generar el prototipo de la versión inicial (en estilo "prototipo rápido", sin cuidar el diseño, para contar con problemas reales que diagnosticar) y el script de verificación `scripts/linea_base.ps1` | Alto | Ejecutó y probó el sistema, sacó las capturas de evidencia, verificó los requisitos mínimos de la consigna y revisó que las reglas de negocio documentadas coincidieran con el comportamiento |
+
+**Evidencia:** registro de los pedidos principales y de las decisiones tomadas en `docs/evidencias/ia/IA-01_IA-02_registro.md`.
+
+## Consultas por etapa
+
+Consultas puntuales hechas durante el trabajo, con el enlace a cada conversación. Cada integrante agrega las suyas.
+
+| # | Etapa | Integrante | Herramienta | Consulta | Grado | Enlace |
 |---|---|---|---|---|---|---|
-| IA-01 | Alex | Claude Code (modelo Claude Opus 5.5) | Organización y Etapa 1 | Analizar la consigna y el modelo de la cátedra; proponer la división del trabajo en zonas, issues y revisión cruzada; generar el prototipo de la versión inicial en estilo "prototipo rápido" (sin cuidar el diseño, para tener problemas reales que diagnosticar); redactar el borrador de la sección 1 y las plantillas de las demás secciones | Alto | Registro curado de prompts: `docs/evidencias/ia/IA-01_organizacion_y_sistema_base.md` (pendiente) |
+| IA-03 | 2 – Calidad externa/interna | | | | | |
+| IA-04 | 3 – Code smells | | | | | |
+| IA-05 | 4 – SOLID y Clean Code | | | | | |
+| IA-06 | 5 – Refactoring | | | | | |
+| IA-07 | 6 – Pruebas | | | | | |
+| IA-08 | 7 – Code review | | | | | |
 
-## Registro de prompts
-
-_En orden cronológico. Para cada uno: fecha, integrante, prompt (textual o resumido), qué devolvió la herramienta y qué se hizo con eso._
-
-### IA-01 – Organización del TPI y versión inicial (Alex, 2026-10-20)
-
-- **Prompt (resumen):** se le pasaron la consigna (PDF y texto del aula), el modelo de presentación de la cátedra y los repositorios de trabajos anteriores del equipo, y se le pidió organizar el TPI: dividir tareas de forma pareja, crear el repositorio, los issues y el tablero, y dejar avanzada una parte importante del trabajo, con documentos en Markdown para corregir antes de armar el PDF.
-- **Qué devolvió:** propuesta de tecnología (Spring Boot), división del código en tres zonas, plan de trabajo, prototipo funcional de la versión inicial, script de línea base del comportamiento externo (`scripts/linea_base.ps1`), borrador de la sección 1, plantillas de las secciones 2 a 8 y los issues del tablero.
-- **Qué hizo el equipo:** _completar: qué se revisó, qué se cambió y qué se aprobó._
+_Los enlaces deben ser públicos (enlace compartido de la conversación) y estar accesibles al momento de la corrección. Además, conviene exportar cada conversación a `docs/evidencias/ia/` por si el enlace deja de funcionar._
