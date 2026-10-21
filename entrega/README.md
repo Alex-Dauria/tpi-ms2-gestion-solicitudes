@@ -56,7 +56,7 @@ Anexo_TPI_MSII_Gestion_Solicitudes_Academicas.zip
 ├── pruebas/                 ← líneas base y salidas de mvnw test, antes y después
 ├── code-review/             ← capturas de las revisiones en los PR
 ├── diagramas/               ← diagramas exportados, si hay
-└── ia/                      ← conversaciones con IA exportadas (IA-01, IA-02…)
+└── ia/                      ← evidencia de uso de IA: registros curados o conversaciones (IA-01, IA-02…)
 ```
 
 Antes de subirlo: verificar que no haya datos personales reales.
