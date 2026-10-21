@@ -176,35 +176,35 @@ La versión inicial es un **prototipo construido por el equipo para este trabajo
 
 ## 1.10 Evidencia de funcionamiento
 
-Las capturas muestran las operaciones principales funcionando desde Swagger UI. Los casos de error que no se capturaron (solicitud duplicada, responsable inactivo, transición no permitida, solicitud inexistente) quedan registrados en la línea base de comportamiento de la sección 6.
+Las capturas muestran las operaciones principales funcionando desde Swagger UI. Se tomaron en una misma sesión y en este orden, partiendo de los datos de prueba iniciales: por eso el reporte (captura 4) muestra el estado anterior a la asignación y al cambio de estado de las capturas 5 y 6. Los casos de error que no se capturaron (solicitud duplicada, responsable inactivo, transición no permitida, solicitud inexistente) quedan registrados en la línea base de comportamiento de la sección 6.
 
-**Endpoints disponibles**
+**1. Endpoints disponibles**
 
 ![Endpoints de la API en Swagger UI](evidencias/etapa1/01_swagger_endpoints.png)
 
-**F1 – Registrar solicitud.** El sistema responde `201`, asigna el id, calcula la prioridad a partir del tipo (RN-04) y deja la solicitud en `PENDIENTE` con su primera entrada en el historial.
+**2. F1 – Registrar solicitud.** El sistema responde `201`, asigna el id, calcula la prioridad a partir del tipo (RN-04) y deja la solicitud en `PENDIENTE` con su primera entrada en el historial.
 
 ![Registro de una solicitud con respuesta 201](evidencias/etapa1/02_registrar_solicitud.png)
 
-**F1 – Validación.** Una descripción de menos de 10 caracteres se rechaza con `400` y un mensaje claro (RN-03).
+**3. F1 – Validación.** Una descripción de menos de 10 caracteres se rechaza con `400` y un mensaje claro (RN-03).
 
 ![Rechazo por descripción corta con respuesta 400](evidencias/etapa1/03_error_validacion.png)
 
-**F5 – Asignar responsable.** Al asignar un responsable a una solicitud `PENDIENTE`, pasa automáticamente a `EN_REVISION` (RN-13) y los dos cambios quedan en el historial (RN-15).
+**4. F6 – Reporte resumen.** Totales por estado, tipo y prioridad, solicitudes vencidas (RN-14) y solicitudes abiertas por responsable. Incluye la solicitud 6 recién registrada.
+
+![Reporte resumen con respuesta 200](evidencias/etapa1/04_reporte_resumen.png)
+
+**5. F5 – Asignar responsable.** Al asignar un responsable a una solicitud `PENDIENTE`, pasa automáticamente a `EN_REVISION` (RN-13) y los dos cambios quedan en el historial (RN-15).
 
 ![Asignación de responsable con respuesta 200](evidencias/etapa1/05_asignar_responsable.png)
 
-**F4 – Cambiar estado.** La solicitud pasa de `EN_REVISION` a `RESUELTA`, una transición permitida (RN-07), y el comentario queda registrado en el historial.
+**6. F4 – Cambiar estado.** La solicitud pasa de `EN_REVISION` a `RESUELTA`, una transición permitida (RN-07), y el comentario queda registrado en el historial.
 
 ![Cambio de estado a RESUELTA con respuesta 200](evidencias/etapa1/06_cambiar_estado.png)
 
-**F2 – Buscar y filtrar.** Los filtros se combinan: estado `PENDIENTE` y prioridad `ALTA` devuelve solo la solicitud 5.
+**7. F2 – Buscar y filtrar.** Los filtros se combinan: estado `PENDIENTE` y prioridad `ALTA` devuelve solo la solicitud 5.
 
 ![Búsqueda con filtros combinados con respuesta 200](evidencias/etapa1/07_filtrar_solicitudes.png)
-
-**F6 – Reporte resumen.** Totales por estado, tipo y prioridad, solicitudes vencidas y solicitudes abiertas por responsable.
-
-![Reporte resumen con respuesta 200](evidencias/etapa1/04_reporte_resumen.png)
 
 ## 1.11 Repositorio
 

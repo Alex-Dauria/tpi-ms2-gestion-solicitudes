@@ -89,11 +89,13 @@ Ejecutar las pruebas:
 ## Estructura del repositorio
 
 ```text
-src/main/java/...      Código del sistema
-src/test/java/...      Pruebas automatizadas
-docs/                  Informe del TPI en Markdown (una sección por etapa)
-docs/evidencias/       Capturas y salidas de ejecución
-docs/07_code_review.md Checklist y registro del code review
+src/main/java/...        Código del sistema
+src/test/java/...        Pruebas automatizadas (se agregan en el hito 3)
+scripts/linea_base.ps1   Verificación del comportamiento externo antes/después
+docs/                    Informe del TPI en Markdown (una sección por etapa)
+docs/evidencias/         Capturas y salidas de ejecución
+docs/07_code_review.md   Checklist y registro del code review
+entrega/                 Informe PDF final y cómo se arma la entrega
 ```
 
 ## Documentación del trabajo
@@ -101,6 +103,7 @@ docs/07_code_review.md Checklist y registro del code review
 | Sección | Documento |
 |---|---|
 | Plan de trabajo y metodología | [docs/00_plan_de_trabajo.md](docs/00_plan_de_trabajo.md) |
+| Portada y resumen ejecutivo | [docs/portada_y_resumen.md](docs/portada_y_resumen.md) |
 | 1. Sistema base | [docs/01_sistema_base.md](docs/01_sistema_base.md) |
 | 2. Calidad externa vs. calidad interna | [docs/02_calidad_externa_interna.md](docs/02_calidad_externa_interna.md) |
 | 3. Deuda técnica y code smells | [docs/03_deuda_tecnica_code_smells.md](docs/03_deuda_tecnica_code_smells.md) |
@@ -111,8 +114,11 @@ docs/07_code_review.md Checklist y registro del code review
 | 8. Conclusiones | [docs/08_conclusiones.md](docs/08_conclusiones.md) |
 | Uso de inteligencia artificial | [docs/09_uso_ia.md](docs/09_uso_ia.md) |
 | Decisiones técnicas | [docs/10_decisiones_tecnicas.md](docs/10_decisiones_tecnicas.md) |
+| 11. Anexos y enlaces | [docs/11_anexos_y_enlaces.md](docs/11_anexos_y_enlaces.md) |
+| Armado del PDF y del ZIP | [entrega/README.md](entrega/README.md) |
 
 ## Enlaces
 
+- Tablero de trabajo: <https://github.com/users/Alex-Dauria/projects/1>
 - Video de defensa: _pendiente_
-- Informe PDF: _pendiente_
+- Informe PDF: _pendiente_ (quedará en `entrega/`)

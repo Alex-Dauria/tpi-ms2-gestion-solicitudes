@@ -14,5 +14,5 @@ Closes #
 
 - [ ] Sin cambios de comportamiento externo, o los cambios intencionales están documentados
 - [ ] Un commit por refactoring, con el identificador R-xx en el mensaje (si es un PR de refactoring)
-- [ ] Se aplicó el checklist de [docs/07_code_review.md](../docs/07_code_review.md) (si es un PR de código)
-- [ ] Si se usó IA, quedó registrada en [docs/09_uso_ia.md](../docs/09_uso_ia.md)
+- [ ] Se aplicó el checklist de [code review](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/blob/main/docs/07_code_review.md) (si es un PR de código)
+- [ ] Si se usó IA, quedó registrada en [uso de IA](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/blob/main/docs/09_uso_ia.md)

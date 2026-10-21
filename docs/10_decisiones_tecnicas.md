@@ -31,3 +31,15 @@ Registro breve de las decisiones que condicionan el trabajo. Cada una indica el 
 - **Contexto:** el refactoring tiene que ser seguro y las tres zonas modifican el mismo controlador.
 - **Decisión:** primero se escriben las pruebas de cada zona sobre la versión inicial (pueden hacerse en paralelo); después se refactoriza en orden A → B → C, con un commit por refactoring y merge sin squash.
 - **Motivo:** las pruebas son la red de seguridad que demuestra que no cambió el comportamiento, y la secuencia evita conflictos de merge.
+
+## DT-06 – Línea base del comportamiento externo con un script de caja negra
+
+- **Contexto:** las pruebas automatizadas usan clases internas del sistema (por ejemplo, para reiniciar los datos), y esas clases cambian con el refactoring.
+- **Decisión:** sumar `scripts/linea_base.ps1`, que levanta la aplicación y ejecuta siempre los mismos 12 pedidos HTTP. Se genera una referencia sobre `estado-inicial` y al final se compara caso por caso con `estado-refactorizado`.
+- **Motivo:** verifica el sistema solo desde afuera, sin depender del código interno, así que sirve igual antes y después. Es evidencia directa de que el comportamiento externo se conservó.
+
+## DT-07 – Informe en Markdown y PDF al final
+
+- **Contexto:** el informe lo escriben y revisan tres personas, y la consigna pide un PDF único.
+- **Decisión:** cada sección se escribe en `docs/` en Markdown y se revisa por PR. El PDF se arma una sola vez al final, en `entrega/`, siguiendo `entrega/README.md`.
+- **Motivo:** los Markdown permiten revisar por PR, ver los cambios y comentar línea por línea. Armar el PDF antes obligaría a rehacerlo con cada corrección.

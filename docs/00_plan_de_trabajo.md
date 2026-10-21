@@ -42,8 +42,8 @@ Los demás refactorings de cada zona se eligen **a partir del diagnóstico**, no
 | 1. Estado inicial | #1 | `estado-inicial` |
 | 2. Diagnóstico | #2 a #7 | `etapa-diagnostico` |
 | 3. Refactoring y pruebas | #8 a #13 | `etapa-refactoring` y `etapa-pruebas` |
-| 4. Code review y documentación | #14 a #16 | `estado-refactorizado` (código final) y `etapa-docs` |
-| 5. Entrega | #17 y #18 | — |
+| 4. Code review y documentación | #14 a #16 | `estado-refactorizado` (código final) |
+| 5. Entrega | #17 y #18 | `etapa-docs` (documentación completa) |
 
 Fechas: _completar con las de la pestaña Evaluaciones del aula._
 
@@ -83,4 +83,6 @@ La consigna permite usar IA como apoyo si se declara. Cada integrante registra e
 
 ## 9. Armado del PDF
 
-Se escribe y corrige todo en Markdown. Recién cuando las secciones estén aprobadas se arma el PDF único (portada, resumen ejecutivo, secciones 01 a 10, enlaces al repo y al video, participación de cada integrante). Eso se hace en el issue #17.
+Se escribe y corrige todo en Markdown. Recién cuando todas las secciones estén aprobadas se arma el PDF único, en el issue #17.
+
+Qué entra en el PDF y en qué orden, cómo se convierte, dónde queda (`entrega/`) y cómo se arma el ZIP está definido en [entrega/README.md](../entrega/README.md). La portada y el resumen ejecutivo están en [portada_y_resumen.md](portada_y_resumen.md); el resumen se escribe al final, cuando ya está todo hecho.
