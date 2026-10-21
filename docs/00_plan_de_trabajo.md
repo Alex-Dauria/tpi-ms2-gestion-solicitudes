@@ -95,11 +95,13 @@ Las tres zonas tocan `SolicitudController`. Para no pisarnos:
 ## 7. Flujo de trabajo en GitHub
 
 1. Tomar el issue y moverlo a **In progress** en el Project.
-2. Crear la rama desde `main`: `etapa-N/tema` para documentos o `zona-x/tema` para código (ej.: `zona-a/pruebas`, `zona-a/refactoring`).
-3. Abrir el PR con la plantilla, con `Closes #N`, y mover el issue a **In review**.
+2. Crear la rama desde `main`: `etapa-N/tema` para documentos o `zona-x/tema` para código (ej.: `zona-a/pruebas`, `zona-a/refactoring`). Cada issue indica el nombre exacto en su sección "Cómo entregar".
+3. Abrir el PR con la plantilla, con `Closes #N`, y mover el issue a **In review**. Si el issue se entrega en más de un PR (las zonas: uno de pruebas y otro de refactoring), los PR anteriores llevan `Refs #N` y solo el último lleva `Closes #N`.
 4. La revisora deja sus observaciones en el PR. En los PR de código se aplica el checklist de code review (#7).
 5. La autora responde punto por punto y sube los ajustes.
 6. Con la aprobación, la autora mergea y el issue pasa a **Done**.
+
+En las tareas donde aportan las tres (#15, #16, #17), quien coordina abre la rama y el PR, y cada una sube su parte con commits propios en esa misma rama.
 
 **Commits:** en español, con prefijo: `docs:`, `test:`, `refactor:`, `feat:`, `fix:`, `chore:`.
 
