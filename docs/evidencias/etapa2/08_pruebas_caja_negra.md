@@ -1,9 +1,13 @@
 # Pruebas de caja negra – Etapa 2
 
 **Fecha:** 2026-10-22
+
 **Versión probada:** inicial (tag `estado-inicial`)
+
 **Cómo se ejecutó:** aplicación levantada con `./mvnw spring-boot:run` (Java 21) y los pedidos hechos con `curl` contra `http://localhost:8080`.
+
 **Datos de partida:** se borró la carpeta `datos/` antes de arrancar, así que la sesión empieza con los cinco registros sintéticos de prueba.
+
 **Importante:** los casos se ejecutan en orden y algunos modifican el estado del sistema; el número de caso es el orden real de la sesión.
 
 ## Resumen
@@ -22,8 +26,8 @@
 | 10 | Registrar con JSON malformado | 400 |
 | 11 | Asignar responsable inactivo | 409 |
 | 12 | Asignar responsable inexistente | 404 |
-| 13 | Registrar válida de estudiante existente (prioridad calculada) | 201 |
-| 14 | Registrar válida de estudiante nuevo (alta automática) | 201 |
+| 13 | Registrar válida estudiante existente (prioridad calculada) | 201 |
+| 14 | Registrar válida estudiante nuevo (alta automática) | 201 |
 | 15 | Asignar responsable a solicitud PENDIENTE | 200 |
 | 16 | Cambiar estado EN_REVISION -> RESUELTA | 200 |
 | 17 | Rechazar sin comentario | 400 |
@@ -515,18 +519,20 @@
 
 ## Error 500: rastro del servidor
 
-El caso 9 (legajo enviado como número) genera una excepción en el controlador. El registro de la aplicación muestra:
+El caso del legajo enviado como número genera una excepción en el controlador. El registro de la aplicación muestra:
 
 ```text
 java.lang.ClassCastException: class java.lang.Integer cannot be cast to class java.lang.String
 	at ar.edu.utn.tupad.solicitudes.controlador.SolicitudController.crear(SolicitudController.java:32)
 ```
 
-La línea 32 es `String legajo = (String) body.get("legajo");`: el `Map<String, Object>` no valida el tipo y el cast falla en tiempo de ejecución.
+El cast que falla está en `SolicitudController.crear`: `String legajo = (String) body.get("legajo");`. El `Map<String, Object>` no valida el tipo y el cast falla en tiempo de ejecución.
+
+El número de línea del rastro es parte de la salida original del servidor sobre la versión inicial; después del refactoring puede cambiar y no se usa como referencia en el informe.
 
 ## Persistencia: reinicio de la aplicación
 
-Terminada la sesión, se detuvo y volvió a levantar la aplicación **sin borrar** `datos/`. La solicitud creada en el caso 13 seguía disponible:
+Terminada la sesión, se detuvo y volvió a levantar la aplicación **sin borrar** `datos/`. La solicitud creada en el caso del registro válido de un estudiante existente seguía disponible:
 
 `GET /solicitudes/6` → `200`
 
