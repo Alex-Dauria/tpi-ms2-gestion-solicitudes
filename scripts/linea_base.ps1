@@ -10,11 +10,17 @@
     La fecha del día se reemplaza por <HOY> para que se puedan comparar corridas de días distintos.
     Con -CompararCon, compara caso por caso contra una corrida anterior y agrega el resultado al final.
 
+    Funciona en Windows (PowerShell 5.1 o 7) y en macOS/Linux con PowerShell 7 (pwsh).
+
 .EXAMPLE
     .\scripts\linea_base.ps1 -Salida docs\evidencias\pruebas\linea_base_estado_inicial.md
 
 .EXAMPLE
     .\scripts\linea_base.ps1 -Salida docs\evidencias\pruebas\linea_base_estado_refactorizado.md -CompararCon docs\evidencias\pruebas\linea_base_estado_inicial.md
+
+.EXAMPLE
+    # macOS / Linux
+    pwsh ./scripts/linea_base.ps1 -Salida docs/evidencias/pruebas/linea_base_estado_inicial.md
 #>
 param(
     [Parameter(Mandatory = $true)][string]$Salida,
@@ -24,6 +30,9 @@ param(
 
 $ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName System.Net.Http
+
+# Windows PowerShell 5.1 solo corre en Windows; en PowerShell 7 (pwsh) se usa $IsWindows
+$esWindows = ($PSVersionTable.PSVersion.Major -lt 6) -or $IsWindows
 
 $raiz = Split-Path -Parent $PSScriptRoot
 $base = "http://localhost:$Puerto"
@@ -103,12 +112,13 @@ try {
     if (Test-Path datos) { Remove-Item -Recurse -Force datos }
 
     Write-Host 'Compilando...'
-    & .\mvnw.cmd -q -DskipTests clean package
+    $mvnw = if ($esWindows) { '.\mvnw.cmd' } else { './mvnw' }
+    & $mvnw -q -DskipTests clean package
     if ($LASTEXITCODE -ne 0) { throw 'Falló la compilación.' }
-    $jar = Get-ChildItem target\*.jar | Where-Object { $_.Name -notlike '*.original' } | Select-Object -First 1
+    $jar = Get-ChildItem (Join-Path 'target' '*.jar') | Where-Object { $_.Name -notlike '*.original' } | Select-Object -First 1
 
     Write-Host 'Levantando la aplicación...'
-    $log = Join-Path $env:TEMP 'linea_base_app.log'
+    $log = Join-Path ([System.IO.Path]::GetTempPath()) 'linea_base_app.log'
     $app = Start-Process java -ArgumentList '-jar', "`"$($jar.FullName)`"", "--server.port=$Puerto" `
         -PassThru -NoNewWindow -RedirectStandardOutput $log -RedirectStandardError "$log.err"
 

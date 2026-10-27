@@ -91,7 +91,7 @@ Valores de clasificación:
 | # | Operación | Endpoint | Resultado |
 |---|---|---|---|
 | F1 | Registrar solicitud | `POST /solicitudes` | `201` con la solicitud creada en estado `PENDIENTE` |
-| F2 | Buscar y filtrar | `GET /solicitudes?estado=&tipo=&prioridad=&legajo=&responsableId=&vencidas=` | `200` con la lista ordenada por prioridad (ALTA primero) y luego por id |
+| F2 | Buscar y filtrar | `GET /solicitudes?estado=&tipo=&prioridad=&legajo=&responsableId=&vencidas=` | `200` con la lista ordenada por prioridad (ALTA primero) y luego por id. Los filtros de estado, tipo y prioridad no distinguen mayúsculas; un valor que no coincide con ninguna solicitud devuelve una lista vacía, y `vencidas=false` equivale a no filtrar por vencimiento |
 | F3 | Consultar una solicitud | `GET /solicitudes/{id}` | `200` con la solicitud o `404` |
 | F4 | Cambiar estado | `PUT /solicitudes/{id}/estado` con `{"estado", "comentario"}` | `200` con la solicitud actualizada |
 | F5 | Asignar responsable | `PUT /solicitudes/{id}/responsable` con `{"responsableId"}` | `200` con la solicitud actualizada |
@@ -109,8 +109,8 @@ Estas reglas definen el **comportamiento externo** que el refactoring tiene que 
 | RN-01 | El legajo es obligatorio y tiene 5 dígitos | `400` |
 | RN-02 | El tipo es obligatorio y debe ser uno de los válidos (no distingue mayúsculas) | `400` |
 | RN-03 | La descripción tiene entre 10 y 500 caracteres (el mínimo se cuenta sin los espacios de los extremos; el máximo, con ellos) | `400` |
-| RN-04 | Si no se indica prioridad, se calcula por tipo: `REVISION_NOTA` → ALTA; `EQUIVALENCIA` y `CAMBIO_COMISION` → MEDIA; el resto → BAJA | — |
-| RN-05 | Si el estudiante no existe, se da de alta: requiere nombre y un email válido | `400` |
+| RN-04 | Si se indica prioridad, debe ser `ALTA`, `MEDIA` o `BAJA` (no distingue mayúsculas). Si no se indica, se calcula por tipo: `REVISION_NOTA` → ALTA; `EQUIVALENCIA` y `CAMBIO_COMISION` → MEDIA; el resto → BAJA | `400` si la prioridad indicada no es válida |
+| RN-05 | Si el estudiante no existe, se da de alta: requiere nombre y un email válido. El email se guarda en minúsculas y, si no se indica carrera, se registra `"Sin especificar"` | `400` |
 | RN-06 | Un estudiante no puede tener dos solicitudes abiertas (`PENDIENTE` o `EN_REVISION`) del mismo tipo | `409` |
 | RN-07 | Las transiciones de estado permitidas son las del diagrama de abajo; `RECHAZADA` y `CERRADA` son estados finales | `409` |
 | RN-08 | Para pasar a `EN_REVISION` la solicitud debe tener responsable | `409` |

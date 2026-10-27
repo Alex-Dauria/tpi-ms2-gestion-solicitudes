@@ -25,6 +25,8 @@ Como no depende del código interno, sirve igual antes y después del refactorin
 .\scripts\linea_base.ps1 -Salida docs\evidencias\pruebas\linea_base_estado_refactorizado.md -CompararCon docs\evidencias\pruebas\linea_base_estado_inicial.md
 ```
 
+En macOS o Linux se ejecuta igual con PowerShell 7: `pwsh ./scripts/linea_base.ps1 -Salida …`.
+
 La fecha del día se reemplaza por `<HOY>` para que se puedan comparar corridas de días distintos. El resultado esperado al final es **12 de 12 casos iguales**. Si algún caso da distinto, hay que revisar si es una regresión o un cambio intencional documentado.
 
 | Corrida | Archivo | Resultado |
