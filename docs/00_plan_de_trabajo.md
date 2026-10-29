@@ -53,11 +53,11 @@ Los demás refactorings de cada zona se eligen **a partir del diagnóstico**, no
 
 | Hito | Issues | Fechas | Tag al cerrar |
 |---|---|---|---|
-| 1. Estado inicial | #1 | hasta el jue 22/10 | `estado-inicial` |
-| 2. Diagnóstico | #2 a #7 | vie 23/10 al mar 27/10 | `etapa-diagnostico` |
-| 3. Refactoring y pruebas | #8 a #13 | mié 28/10 al mar 3/11 | `etapa-refactoring` y `etapa-pruebas` |
-| 4. Code review y documentación | #14 a #16 | mié 4/11 al jue 5/11 | `estado-refactorizado` (código final) |
-| 5. Entrega | #17 y #18 | vie 6/11 al sáb 7/11 | `etapa-docs` (documentación completa) |
+| 1. Estado inicial | #1 | hasta el mar 27/10 | `estado-inicial` |
+| 2. Diagnóstico | #2 a #7 | mié 28/10 al sáb 31/10 | `etapa-diagnostico` |
+| 3. Refactoring y pruebas | #8 a #13 | dom 1/11 al mié 4/11 | `etapa-refactoring` y `etapa-pruebas` |
+| 4. Code review y documentación | #14 a #16 | jue 5/11 al vie 6/11 | `estado-refactorizado` (código final) |
+| 5. Entrega | #17 y #18 | sáb 7/11 | `etapa-docs` (documentación completa) |
 
 El domingo 8/11 queda como margen para subir todo a la plataforma.
 
@@ -65,13 +65,13 @@ Fechas internas de los hitos 2 y 3:
 
 | Tarea | Fecha límite |
 |---|---|
-| Diagnóstico de cada zona (#3, #4, #5), calidad externa/interna (#2) y checklist de code review (#7) | dom 25/10 |
-| Catálogo consolidado (#6) | mar 27/10 |
-| Pruebas de caracterización de las tres zonas (fase 1 de #8, #9, #10). Se pueden empezar apenas exista el tag `estado-inicial` | mar 27/10 |
-| Refactoring zona A (#8) | jue 29/10 |
-| Refactoring zona B (#9) | sáb 31/10 |
-| Refactoring zona C (#10) | lun 2/11 |
-| Secciones de SOLID, refactorings y pruebas (#11, #12, #13) | mar 3/11 |
+| Diagnóstico de cada zona (#3, #4, #5), calidad externa/interna (#2) y checklist de code review (#7) | vie 30/10 |
+| Catálogo consolidado (#6) | sáb 31/10 |
+| Pruebas de caracterización de las tres zonas (fase 1 de #8, #9, #10). Se pueden empezar apenas exista el tag `estado-inicial` | sáb 31/10 |
+| Refactoring zona A (#8) | dom 1/11 |
+| Refactoring zona B (#9) | lun 2/11 |
+| Refactoring zona C (#10) | mar 3/11 |
+| Secciones de SOLID, refactorings y pruebas (#11, #12, #13) | mié 4/11 |
 
 ## 5. Orden del refactoring
 
