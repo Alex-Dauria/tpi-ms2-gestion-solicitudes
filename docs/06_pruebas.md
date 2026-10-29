@@ -13,7 +13,7 @@ _Explicar el enfoque. Propuesta:_ **pruebas de caracterización**. Antes de refa
 
 ### Línea base del comportamiento externo
 
-Además de las pruebas automatizadas, el script `scripts/linea_base.ps1` verifica el sistema "desde afuera", como lo usaría un cliente. Compila la versión del código que haya en la carpeta, la levanta con los datos de prueba iniciales, ejecuta siempre los mismos 12 pedidos HTTP (operaciones válidas y casos de error) y guarda el código y la respuesta de cada uno.
+Además de las pruebas automatizadas, el script `scripts/linea_base.ps1` verifica el sistema "desde afuera", como lo usaría un cliente. Compila la versión del código que haya en la carpeta, la levanta con los datos de prueba iniciales, ejecuta siempre los mismos 14 pedidos HTTP (operaciones válidas y casos de error) y guarda el código y la respuesta de cada uno. Cada caso indica qué funcionalidad (F) y qué regla de negocio (RN) de la sección 1 verifica, para mantener la trazabilidad.
 
 Como no depende del código interno, sirve igual antes y después del refactoring:
 
@@ -27,7 +27,7 @@ Como no depende del código interno, sirve igual antes y después del refactorin
 
 En macOS o Linux se ejecuta igual con PowerShell 7: `pwsh ./scripts/linea_base.ps1 -Salida …`.
 
-La fecha del día se reemplaza por `<HOY>` para que se puedan comparar corridas de días distintos. El resultado esperado al final es **12 de 12 casos iguales**. Si algún caso da distinto, hay que revisar si es una regresión o un cambio intencional documentado.
+La fecha del día se reemplaza por `<HOY>` para que se puedan comparar corridas de días distintos. El resultado esperado al final es **14 de 14 casos iguales**. Si algún caso da distinto, hay que revisar si es una regresión o un cambio intencional documentado.
 
 | Corrida | Archivo | Resultado |
 |---|---|---|
@@ -72,8 +72,8 @@ _Salida de `.\mvnw.cmd test` en cada momento (texto o captura), guardada en `doc
 | Momento | Commit / tag | Pruebas ejecutadas | OK | Fallidas | Línea base | Evidencia |
 |---|---|---|---|---|---|---|
 | Antes (código inicial + pruebas) | _commit_ | | | | Referencia | |
-| Después del refactoring | `etapa-refactoring` | | | | _x de 12 iguales_ | |
-| Versión final | `estado-refactorizado` | | | | _x de 12 iguales_ | |
+| Después del refactoring | `etapa-refactoring` | | | | _x de 14 iguales_ | |
+| Versión final | `estado-refactorizado` | | | | _x de 14 iguales_ | |
 
 ## 6.4 Cómo se verificó que el refactoring no alteró el comportamiento
 
