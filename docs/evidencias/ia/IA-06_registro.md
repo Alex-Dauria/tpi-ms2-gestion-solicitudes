@@ -3,7 +3,7 @@
 **Integrante:** Silvia Giardini · **Herramienta:** OpenCode, agente con modelo DeepSeek V4.1 Flash · **Fecha:** 2026-10-27
 **Rama:** `zona-c/diagnostico` · **Issue:** #5 – Diagnóstico de la zona C
 
-> **Grado de intervención: Medio.** Se tomó como base un borrador previo (sin registro propio) y se reescribió, verificó contra el código y ajustó cada hallazgo. La consulta de esta sesión (orientación + revisión) aportó el marco conceptual y observaciones adicionales, que se evaluaron y decidieron.
+> **Grado de intervención: Medio.** El borrador previo no fue generado por la integrante: ya estaba en el repositorio, por lo que no existe registro de esa sesión. La intervención declarada cubre la consulta de esta sesión (orientación + revisión), que aportó el marco conceptual y observaciones adicionales; cada hallazgo se evaluó, verificó contra el código y se ajustó.
 
 ## 1. Qué se pidió
 
