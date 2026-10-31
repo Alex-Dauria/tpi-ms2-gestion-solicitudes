@@ -16,72 +16,7 @@
 
 ## 2. Los prompts
 
-### Prompt 1 — orientación
-
-```text
-ROL: Actuás como tutor de ingeniería de software. Tu función es orientarme, no
-resolverme el trabajo: me das el marco conceptual y las preguntas que debería
-hacerme, y el diagnóstico lo hago yo.
-
-CONTEXTO: TP final de Metodología de Sistemas II. Tenemos una API REST en Spring
-Boot hecha en estilo "prototipo rápido": funciona, pero no está diseñada. La
-versión quedó congelada con el tag estado-inicial y no se puede cambiar el
-comportamiento externo. Mi zona es "Consultas y persistencia": los endpoints de
-listado y filtrado, el reporte resumen, los catálogos y la clase que guarda los
-datos en memoria y en un archivo JSON.
-
-TAREA: dame una guía de orientación para diagnosticar esa zona por mi cuenta.
-Necesito:
-1. Un mapa de conceptos: los nombres del catálogo de Fowler y de Clean Code que
-   se aplican típicamente a este tipo de código, con una definición de una línea
-   y la señal concreta que delata cada uno.
-2. Preguntas guía: qué debería preguntarme al leer cada método, del tipo "¿este
-   valor viaja siempre con estos otros?", sin responderme.
-3. Una tabla comparativa de técnicas de refactoring candidatas para esos
-   problemas: técnica | cuándo aplica | cuándo NO conviene | qué riesgo trae.
-4. Los falsos positivos más comunes en este tipo de código, para no forzar
-   hallazgos que no corresponden.
-5. Tres preguntas para asignar prioridad Alta / Media / Baja.
-6. Qué afirmaciones NO puedo hacer sin evidencia y qué debería mostrar para
-   respaldarlas.
-
-FORMATO: seis secciones con esos títulos, en viñetas o tablas. Nada de párrafos
-largos.
-
-RESTRICCIONES: no me digas qué problemas tiene mi código, no nombres smells
-concretos de mi proyecto, no escribas fichas y no escribas código. Si necesitás
-el código para responder algo, decime que no podés en vez de suponerlo.
-```
-
-El agente aclaró en la primera línea de su respuesta que no había abierto el repositorio, y cerró con dos cosas que no podía responder sin verlo. Esa restricción se respetó.
-
-### Prompt 2 — revisión de los hallazgos
-
-_Segundo mensaje, enviado en la misma conversación._
-
-```text
-TAREA: te paso los cinco hallazgos que detecté. Revisalos, sin buscar por mí.
-1. ¿Alguno está mal fundamentado o no es realmente un smell?
-2. ¿Me falta algún caso en mi zona? Si agregás uno, mostrame solo el método y la
-   firma o el fragmento, sin explicación extendida.
-3. Prestá atención especial a las listas de parámetros largas: ¿me quedó alguna
-   sin detectar? Y dame la regla explícita con la que lo decidís: cuándo una firma
-   cuenta como larga, cuántos parámetros es el umbral, y cuándo una firma larga es
-   aceptable en un endpoint HTTP.
-
-FORMATO: (a) tabla con mi hallazgo | ¿está bien? | observación en una línea;
-(b) lista de posibles faltantes, si hay; (c) la regla de conteo en tres viñetas.
-
-RESTRICCIONES: no reescribas mis fichas, no escribas refactorings ni código. Si
-para responder necesitás algo que no te di, preguntámelo en vez de suponerlo.
-
-MIS HALLAZGOS:
-SC-01 Lista de parámetros larga en listar/filtrar (seis parámetros) — Alta
-SC-02 Regla de vencimiento duplicada en filtrar y resumen — Alta
-SC-03 Estado global y persistencia en la misma clase — Alta
-SC-04 resumen con claves fijas y get(...) + 1 — Alta
-SC-05 Catálogos que devuelven las listas internas — Media
-```
+Los prompts utilizados se omiten en este registro por privacidad. El detalle de las consultas y sus resultados se resume en la sección 1 y en las secciones 3 a 5. El export completo de la sesión se conserva como respaldo local.
 
 ## 3. Qué devolvió la revisión, hallazgo por hallazgo
 
