@@ -44,10 +44,10 @@ _Si un smell toca dos zonas (por ejemplo, los estados como texto o el chequeo de
 
 | ID | Smell / debilidad | Ubicación | Impacto | Riesgo de mantenimiento | Prioridad | Zona | Detectado por |
 |---|---|---|---|---|---|---|---|
-| SC-01 | Lista de parámetros larga en `filtrar` | `SolicitudController.listar` / `filtrar` | F2 y cualquier filtro nuevo | Un argumento en el orden equivocado compila y cambia el resultado | Alta | C | Silvia |
+| SC-01 | Lista de parámetros larga en `filtrar` | `SolicitudController.listar` / `filtrar` | F2 y cualquier filtro nuevo | Un argumento en el orden equivocado compila y cambia el resultado | Media | C | Silvia |
 | SC-02 | Regla de vencimiento duplicada | `filtrar` y `resumen` | F2 y F6 | El filtro y el reporte pueden mostrar números distintos | Alta | C | Silvia |
 | SC-03 | Estado global y persistencia en `BaseDeDatos` | `BaseDeDatos` | Todos los endpoints, las pruebas y la migración | Las pruebas comparten estado; cambiar la persistencia atraviesa todo | Alta | C | Silvia |
-| SC-04 | `resumen` con mapas de `String` y `get(...) + 1` | `resumen` | F6 y el alta de un tipo o estado | `NullPointerException` latente | Alta | C | Silvia |
+| SC-04 | `resumen` con mapas de `String` y `get(...) + 1` | `resumen` | F6 y el alta de un tipo o estado | `NullPointerException` latente | Media | C | Silvia |
 | SC-05 | Catálogos que devuelven las listas internas | `estudiantes` / `responsables` | F7 | Un consumidor puede mutar el estado global | Media | C | Silvia |
 
 _El refactoring propuesto para cada smell está en su ficha._
@@ -74,7 +74,7 @@ private List<Solicitud> filtrar(String estado, String tipo, String prioridad, St
 - **Por qué es un problema:** los seis parámetros forman una *Long Parameter List*: siempre viajan juntos y representan una sola cosa, el filtro. Cuatro son `String`, así que el compilador no distingue un orden equivocado; agregar un filtro obliga a tocar la firma del endpoint, la del método privado y todas las llamadas. Seis parámetros superan el umbral: cuatro ya es el disparador y cinco o más es larga por defecto. Además, el costo se paga en `filtrar`, que no solo recibe los seis sino que los combina en una misma condición, así que un valor en el lugar equivocado no se nota al leer la llamada.
 - **Impacto:** F2 y cualquier filtro nuevo; también las pruebas y la documentación de Swagger, que cambian con la firma.
 - **Riesgo de mantenimiento:** un `estado` pasado en el lugar de `tipo` compila y devuelve resultados silenciosamente distintos; cada condición nueva agrega otro parámetro a la lista.
-- **Prioridad:** Alta, según 3.1: es la puerta de entrada de la zona y la que habilita el refactoring obligatorio.
+- **Prioridad:** Media, según 3.1: afecta una sola funcionalidad (F2) y la firma del endpoint; no bloquea otros refactorings.
 - **Refactoring propuesto:** **Introduce Parameter Object**: agrupar los seis valores en `FiltroSolicitudes` y hacer que `filtrar` reciba ese objeto. Los query params HTTP no cambian; `listar` sigue exponiendo los mismos nombres.
 
 #### SC-02 – Regla de vencimiento duplicada
@@ -101,7 +101,7 @@ if (dias > limite) { venc++; }
 - **Impacto:** F2 (`vencidas=true`) y F6 (conteo de `vencidas`); un cambio en RN-14 obliga a editar dos métodos.
 - **Riesgo de mantenimiento:** si se cambia una sola copia, el filtro y el reporte muestran números distintos sin avisar.
 - **Prioridad:** Alta, según 3.1: afecta dos funcionalidades y hace riesgoso cualquier cambio de plazos.
-- **Refactoring propuesto:** **Extract Class** `PoliticaVencimiento`, con `estaVencida(Solicitud, LocalDate)`, llamada desde `filtrar` y `resumen`. No la muevas a `Solicitud` sin coordinar con la zona B.
+- **Refactoring propuesto:** **Extract Class** `PoliticaVencimiento`, con `estaVencida(Solicitud, LocalDate)`, llamada desde `filtrar` y `resumen`. Si se decide ubicarla en `Solicitud`, coordinarlo con la zona B (#9).
 
 #### SC-03 – Estado global y persistencia en la misma clase
 
@@ -142,7 +142,7 @@ porTipo.put(s.getTipo(), porTipo.get(s.getTipo()) + 1);
 - **Por qué es un problema:** los tipos, estados y prioridades son *Type Codes* representados como `String`. El conjunto de valores válidos está repetido en la validación y el cálculo de prioridad de la zona A, y en el mapa del reporte. `get` devuelve `null` si aparece un valor nuevo.
 - **Impacto:** F6 y cualquier alta de un tipo o estado nuevo; el registro puede seguir funcionando y el reporte fallar después.
 - **Riesgo de mantenimiento:** `NullPointerException` latente; el compilador no avisa y los datos actuales no lo disparan.
-- **Prioridad:** Alta, según 3.1: un cambio de dominio puede tumbar el reporte.
+- **Prioridad:** Media, según 3.1: afecta una sola funcionalidad (F6); el `NullPointerException` es latente con los datos actuales.
 - **Refactoring propuesto:** **Replace Type Code with Class** (o `enum`) para tipos, estados y prioridades, más **Extract Method** para los conteos y `EnumMap` para evitar el `null`. Toca las zonas A y B; hay que coordinarlo y dejarlo anotado en la ficha.
 
 #### SC-05 – Los catálogos devuelven las listas internas
@@ -177,7 +177,7 @@ Estos problemas atraviesan más de una zona. No abro una ficha propia para no du
 - Estados, tipos y prioridades se representan como `String` en varias capas (A/B/C); se cruza con SC-04.
 - Nombres abreviados: `m`, `lst`, `sol`, `pa`, `pb`.
 - Las 22 respuestas de error se arman a mano.
-- `LocalDate.now()` aparece en `registrarSolicitud`, `filtrar` y `resumen`.
+- `LocalDate.now()` aparece en `registrarSolicitud`, `filtrar`, `cambiarEstado`, `asignarResponsable` y `resumen` (5 lugares).
 - `// TODO` y código comentado al final de `registrarSolicitud`.
 - `cargar` y `guardar` atrapan la excepción y siguen: un archivo JSON corrupto hace que el sistema arranque con los datos de prueba sin avisar, y una escritura fallida se pierde en silencio. Es comportamiento, no solo estructura, así que se decide en #6 si entra como hallazgo propio o como cambio intencional.
 - `resumen` calcula los conteos y arma la respuesta en el mismo método (se cruza con SC-04).

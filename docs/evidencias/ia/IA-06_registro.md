@@ -3,9 +3,9 @@
 **Integrante:** Silvia Giardini · **Herramienta:** OpenCode, agente con modelo DeepSeek V4.1 Flash · **Fecha:** 2026-10-27
 **Rama:** `zona-c/diagnostico` · **Issue:** #5 – Diagnóstico de la zona C
 
-> **Grado de intervención: Medio.** La herramienta aportó el marco conceptual y observaciones sobre los hallazgos ya escritos. La integrante evaluó cada observación, la verificó contra el código y decidió qué se mantiene, qué se ajusta y qué se descarta.
+> **Grado de intervención: Alto.** El borrador de las fichas se generó con el mismo agente en una sesión anterior (sin registro propio) y la integrante revisó, verificó contra el código y adoptó o ajustó cada hallazgo. La consulta de esta sesión (orientación + revisión) aportó el marco conceptual y observaciones adicionales, que la integrante evaluó y decidió.
 
-**Alcance de esta declaración.** El borrador de las fichas se preparó con el mismo agente en una sesión anterior, que no tiene registro propio. Esta consulta se hizo sobre ese borrador ya escrito, así que el grado Medio cubre el conjunto. Además, el agente conserva notas del proyecto en su memoria y lo advirtió al cerrar la revisión ("tengo apuntes previos de esta zona"): se declara acá para que la evidencia no se lea como una consulta a ciegas.
+**Alcance de esta declaración.** El borrador de las fichas se generó con el mismo agente en una sesión anterior, que no tiene registro propio. Esta consulta se hizo sobre ese borrador ya escrito, por lo que el grado Alto cubre el conjunto (generación + revisión). Además, el agente conserva notas del proyecto en su memoria y lo advirtió al cerrar la revisión ("tengo apuntes previos de esta zona"): se declara acá para que la evidencia no se lea como una consulta a ciegas.
 
 ## 1. Qué se pidió
 
