@@ -3,7 +3,7 @@
 **Integrante:** Silvia Giardini · **Herramienta:** OpenCode, agente con modelo DeepSeek V4.1 Flash · **Fecha:** 2026-10-27
 **Rama:** `zona-c/diagnostico` · **Issue:** #5 – Diagnóstico de la zona C
 
-> **Grado de intervención: Medio.** Se tomó en cuenta el borrador de las fichas que se generó en la primera etapa del proyecto como base (sin registro propio), se revisó, verificó y adoptó o ajustó cada hallazgo. La consulta de esta sesión (orientación + revisión) aportó el marco conceptual y observaciones adicionales, que se evaluó y decidió.
+> **Grado de intervención: Medio.** Se tomó como base un borrador previo (sin registro propio) y se reescribió, verificó contra el código y ajustó cada hallazgo. La consulta de esta sesión (orientación + revisión) aportó el marco conceptual y observaciones adicionales, que se evaluaron y decidieron.
 
 ## 1. Qué se pidió
 
@@ -116,5 +116,4 @@ El agente los planteó como preguntas, sin afirmar que existieran. Cada uno se v
 - No leyó el código: no podía decir qué señal aplica en esta zona, y lo dijo.
 - La regla de conteo es orientativa, no una norma; se usa como criterio de justificación.
 - Nada se incorporó sin verificar.
-
-Este registro es la evidencia resumida. El export completo de la sesión se conserva como respaldo local.
+Este registro es una evidencia resumida.
