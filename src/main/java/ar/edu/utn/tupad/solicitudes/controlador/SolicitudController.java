@@ -86,8 +86,6 @@ public class SolicitudController {
         Solicitud solicitud = construirSolicitud(BaseDeDatos.ultimoId, legajo, tipo, descripcion.trim(), prioridad);
         BaseDeDatos.solicitudes.add(solicitud);
         BaseDeDatos.guardar();
-        // TODO: avisar por mail al estudiante
-        // System.out.println("Se creo la solicitud " + s.getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(solicitud);
     }
 
