@@ -67,18 +67,7 @@ public class SolicitudController {
                 return respuestaError(HttpStatus.BAD_REQUEST, "Prioridad inválida: " + prioridad);
             }
         } else {
-            // la prioridad se calcula segun el tipo
-            switch (tipo) {
-                case "REVISION_NOTA":
-                    prioridad = "ALTA";
-                    break;
-                case "EQUIVALENCIA":
-                case "CAMBIO_COMISION":
-                    prioridad = "MEDIA";
-                    break;
-                default:
-                    prioridad = "BAJA";
-            }
+            prioridad = prioridadPorDefecto(tipo);
         }
 
         // buscar estudiante
@@ -130,6 +119,19 @@ public class SolicitudController {
         // TODO: avisar por mail al estudiante
         // System.out.println("Se creo la solicitud " + s.getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(s);
+    }
+
+    // Prioridad que corresponde a cada tipo cuando la solicitud no indica una (RN-04)
+    private String prioridadPorDefecto(String tipo) {
+        switch (tipo) {
+            case "REVISION_NOTA":
+                return "ALTA";
+            case "EQUIVALENCIA":
+            case "CAMBIO_COMISION":
+                return "MEDIA";
+            default:
+                return "BAJA";
+        }
     }
 
     @GetMapping("/solicitudes")
