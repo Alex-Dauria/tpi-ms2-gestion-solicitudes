@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,40 +40,31 @@ public class SolicitudController {
 
     private ResponseEntity<Object> registrarSolicitud(String legajo, String nombre, String email, String carrera,
                                                       String tipo, String prioridad, String descripcion) {
-        Map<String, Object> m = new HashMap<>();
-
         // validaciones
         if (legajo == null || legajo.trim().isEmpty()) {
-            m.put("error", "El legajo es obligatorio");
-            return ResponseEntity.badRequest().body(m);
+            return respuestaError(HttpStatus.BAD_REQUEST, "El legajo es obligatorio");
         }
         if (!legajo.matches("\\d{5}")) {
-            m.put("error", "El legajo debe tener 5 dígitos");
-            return ResponseEntity.badRequest().body(m);
+            return respuestaError(HttpStatus.BAD_REQUEST, "El legajo debe tener 5 dígitos");
         }
         if (tipo == null || tipo.trim().isEmpty()) {
-            m.put("error", "El tipo es obligatorio");
-            return ResponseEntity.badRequest().body(m);
+            return respuestaError(HttpStatus.BAD_REQUEST, "El tipo es obligatorio");
         }
         tipo = tipo.toUpperCase();
         if (!tipo.equals("CERTIFICADO") && !tipo.equals("EQUIVALENCIA") && !tipo.equals("REVISION_NOTA")
                 && !tipo.equals("CAMBIO_COMISION") && !tipo.equals("OTRO")) {
-            m.put("error", "Tipo de solicitud inválido: " + tipo);
-            return ResponseEntity.badRequest().body(m);
+            return respuestaError(HttpStatus.BAD_REQUEST, "Tipo de solicitud inválido: " + tipo);
         }
         if (descripcion == null || descripcion.trim().length() < 10) {
-            m.put("error", "La descripción debe tener al menos 10 caracteres");
-            return ResponseEntity.badRequest().body(m);
+            return respuestaError(HttpStatus.BAD_REQUEST, "La descripción debe tener al menos 10 caracteres");
         }
         if (descripcion.length() > 500) {
-            m.put("error", "La descripción no puede superar los 500 caracteres");
-            return ResponseEntity.badRequest().body(m);
+            return respuestaError(HttpStatus.BAD_REQUEST, "La descripción no puede superar los 500 caracteres");
         }
         if (prioridad != null && !prioridad.trim().isEmpty()) {
             prioridad = prioridad.toUpperCase();
             if (!prioridad.equals("ALTA") && !prioridad.equals("MEDIA") && !prioridad.equals("BAJA")) {
-                m.put("error", "Prioridad inválida: " + prioridad);
-                return ResponseEntity.badRequest().body(m);
+                return respuestaError(HttpStatus.BAD_REQUEST, "Prioridad inválida: " + prioridad);
             }
         } else {
             // la prioridad se calcula segun el tipo
@@ -102,12 +92,10 @@ public class SolicitudController {
         if (est == null) {
             // si no existe lo damos de alta
             if (nombre == null || nombre.trim().isEmpty() || email == null || email.trim().isEmpty()) {
-                m.put("error", "El estudiante no existe: se requieren nombre y email para darlo de alta");
-                return ResponseEntity.badRequest().body(m);
+                return respuestaError(HttpStatus.BAD_REQUEST, "El estudiante no existe: se requieren nombre y email para darlo de alta");
             }
             if (!email.contains("@") || !email.contains(".")) {
-                m.put("error", "El email no es válido");
-                return ResponseEntity.badRequest().body(m);
+                return respuestaError(HttpStatus.BAD_REQUEST, "El email no es válido");
             }
             est = new Estudiante();
             est.setLegajo(legajo);
@@ -121,8 +109,7 @@ public class SolicitudController {
         for (Solicitud s : BaseDeDatos.solicitudes) {
             if (s.getLegajo().equals(legajo) && s.getTipo().equals(tipo)
                     && (s.getEstado().equals("PENDIENTE") || s.getEstado().equals("EN_REVISION"))) {
-                m.put("error", "El estudiante ya tiene una solicitud abierta de tipo " + tipo + " (id " + s.getId() + ")");
-                return ResponseEntity.status(HttpStatus.CONFLICT).body(m);
+                return respuestaError(HttpStatus.CONFLICT, "El estudiante ya tiene una solicitud abierta de tipo " + tipo + " (id " + s.getId() + ")");
             }
         }
 
@@ -227,14 +214,11 @@ public class SolicitudController {
                 return ResponseEntity.ok(s);
             }
         }
-        Map<String, Object> m = new HashMap<>();
-        m.put("error", "No existe la solicitud " + id);
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(m);
+        return respuestaError(HttpStatus.NOT_FOUND, "No existe la solicitud " + id);
     }
 
     @PutMapping("/solicitudes/{id}/estado")
     public ResponseEntity<Object> cambiarEstado(@PathVariable int id, @RequestBody Map<String, String> body) {
-        Map<String, Object> m = new HashMap<>();
         Solicitud sol = null;
         for (Solicitud s : BaseDeDatos.solicitudes) {
             if (s.getId() == id) {
@@ -243,15 +227,13 @@ public class SolicitudController {
             }
         }
         if (sol == null) {
-            m.put("error", "No existe la solicitud " + id);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(m);
+            return respuestaError(HttpStatus.NOT_FOUND, "No existe la solicitud " + id);
         }
 
         String nuevo = body.get("estado");
         String comentario = body.get("comentario");
         if (nuevo == null || nuevo.trim().isEmpty()) {
-            m.put("error", "El nuevo estado es obligatorio");
-            return ResponseEntity.badRequest().body(m);
+            return respuestaError(HttpStatus.BAD_REQUEST, "El nuevo estado es obligatorio");
         }
         nuevo = nuevo.toUpperCase();
         String actual = sol.getEstado();
@@ -274,16 +256,13 @@ public class SolicitudController {
             valido = false;
         }
         if (!valido) {
-            m.put("error", "Transición no permitida: " + actual + " -> " + nuevo);
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(m);
+            return respuestaError(HttpStatus.CONFLICT, "Transición no permitida: " + actual + " -> " + nuevo);
         }
         if (nuevo.equals("EN_REVISION") && sol.getResponsableId() == null) {
-            m.put("error", "Para pasar a EN_REVISION la solicitud debe tener un responsable asignado");
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(m);
+            return respuestaError(HttpStatus.CONFLICT, "Para pasar a EN_REVISION la solicitud debe tener un responsable asignado");
         }
         if (nuevo.equals("RECHAZADA") && (comentario == null || comentario.trim().isEmpty())) {
-            m.put("error", "Para rechazar una solicitud hay que indicar un comentario");
-            return ResponseEntity.badRequest().body(m);
+            return respuestaError(HttpStatus.BAD_REQUEST, "Para rechazar una solicitud hay que indicar un comentario");
         }
 
         String hoy = LocalDate.now().toString();
@@ -300,7 +279,6 @@ public class SolicitudController {
 
     @PutMapping("/solicitudes/{id}/responsable")
     public ResponseEntity<Object> asignarResponsable(@PathVariable int id, @RequestBody Map<String, Integer> body) {
-        Map<String, Object> m = new HashMap<>();
         Solicitud sol = null;
         for (Solicitud s : BaseDeDatos.solicitudes) {
             if (s.getId() == id) {
@@ -309,18 +287,15 @@ public class SolicitudController {
             }
         }
         if (sol == null) {
-            m.put("error", "No existe la solicitud " + id);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(m);
+            return respuestaError(HttpStatus.NOT_FOUND, "No existe la solicitud " + id);
         }
         if (sol.getEstado().equals("CERRADA") || sol.getEstado().equals("RECHAZADA")) {
-            m.put("error", "No se puede asignar responsable a una solicitud " + sol.getEstado());
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(m);
+            return respuestaError(HttpStatus.CONFLICT, "No se puede asignar responsable a una solicitud " + sol.getEstado());
         }
 
         Integer rid = body.get("responsableId");
         if (rid == null) {
-            m.put("error", "El responsableId es obligatorio");
-            return ResponseEntity.badRequest().body(m);
+            return respuestaError(HttpStatus.BAD_REQUEST, "El responsableId es obligatorio");
         }
         Responsable r = null;
         for (Responsable x : BaseDeDatos.responsables) {
@@ -330,12 +305,10 @@ public class SolicitudController {
             }
         }
         if (r == null) {
-            m.put("error", "No existe el responsable " + rid);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(m);
+            return respuestaError(HttpStatus.NOT_FOUND, "No existe el responsable " + rid);
         }
         if (!r.isActivo()) {
-            m.put("error", "El responsable " + r.getNombre() + " no está activo");
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(m);
+            return respuestaError(HttpStatus.CONFLICT, "El responsable " + r.getNombre() + " no está activo");
         }
 
         int cant = 0;
@@ -346,8 +319,7 @@ public class SolicitudController {
             }
         }
         if (cant >= 5) {
-            m.put("error", "El responsable ya tiene 5 solicitudes abiertas");
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(m);
+            return respuestaError(HttpStatus.CONFLICT, "El responsable ya tiene 5 solicitudes abiertas");
         }
 
         String hoy = LocalDate.now().toString();
@@ -425,6 +397,12 @@ public class SolicitudController {
         r.put("vencidas", venc);
         r.put("abiertasPorResponsable", porResp);
         return r;
+    }
+
+    // ===================== RESPUESTAS DE ERROR =====================
+
+    private ResponseEntity<Object> respuestaError(HttpStatus status, String mensaje) {
+        return ResponseEntity.status(status).body(Map.of("error", mensaje));
     }
 
     // ===================== CATALOGOS =====================
