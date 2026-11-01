@@ -51,37 +51,19 @@ public class SolicitudController {
         }
 
         String legajo = datos.legajo();
-        String nombre = datos.nombre();
-        String email = datos.email();
-        String carrera = datos.carrera();
         String tipo = datos.tipo().toUpperCase();
         String prioridad = estaVacio(datos.prioridad())
                 ? prioridadPorDefecto(tipo)
                 : datos.prioridad().toUpperCase();
         String descripcion = datos.descripcion();
 
-        // buscar estudiante
-        Estudiante est = null;
-        for (Estudiante e : BaseDeDatos.estudiantes) {
-            if (e.getLegajo().equals(legajo)) {
-                est = e;
-                break;
+        // Si el estudiante no existe, se lo da de alta con los datos del pedido (RN-05)
+        if (buscarEstudiantePorLegajo(legajo).isEmpty()) {
+            Optional<String> errorAlta = validarDatosDeAlta(datos.nombre(), datos.email());
+            if (errorAlta.isPresent()) {
+                return respuestaError(HttpStatus.BAD_REQUEST, errorAlta.get());
             }
-        }
-        if (est == null) {
-            // si no existe lo damos de alta
-            if (nombre == null || nombre.trim().isEmpty() || email == null || email.trim().isEmpty()) {
-                return respuestaError(HttpStatus.BAD_REQUEST, "El estudiante no existe: se requieren nombre y email para darlo de alta");
-            }
-            if (!email.contains("@") || !email.contains(".")) {
-                return respuestaError(HttpStatus.BAD_REQUEST, "El email no es válido");
-            }
-            est = new Estudiante();
-            est.setLegajo(legajo);
-            est.setNombre(nombre.trim());
-            est.setEmail(email.trim().toLowerCase());
-            est.setCarrera(carrera == null ? "Sin especificar" : carrera);
-            BaseDeDatos.estudiantes.add(est);
+            BaseDeDatos.estudiantes.add(crearEstudiante(datos));
         }
 
         // no puede tener otra solicitud abierta del mismo tipo
@@ -158,6 +140,32 @@ public class SolicitudController {
             return Optional.of("Prioridad inválida: " + prioridadNormalizada);
         }
         return Optional.empty();
+    }
+
+    private Optional<Estudiante> buscarEstudiantePorLegajo(String legajo) {
+        for (Estudiante estudiante : BaseDeDatos.estudiantes) {
+            if (estudiante.getLegajo().equals(legajo)) {
+                return Optional.of(estudiante);
+            }
+        }
+        return Optional.empty();
+    }
+
+    // RN-05: para dar de alta a un estudiante nuevo hacen falta nombre y un email válido
+    private Optional<String> validarDatosDeAlta(String nombre, String email) {
+        if (estaVacio(nombre) || estaVacio(email)) {
+            return Optional.of("El estudiante no existe: se requieren nombre y email para darlo de alta");
+        }
+        if (!email.contains("@") || !email.contains(".")) {
+            return Optional.of("El email no es válido");
+        }
+        return Optional.empty();
+    }
+
+    // RN-05: el email se guarda en minúsculas y, sin carrera, se registra "Sin especificar"
+    private Estudiante crearEstudiante(DatosSolicitud datos) {
+        String carrera = datos.carrera() == null ? "Sin especificar" : datos.carrera();
+        return new Estudiante(datos.legajo(), datos.nombre().trim(), datos.email().trim().toLowerCase(), carrera);
     }
 
     private boolean estaVacio(String valor) {
