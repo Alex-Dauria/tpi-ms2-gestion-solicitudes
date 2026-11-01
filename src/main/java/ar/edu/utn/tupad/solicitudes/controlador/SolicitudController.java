@@ -66,31 +66,47 @@ public class SolicitudController {
             BaseDeDatos.estudiantes.add(crearEstudiante(datos));
         }
 
-        // no puede tener otra solicitud abierta del mismo tipo
-        for (Solicitud s : BaseDeDatos.solicitudes) {
-            if (s.getLegajo().equals(legajo) && s.getTipo().equals(tipo)
-                    && (s.getEstado().equals("PENDIENTE") || s.getEstado().equals("EN_REVISION"))) {
-                return respuestaError(HttpStatus.CONFLICT, "El estudiante ya tiene una solicitud abierta de tipo " + tipo + " (id " + s.getId() + ")");
-            }
+        // RN-06: no puede tener otra solicitud abierta del mismo tipo
+        Optional<Solicitud> abierta = buscarSolicitudAbierta(legajo, tipo);
+        if (abierta.isPresent()) {
+            return respuestaError(HttpStatus.CONFLICT, "El estudiante ya tiene una solicitud abierta de tipo "
+                    + tipo + " (id " + abierta.get().getId() + ")");
         }
 
-        Solicitud s = new Solicitud();
         BaseDeDatos.ultimoId++;
-        s.setId(BaseDeDatos.ultimoId);
-        s.setLegajo(legajo);
-        s.setTipo(tipo);
-        s.setDescripcion(descripcion.trim());
-        s.setPrioridad(prioridad);
-        s.setEstado("PENDIENTE");
-        String hoy = LocalDate.now().toString();
-        s.setFechaCreacion(hoy);
-        s.setFechaUltimoCambio(hoy);
-        s.getHistorial().add(hoy + ": solicitud registrada (PENDIENTE)");
-        BaseDeDatos.solicitudes.add(s);
+        Solicitud solicitud = construirSolicitud(BaseDeDatos.ultimoId, legajo, tipo, descripcion.trim(), prioridad);
+        BaseDeDatos.solicitudes.add(solicitud);
         BaseDeDatos.guardar();
         // TODO: avisar por mail al estudiante
         // System.out.println("Se creo la solicitud " + s.getId());
-        return ResponseEntity.status(HttpStatus.CREATED).body(s);
+        return ResponseEntity.status(HttpStatus.CREATED).body(solicitud);
+    }
+
+    // Una solicitud está abierta mientras está PENDIENTE o EN_REVISION (regla de estados de la zona B)
+    private Optional<Solicitud> buscarSolicitudAbierta(String legajo, String tipo) {
+        for (Solicitud solicitud : BaseDeDatos.solicitudes) {
+            if (solicitud.getLegajo().equals(legajo) && solicitud.getTipo().equals(tipo)
+                    && (solicitud.getEstado().equals("PENDIENTE") || solicitud.getEstado().equals("EN_REVISION"))) {
+                return Optional.of(solicitud);
+            }
+        }
+        return Optional.empty();
+    }
+
+    // Toda solicitud nueva nace PENDIENTE, con la fecha de hoy y su primera entrada en el historial (RN-15)
+    private Solicitud construirSolicitud(int id, String legajo, String tipo, String descripcion, String prioridad) {
+        String hoy = LocalDate.now().toString();
+        Solicitud solicitud = new Solicitud();
+        solicitud.setId(id);
+        solicitud.setLegajo(legajo);
+        solicitud.setTipo(tipo);
+        solicitud.setDescripcion(descripcion);
+        solicitud.setPrioridad(prioridad);
+        solicitud.setEstado("PENDIENTE");
+        solicitud.setFechaCreacion(hoy);
+        solicitud.setFechaUltimoCambio(hoy);
+        solicitud.getHistorial().add(hoy + ": solicitud registrada (PENDIENTE)");
+        return solicitud;
     }
 
     // RN-01
