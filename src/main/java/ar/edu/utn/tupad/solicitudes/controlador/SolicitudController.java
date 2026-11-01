@@ -25,6 +25,15 @@ import java.util.Optional;
 @RestController
 public class SolicitudController {
 
+    // Reglas del registro (RN-01 a RN-05)
+    private static final int DIGITOS_LEGAJO = 5;
+    private static final int LARGO_MINIMO_DESCRIPCION = 10;
+    private static final int LARGO_MAXIMO_DESCRIPCION = 500;
+    private static final List<String> TIPOS_VALIDOS =
+            List.of("CERTIFICADO", "EQUIVALENCIA", "REVISION_NOTA", "CAMBIO_COMISION", "OTRO");
+    private static final List<String> PRIORIDADES_VALIDAS = List.of("ALTA", "MEDIA", "BAJA");
+    private static final String CARRERA_POR_DEFECTO = "Sin especificar";
+
     // ===================== SOLICITUDES =====================
 
     @PostMapping("/solicitudes")
@@ -114,8 +123,8 @@ public class SolicitudController {
         if (estaVacio(legajo)) {
             return Optional.of("El legajo es obligatorio");
         }
-        if (!legajo.matches("\\d{5}")) {
-            return Optional.of("El legajo debe tener 5 dígitos");
+        if (!legajo.matches("\\d{" + DIGITOS_LEGAJO + "}")) {
+            return Optional.of("El legajo debe tener " + DIGITOS_LEGAJO + " dígitos");
         }
         return Optional.empty();
     }
@@ -126,9 +135,7 @@ public class SolicitudController {
             return Optional.of("El tipo es obligatorio");
         }
         String tipoNormalizado = tipo.toUpperCase();
-        if (!tipoNormalizado.equals("CERTIFICADO") && !tipoNormalizado.equals("EQUIVALENCIA")
-                && !tipoNormalizado.equals("REVISION_NOTA") && !tipoNormalizado.equals("CAMBIO_COMISION")
-                && !tipoNormalizado.equals("OTRO")) {
+        if (!TIPOS_VALIDOS.contains(tipoNormalizado)) {
             return Optional.of("Tipo de solicitud inválido: " + tipoNormalizado);
         }
         return Optional.empty();
@@ -136,11 +143,11 @@ public class SolicitudController {
 
     // RN-03: el mínimo se mide sin los espacios de los extremos y el máximo con ellos
     private Optional<String> validarDescripcion(String descripcion) {
-        if (descripcion == null || descripcion.trim().length() < 10) {
-            return Optional.of("La descripción debe tener al menos 10 caracteres");
+        if (descripcion == null || descripcion.trim().length() < LARGO_MINIMO_DESCRIPCION) {
+            return Optional.of("La descripción debe tener al menos " + LARGO_MINIMO_DESCRIPCION + " caracteres");
         }
-        if (descripcion.length() > 500) {
-            return Optional.of("La descripción no puede superar los 500 caracteres");
+        if (descripcion.length() > LARGO_MAXIMO_DESCRIPCION) {
+            return Optional.of("La descripción no puede superar los " + LARGO_MAXIMO_DESCRIPCION + " caracteres");
         }
         return Optional.empty();
     }
@@ -151,8 +158,7 @@ public class SolicitudController {
             return Optional.empty();
         }
         String prioridadNormalizada = prioridad.toUpperCase();
-        if (!prioridadNormalizada.equals("ALTA") && !prioridadNormalizada.equals("MEDIA")
-                && !prioridadNormalizada.equals("BAJA")) {
+        if (!PRIORIDADES_VALIDAS.contains(prioridadNormalizada)) {
             return Optional.of("Prioridad inválida: " + prioridadNormalizada);
         }
         return Optional.empty();
@@ -180,7 +186,7 @@ public class SolicitudController {
 
     // RN-05: el email se guarda en minúsculas y, sin carrera, se registra "Sin especificar"
     private Estudiante crearEstudiante(DatosSolicitud datos) {
-        String carrera = datos.carrera() == null ? "Sin especificar" : datos.carrera();
+        String carrera = datos.carrera() == null ? CARRERA_POR_DEFECTO : datos.carrera();
         return new Estudiante(datos.legajo(), datos.nombre().trim(), datos.email().trim().toLowerCase(), carrera);
     }
 
