@@ -28,18 +28,26 @@ public class SolicitudController {
 
     @PostMapping("/solicitudes")
     public ResponseEntity<Object> crear(@RequestBody Map<String, Object> body) {
-        String legajo = (String) body.get("legajo");
-        String nombre = (String) body.get("nombre");
-        String email = (String) body.get("email");
-        String carrera = (String) body.get("carrera");
-        String tipo = (String) body.get("tipo");
-        String prioridad = (String) body.get("prioridad");
-        String descripcion = (String) body.get("descripcion");
-        return registrarSolicitud(legajo, nombre, email, carrera, tipo, prioridad, descripcion);
+        DatosSolicitud datos = new DatosSolicitud(
+                (String) body.get("legajo"),
+                (String) body.get("nombre"),
+                (String) body.get("email"),
+                (String) body.get("carrera"),
+                (String) body.get("tipo"),
+                (String) body.get("prioridad"),
+                (String) body.get("descripcion"));
+        return registrarSolicitud(datos);
     }
 
-    private ResponseEntity<Object> registrarSolicitud(String legajo, String nombre, String email, String carrera,
-                                                      String tipo, String prioridad, String descripcion) {
+    private ResponseEntity<Object> registrarSolicitud(DatosSolicitud datos) {
+        String legajo = datos.legajo();
+        String nombre = datos.nombre();
+        String email = datos.email();
+        String carrera = datos.carrera();
+        String tipo = datos.tipo();
+        String prioridad = datos.prioridad();
+        String descripcion = datos.descripcion();
+
         // validaciones
         if (legajo == null || legajo.trim().isEmpty()) {
             return respuestaError(HttpStatus.BAD_REQUEST, "El legajo es obligatorio");
