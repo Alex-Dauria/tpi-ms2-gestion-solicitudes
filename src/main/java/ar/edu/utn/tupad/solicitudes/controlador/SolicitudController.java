@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 public class SolicitudController {
@@ -40,43 +41,24 @@ public class SolicitudController {
     }
 
     private ResponseEntity<Object> registrarSolicitud(DatosSolicitud datos) {
+        // Se valida campo por campo, en este orden, y se corta en el primer error
+        Optional<String> error = validarLegajo(datos.legajo())
+                .or(() -> validarTipo(datos.tipo()))
+                .or(() -> validarDescripcion(datos.descripcion()))
+                .or(() -> validarPrioridad(datos.prioridad()));
+        if (error.isPresent()) {
+            return respuestaError(HttpStatus.BAD_REQUEST, error.get());
+        }
+
         String legajo = datos.legajo();
         String nombre = datos.nombre();
         String email = datos.email();
         String carrera = datos.carrera();
-        String tipo = datos.tipo();
-        String prioridad = datos.prioridad();
+        String tipo = datos.tipo().toUpperCase();
+        String prioridad = estaVacio(datos.prioridad())
+                ? prioridadPorDefecto(tipo)
+                : datos.prioridad().toUpperCase();
         String descripcion = datos.descripcion();
-
-        // validaciones
-        if (legajo == null || legajo.trim().isEmpty()) {
-            return respuestaError(HttpStatus.BAD_REQUEST, "El legajo es obligatorio");
-        }
-        if (!legajo.matches("\\d{5}")) {
-            return respuestaError(HttpStatus.BAD_REQUEST, "El legajo debe tener 5 dígitos");
-        }
-        if (tipo == null || tipo.trim().isEmpty()) {
-            return respuestaError(HttpStatus.BAD_REQUEST, "El tipo es obligatorio");
-        }
-        tipo = tipo.toUpperCase();
-        if (!tipo.equals("CERTIFICADO") && !tipo.equals("EQUIVALENCIA") && !tipo.equals("REVISION_NOTA")
-                && !tipo.equals("CAMBIO_COMISION") && !tipo.equals("OTRO")) {
-            return respuestaError(HttpStatus.BAD_REQUEST, "Tipo de solicitud inválido: " + tipo);
-        }
-        if (descripcion == null || descripcion.trim().length() < 10) {
-            return respuestaError(HttpStatus.BAD_REQUEST, "La descripción debe tener al menos 10 caracteres");
-        }
-        if (descripcion.length() > 500) {
-            return respuestaError(HttpStatus.BAD_REQUEST, "La descripción no puede superar los 500 caracteres");
-        }
-        if (prioridad != null && !prioridad.trim().isEmpty()) {
-            prioridad = prioridad.toUpperCase();
-            if (!prioridad.equals("ALTA") && !prioridad.equals("MEDIA") && !prioridad.equals("BAJA")) {
-                return respuestaError(HttpStatus.BAD_REQUEST, "Prioridad inválida: " + prioridad);
-            }
-        } else {
-            prioridad = prioridadPorDefecto(tipo);
-        }
 
         // buscar estudiante
         Estudiante est = null;
@@ -127,6 +109,59 @@ public class SolicitudController {
         // TODO: avisar por mail al estudiante
         // System.out.println("Se creo la solicitud " + s.getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(s);
+    }
+
+    // RN-01
+    private Optional<String> validarLegajo(String legajo) {
+        if (estaVacio(legajo)) {
+            return Optional.of("El legajo es obligatorio");
+        }
+        if (!legajo.matches("\\d{5}")) {
+            return Optional.of("El legajo debe tener 5 dígitos");
+        }
+        return Optional.empty();
+    }
+
+    // RN-02: el tipo no distingue mayúsculas y el mensaje muestra el valor ya pasado a mayúsculas
+    private Optional<String> validarTipo(String tipo) {
+        if (estaVacio(tipo)) {
+            return Optional.of("El tipo es obligatorio");
+        }
+        String tipoNormalizado = tipo.toUpperCase();
+        if (!tipoNormalizado.equals("CERTIFICADO") && !tipoNormalizado.equals("EQUIVALENCIA")
+                && !tipoNormalizado.equals("REVISION_NOTA") && !tipoNormalizado.equals("CAMBIO_COMISION")
+                && !tipoNormalizado.equals("OTRO")) {
+            return Optional.of("Tipo de solicitud inválido: " + tipoNormalizado);
+        }
+        return Optional.empty();
+    }
+
+    // RN-03: el mínimo se mide sin los espacios de los extremos y el máximo con ellos
+    private Optional<String> validarDescripcion(String descripcion) {
+        if (descripcion == null || descripcion.trim().length() < 10) {
+            return Optional.of("La descripción debe tener al menos 10 caracteres");
+        }
+        if (descripcion.length() > 500) {
+            return Optional.of("La descripción no puede superar los 500 caracteres");
+        }
+        return Optional.empty();
+    }
+
+    // RN-04: la prioridad es opcional; si viene, tiene que ser válida
+    private Optional<String> validarPrioridad(String prioridad) {
+        if (estaVacio(prioridad)) {
+            return Optional.empty();
+        }
+        String prioridadNormalizada = prioridad.toUpperCase();
+        if (!prioridadNormalizada.equals("ALTA") && !prioridadNormalizada.equals("MEDIA")
+                && !prioridadNormalizada.equals("BAJA")) {
+            return Optional.of("Prioridad inválida: " + prioridadNormalizada);
+        }
+        return Optional.empty();
+    }
+
+    private boolean estaVacio(String valor) {
+        return valor == null || valor.trim().isEmpty();
     }
 
     // Prioridad que corresponde a cada tipo cuando la solicitud no indica una (RN-04)
