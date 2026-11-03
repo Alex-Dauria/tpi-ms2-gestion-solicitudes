@@ -8,12 +8,12 @@
 _Explicar el enfoque. Propuesta:_ **pruebas de caracterización**. Antes de refactorizar se escriben pruebas automatizadas que registran cómo se comporta hoy la versión inicial (respuesta, código HTTP y mensaje para cada caso). Esas mismas pruebas se ejecutan después de cada refactoring: si siguen en verde, el comportamiento externo se conservó.
 
 - Herramientas: JUnit 5 + MockMvc (`@SpringBootTest` + `@AutoConfigureMockMvc`).
-- Aislamiento: en `@BeforeEach` llamar a `BaseDeDatos.cargarDatosDePrueba()` para que cada prueba empiece con los mismos datos.
+- Aislamiento: `@BeforeEach` restablece los datos en memoria mediante `BaseDeDatos.cargarDatosDePrueba()`. Además, se conserva una copia del JSON original y se restaura antes y después de las pruebas. Las ejecuciones deben realizarse sin otros procesos utilizando el mismo archivo de datos.
 - Ejecución: `.\mvnw.cmd test` (Windows, PowerShell) o `./mvnw test`.
 
 ### Línea base del comportamiento externo
 
-Además de las pruebas automatizadas, el script `scripts/linea_base.ps1` verifica el sistema "desde afuera", como lo usaría un cliente. Compila la versión del código que haya en la carpeta, la levanta con los datos de prueba iniciales, ejecuta siempre los mismos 12 pedidos HTTP (operaciones válidas y casos de error) y guarda el código y la respuesta de cada uno.
+Además de las pruebas automatizadas, el script `scripts/linea_base.ps1` verifica el sistema "desde afuera", como lo usaría un cliente. Compila la versión del código que haya en la carpeta, la levanta con los datos de prueba iniciales, ejecuta siempre los mismos 14 pedidos HTTP (operaciones válidas y casos de error) y guarda el código y la respuesta de cada uno. Cada caso indica qué funcionalidad (F) y qué regla de negocio (RN) de la sección 1 verifica, para mantener la trazabilidad.
 
 Como no depende del código interno, sirve igual antes y después del refactoring:
 
@@ -27,7 +27,7 @@ Como no depende del código interno, sirve igual antes y después del refactorin
 
 En macOS o Linux se ejecuta igual con PowerShell 7: `pwsh ./scripts/linea_base.ps1 -Salida …`.
 
-La fecha del día se reemplaza por `<HOY>` para que se puedan comparar corridas de días distintos. El resultado esperado al final es **12 de 12 casos iguales**. Si algún caso da distinto, hay que revisar si es una regresión o un cambio intencional documentado.
+La fecha del día se reemplaza por `<HOY>` para que se puedan comparar corridas de días distintos. El resultado esperado al final es **14 de 14 casos iguales**. Si algún caso da distinto, hay que revisar si es una regresión o un cambio intencional documentado.
 
 | Corrida | Archivo | Resultado |
 |---|---|---|
@@ -55,9 +55,37 @@ _Un caso por regla o flujo. Tomar como base F1–F7 y RN-01 a RN-15 de la secci�
 
 ### 6.2.B Zona B – Ciclo de vida (Marina)
 
+
 | ID | Operación | Entrada / situación | Resultado esperado | Regla | Antes | Después |
 |---|---|---|---|---|---|---|
-| CP-B01 | | | | | | |
+| CP-B01 | Obtener solicitud | GET `/solicitudes/1` | HTTP 200. Devuelve la solicitud 1 en estado PENDIENTE. | F3 | OK | Pendiente |
+| CP-B02 | Obtener solicitud inexistente | GET `/solicitudes/99` | HTTP 404. Informa que la solicitud no existe. | F3 | OK | Pendiente |
+| CP-B03 | Cambiar estado | EN_REVISION → RESUELTA, con comentario. | HTTP 200. Actualiza el estado y agrega un registro al historial. | F4, RN-07, RN-15 | OK | Pendiente |
+| CP-B04 | Cambiar estado | RECHAZADA → PENDIENTE. | HTTP 409. Rechaza la transición y conserva estado e historial. | RN-07 | OK | Pendiente |
+| CP-B05 | Cambiar estado | PENDIENTE → EN_REVISION sin responsable. | HTTP 409. Exige un responsable asignado. | RN-08 | OK | Pendiente |
+| CP-B06 | Rechazar solicitud | PENDIENTE → RECHAZADA sin comentario. | HTTP 400. Exige un comentario de rechazo. | RN-09 | OK | Pendiente |
+| CP-B07 | Asignar responsable | Asignar responsable activo a solicitud PENDIENTE. | HTTP 200. Asigna responsable, pasa automáticamente a EN_REVISION y registra historial. | RN-13, RN-15 | OK | Pendiente |
+| CP-B08 | Asignar responsable | Intentar asignar responsable inactivo. | HTTP 409. Rechaza la asignación. | RN-11 | OK | Pendiente |
+| CP-B09 | Asignar responsable | Intentar asignar responsable inexistente. | HTTP 404. Informa que el responsable no existe. | RN-11 | OK | Pendiente |
+| CP-B10 | Asignar responsable | Responsable con cinco solicitudes abiertas. | HTTP 409. Impide superar el límite de asignaciones. | RN-12 | OK | Pendiente |
+| CP-B11 | Cambiar estado | Intentar modificar una solicitud CERRADA. | HTTP 409. Rechaza la transición. | RN-07 | OK | Pendiente |
+| CP-B12 | Asignar responsable | Intentar asignar responsable a solicitud RECHAZADA. | HTTP 409. Rechaza la asignación. | RN-10 | OK | Pendiente |
+| CP-B13 | Cambiar estado | Petición sin campo `estado`. | HTTP 400. Informa que el nuevo estado es obligatorio. | F4 – estado obligatorio | OK | Pendiente |
+| CP-B14 | Reabrir solicitud | RESUELTA → EN_REVISION, con responsable ya asignado y cinco solicitudes abiertas adicionales. | HTTP 200. Permite reabrir sin aplicar nuevamente el límite de asignación. | RN-07, RN-08, RN-12 | OK | Pendiente |
+| CP-B15 | Cambiar estado | PENDIENTE → FOO (estado inexistente). | HTTP 409. Rechaza el cambio y conserva el estado original. | RN-07 | OK | Pendiente |
+| CP-B16 | Cambiar estado | EN_REVISION → resuelta (minúsculas). | HTTP 200. Acepta el valor y devuelve RESUELTA. | F4 – normalización de estado | OK | Pendiente |
+| CP-B17 | Asignar responsable | Petición sin `responsableId`. | HTTP 400. Informa que el responsable es obligatorio y conserva la solicitud. | F5 – responsable obligatorio | OK | Pendiente |
+
+**Resultado de la ejecución inicial**
+
+- **Herramientas:** JUnit 5 y MockMvc.
+- **Clase:** `SolicitudZonaBTest.java`.
+- **Comando:** `.\mvnw.cmd -Dtest=SolicitudZonaBTest test`.
+- **Fecha:** 29/10/2026.
+- **Resultado:** 17 pruebas ejecutadas, 17 correctas, 0 fallidas, 0 errores y 0 omitidas.
+- **Estado de Maven:** `BUILD SUCCESS`.
+- **Aislamiento:** los datos en memoria se reinician antes de cada prueba; se conserva y restaura el archivo JSON original. Se comprobó que el archivo coincide con su respaldo.
+- **Etapa:** caracterización anterior al refactoring. La ejecución posterior queda pendiente.
 
 ### 6.2.C Zona C – Consultas y persistencia (Silvia)
 
@@ -72,8 +100,8 @@ _Salida de `.\mvnw.cmd test` en cada momento (texto o captura), guardada en `doc
 | Momento | Commit / tag | Pruebas ejecutadas | OK | Fallidas | Línea base | Evidencia |
 |---|---|---|---|---|---|---|
 | Antes (código inicial + pruebas) | _commit_ | | | | Referencia | |
-| Después del refactoring | `etapa-refactoring` | | | | _x de 12 iguales_ | |
-| Versión final | `estado-refactorizado` | | | | _x de 12 iguales_ | |
+| Después del refactoring | `etapa-refactoring` | | | | _x de 14 iguales_ | |
+| Versión final | `estado-refactorizado` | | | | _x de 14 iguales_ | |
 
 ## 6.4 Cómo se verificó que el refactoring no alteró el comportamiento
 
