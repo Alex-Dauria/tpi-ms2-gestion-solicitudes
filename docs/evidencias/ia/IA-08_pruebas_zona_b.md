@@ -18,7 +18,7 @@ Utilizar IA como apoyo para comprender, implementar y documentar las pruebas de 
 |---|---|---|
 | Explicar JUnit 5 y MockMvc. | Explicaciones y configuración de pruebas en Spring Boot. | Se ejecutó una prueba inicial correctamente. |
 | Preparar datos independientes para las pruebas. | Código para restablecer los datos en memoria y proteger el archivo JSON. | Se comparó el JSON con su respaldo después de las pruebas. |
-| Generar las pruebas de caracterización. | Código de 14 pruebas para consultas, estados, responsables y validaciones. | Se ejecutaron las 14 pruebas correctamente. |
+| Generar y ampliar las pruebas de caracterización. | Código inicial de 14 pruebas para consultas, estados, responsables y validaciones. Posteriormente se agregaron 3 casos y se mejoraron las verificaciones a partir del code review. | Se ejecutaron las 17 pruebas correctamente con JUnit 5 y MockMvc. |
 | Explicar los comandos de Maven. | Explicación de Maven Wrapper y ejecución de pruebas. | Se ejecutaron los comandos en VS Code. |
 | Documentar los resultados. | Propuesta para completar `docs/06_pruebas.md`. | Se revisó la documentación y se incorporaron los resultados. |
 
@@ -30,8 +30,8 @@ Utilizar IA como apoyo para comprender, implementar y documentar las pruebas de 
 
 **Resultados:**
 
-- 14 pruebas ejecutadas.
-- 14 correctas.
+- 17 pruebas ejecutadas.
+- 17 correctas.
 - 0 fallos y 0 errores.
 - `BUILD SUCCESS`.
 
