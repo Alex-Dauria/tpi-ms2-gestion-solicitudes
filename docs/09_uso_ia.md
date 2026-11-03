@@ -23,15 +23,17 @@
 
 ## Consultas por etapa
 
-Consultas puntuales hechas durante el trabajo, con el enlace a cada conversación. Cada integrante agrega las suyas.
+Consultas puntuales hechas durante el trabajo, con el enlace a la conversación o el registro de cada una. Cada integrante agrega las suyas.
 
 | # | Etapa | Integrante | Herramienta | Consulta | Grado | Enlace |
 |---|---|---|---|---|---|---|
 | IA-03 | 3 – Code smells y 5 – Refactoring | Alex | Claude (chat) | Diagnóstico de code smells del método `registrarSolicitud` (zona A): identificación según Fowler y Clean Code, priorización para la zona y reparto de los smells de frontera con las otras zonas. Después, criterio para aplicar Extract Method de forma segura: orden de extracción, cuidados con el orden de las validaciones y comparación con Replace Error Code with Exception. El integrante corrigió un hallazgo que no correspondía al código original (indentación alterada al pegar) | Bajo | [Conversación](https://claude.ai/share/b1753be3-72ba-442b-b159-9dc406abb747) |
 | IA-04 | Organización (todas las etapas) | Alex | Claude Code | Auditoría externa de la organización y de la Etapa 1 contra la consigna. El equipo tomó solo los hallazgos que consideró necesarios: se corrigió un archivo que había quedado sin versionar, el orden de las mediciones de la etapa 6, la visibilidad del tablero y detalles de redacción | Bajo | Sin enlace (sesión local) |
-| IA-05 | | | | | | |
+| IA-05 | 3 – Deuda técnica y code smells (zona B) | Marina Giselle Cordero | ChatGPT (OpenAI) | Análisis guiado de cambiarEstado, asignarResponsable, obtener y Solicitud: cinco debilidades, riesgos, prioridades y propuestas de refactoring; revisión de compatibilidad con Jackson. | Medio | [Registro](evidencias/ia/IA-05_registro_zona_b_marina.md) · [Evidencia seleccionada](evidencias/ia/evidencia_ia_zona_b_marina.md) |
 | IA-06 | 3 – Code smells (zona C) | Silvia Giardini | OpenCode (DeepSeek V4.1 Flash) | Diagnóstico de code smells de la zona C: orientación conceptual y revisión de los cinco hallazgos; regla de conteo de parámetros | Medio | [Registro](evidencias/ia/IA-06_registro.md) |
 | IA-07 | 2 – Calidad externa/interna | Silvia Giardini | OpenCode y Gemini | Resumen de lo solicitado: estructura y organización posible para cumplir con todos los puntos solicitados, evidencia en el código, solicitud de estructura útil, revisión de referencias, medición de eficiencia y reajuste final. | Medio | OpenCode: Sin enlace público (sesión local), Gemini: [Conversación](https://share.gemini.google/epkkZgawv19N) |
 | IA-09 | 6 – Pruebas (zona A) | Alex | Claude Code | Diseño y escritura de las pruebas de caracterización de la zona A (`SolicitudZonaATest`, CP-A01 a CP-A25) a partir de las reglas RN-01 a RN-06 y de los cuidados sobre el orden de las validaciones de la consulta IA-03; tabla 6.2.A y hallazgos de 6.5. Las pruebas se ejecutaron sobre el código de `estado-inicial` (31 de 31 en verde) | Alto | Sin enlace (sesión local) |
 
-_Los enlaces deben ser públicos (enlace compartido de la conversación) y estar accesibles al momento de la corrección. Además, conviene exportar cada conversación a `docs/evidencias/ia/` por si el enlace deja de funcionar._
+**Aclaración sobre IA-05:** por privacidad, se adjunta evidencia seleccionada con extractos y síntesis identificados como tales, sin enlace público a la conversación. No se presenta como una transcripción literal completa. La consigna pide adjuntar evidencia del intercambio relevante, sin exigir la conversación completa, y el equipo acepta esta modalidad.
+
+_Para cada uso se adjunta un enlace público a la conversación o, si no lo hay, un registro de los pedidos y las decisiones en `docs/evidencias/ia/`. Los enlaces tienen que estar accesibles al momento de la corrección._
