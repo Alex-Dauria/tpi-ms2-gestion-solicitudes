@@ -1,5 +1,5 @@
 
-# IA-05 – Pruebas de caracterización de la Zona B
+# IA-08 – Pruebas de caracterización de la Zona B
 
 **Integrante:** Marina Giselle Cordero  
 **Herramienta:** ChatGPT (OpenAI)  
@@ -48,7 +48,7 @@ La integrante incorporó el código al proyecto, ejecutó las pruebas, verificó
 - `docs/06_pruebas.md`
 - `docs/evidencias/pruebas/zona-b/`
 - [Pull Request #24](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/pull/24)
-- Conversación de ChatGPT: pendiente de incorporar el enlace compartido.
+- Evidencia del intercambio: registro de los pedidos principales, aportes de la IA y verificaciones realizadas, documentado en este archivo.
 
 ## Conclusión
 
