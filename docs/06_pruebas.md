@@ -55,22 +55,26 @@ _Un caso por regla o flujo. Tomar como base F1–F7 y RN-01 a RN-15 de la secci�
 
 ### 6.2.B Zona B – Ciclo de vida (Marina)
 
+
 | ID | Operación | Entrada / situación | Resultado esperado | Regla | Antes | Después |
 |---|---|---|---|---|---|---|
-| CP-B01 | Obtener solicitud | GET `/solicitudes/1` | HTTP 200. Devuelve la solicitud 1 en estado PENDIENTE. | Consulta por ID | OK | Pendiente |
-| CP-B02 | Obtener solicitud inexistente | GET `/solicitudes/99` | HTTP 404. Informa que la solicitud no existe. | Solicitud inexistente | OK | Pendiente |
-| CP-B03 | Cambiar estado | EN_REVISION → RESUELTA, con comentario. | HTTP 200. Actualiza el estado y agrega un registro al historial. | Transición válida y trazabilidad | OK | Pendiente |
-| CP-B04 | Cambiar estado | RECHAZADA → PENDIENTE. | HTTP 409. Rechaza la transición y conserva estado e historial. | Transición no permitida | OK | Pendiente |
-| CP-B05 | Cambiar estado | PENDIENTE → EN_REVISION sin responsable. | HTTP 409. Exige un responsable asignado. | Responsable obligatorio para revisión | OK | Pendiente |
-| CP-B06 | Rechazar solicitud | PENDIENTE → RECHAZADA sin comentario. | HTTP 400. Exige un comentario de rechazo. | Comentario obligatorio | OK | Pendiente |
-| CP-B07 | Asignar responsable | Asignar responsable activo a solicitud PENDIENTE. | HTTP 200. Asigna responsable, pasa automáticamente a EN_REVISION y registra historial. | Asignación y transición automática | OK | Pendiente |
-| CP-B08 | Asignar responsable | Intentar asignar responsable inactivo. | HTTP 409. Rechaza la asignación. | Responsable activo | OK | Pendiente |
-| CP-B09 | Asignar responsable | Intentar asignar responsable inexistente. | HTTP 404. Informa que el responsable no existe. | Responsable inexistente | OK | Pendiente |
-| CP-B10 | Asignar responsable | Responsable con cinco solicitudes abiertas. | HTTP 409. Impide superar el límite de asignaciones. | Máximo cinco solicitudes abiertas | OK | Pendiente |
-| CP-B11 | Cambiar estado | Intentar modificar una solicitud CERRADA. | HTTP 409. Rechaza la transición. | Estado final | OK | Pendiente |
-| CP-B12 | Asignar responsable | Intentar asignar responsable a solicitud RECHAZADA. | HTTP 409. Rechaza la asignación. | Estado final | OK | Pendiente |
-| CP-B13 | Cambiar estado | Petición sin campo `estado`. | HTTP 400. Informa que el nuevo estado es obligatorio. | Validación de entrada | OK | Pendiente |
-| CP-B14 | Reabrir solicitud | RESUELTA → EN_REVISION, con responsable ya asignado y cinco solicitudes abiertas adicionales. | HTTP 200. Permite reabrir sin aplicar nuevamente el límite de asignación. | Reapertura y límite aplicado al asignar | OK | Pendiente |
+| CP-B01 | Obtener solicitud | GET `/solicitudes/1` | HTTP 200. Devuelve la solicitud 1 en estado PENDIENTE. | F3 | OK | Pendiente |
+| CP-B02 | Obtener solicitud inexistente | GET `/solicitudes/99` | HTTP 404. Informa que la solicitud no existe. | F3 | OK | Pendiente |
+| CP-B03 | Cambiar estado | EN_REVISION → RESUELTA, con comentario. | HTTP 200. Actualiza el estado y agrega un registro al historial. | F4, RN-07, RN-15 | OK | Pendiente |
+| CP-B04 | Cambiar estado | RECHAZADA → PENDIENTE. | HTTP 409. Rechaza la transición y conserva estado e historial. | RN-07 | OK | Pendiente |
+| CP-B05 | Cambiar estado | PENDIENTE → EN_REVISION sin responsable. | HTTP 409. Exige un responsable asignado. | RN-08 | OK | Pendiente |
+| CP-B06 | Rechazar solicitud | PENDIENTE → RECHAZADA sin comentario. | HTTP 400. Exige un comentario de rechazo. | RN-09 | OK | Pendiente |
+| CP-B07 | Asignar responsable | Asignar responsable activo a solicitud PENDIENTE. | HTTP 200. Asigna responsable, pasa automáticamente a EN_REVISION y registra historial. | RN-13, RN-15 | OK | Pendiente |
+| CP-B08 | Asignar responsable | Intentar asignar responsable inactivo. | HTTP 409. Rechaza la asignación. | RN-11 | OK | Pendiente |
+| CP-B09 | Asignar responsable | Intentar asignar responsable inexistente. | HTTP 404. Informa que el responsable no existe. | RN-11 | OK | Pendiente |
+| CP-B10 | Asignar responsable | Responsable con cinco solicitudes abiertas. | HTTP 409. Impide superar el límite de asignaciones. | RN-12 | OK | Pendiente |
+| CP-B11 | Cambiar estado | Intentar modificar una solicitud CERRADA. | HTTP 409. Rechaza la transición. | RN-07 | OK | Pendiente |
+| CP-B12 | Asignar responsable | Intentar asignar responsable a solicitud RECHAZADA. | HTTP 409. Rechaza la asignación. | RN-10 | OK | Pendiente |
+| CP-B13 | Cambiar estado | Petición sin campo `estado`. | HTTP 400. Informa que el nuevo estado es obligatorio. | F4 – estado obligatorio | OK | Pendiente |
+| CP-B14 | Reabrir solicitud | RESUELTA → EN_REVISION, con responsable ya asignado y cinco solicitudes abiertas adicionales. | HTTP 200. Permite reabrir sin aplicar nuevamente el límite de asignación. | RN-07, RN-08, RN-12 | OK | Pendiente |
+| CP-B15 | Cambiar estado | PENDIENTE → FOO (estado inexistente). | HTTP 409. Rechaza el cambio y conserva el estado original. | RN-07 | OK | Pendiente |
+| CP-B16 | Cambiar estado | EN_REVISION → resuelta (minúsculas). | HTTP 200. Acepta el valor y devuelve RESUELTA. | F4 – normalización de estado | OK | Pendiente |
+| CP-B17 | Asignar responsable | Petición sin `responsableId`. | HTTP 400. Informa que el responsable es obligatorio y conserva la solicitud. | F5 – responsable obligatorio | OK | Pendiente |
 
 **Resultado de la ejecución inicial**
 
@@ -78,7 +82,7 @@ _Un caso por regla o flujo. Tomar como base F1–F7 y RN-01 a RN-15 de la secci�
 - **Clase:** `SolicitudZonaBTest.java`.
 - **Comando:** `.\mvnw.cmd -Dtest=SolicitudZonaBTest test`.
 - **Fecha:** 29/10/2026.
-- **Resultado:** 14 pruebas ejecutadas, 14 correctas, 0 fallidas, 0 errores y 0 omitidas.
+- **Resultado:** 17 pruebas ejecutadas, 17 correctas, 0 fallidas, 0 errores y 0 omitidas.
 - **Estado de Maven:** `BUILD SUCCESS`.
 - **Aislamiento:** los datos en memoria se reinician antes de cada prueba; se conserva y restaura el archivo JSON original. Se comprobó que el archivo coincide con su respaldo.
 - **Etapa:** caracterización anterior al refactoring. La ejecución posterior queda pendiente.
