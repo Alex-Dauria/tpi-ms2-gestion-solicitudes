@@ -4,7 +4,7 @@
 
 .DESCRIPTION
     Compila la versión del código que haya en la carpeta, la levanta con los datos de prueba
-    iniciales, ejecuta siempre los mismos 12 pedidos HTTP y guarda el código y la respuesta de
+    iniciales, ejecuta siempre los mismos 14 pedidos HTTP y guarda el código y la respuesta de
     cada uno en un archivo Markdown.
 
     La fecha del día se reemplaza por <HOY> para que se puedan comparar corridas de días distintos.
@@ -39,27 +39,31 @@ $base = "http://localhost:$Puerto"
 $hoy = (Get-Date).ToString('yyyy-MM-dd')
 $utf8SinBom = New-Object System.Text.UTF8Encoding $false
 
+# Cada caso indica qué funcionalidad (F) y qué regla de negocio (RN) de la sección 1 verifica
 $casos = @(
-    @{ Nombre = 'Registrar solicitud de un estudiante existente (prioridad calculada por tipo)'; Metodo = 'POST'; Ruta = '/solicitudes'
+    @{ Nombre = 'Registrar solicitud de un estudiante existente (prioridad calculada por tipo)'; Regla = 'F1, RN-02, RN-04'; Metodo = 'POST'; Ruta = '/solicitudes'
        Cuerpo = '{"legajo":"11002","tipo":"equivalencia","descripcion":"Equivalencia de Inglés técnico aprobada en otra institución"}' }
-    @{ Nombre = 'Registrar solicitud de un estudiante nuevo (alta automática)'; Metodo = 'POST'; Ruta = '/solicitudes'
+    @{ Nombre = 'Registrar solicitud de un estudiante nuevo (alta automática)'; Regla = 'F1, RN-05'; Metodo = 'POST'; Ruta = '/solicitudes'
        Cuerpo = '{"legajo":"12001","nombre":"Sofía Castro","email":"Sofia.Castro@alumnos.example.edu.ar","tipo":"CERTIFICADO","descripcion":"Certificado de materias aprobadas para beca"}' }
-    @{ Nombre = 'Rechazo por validación (descripción corta)'; Metodo = 'POST'; Ruta = '/solicitudes'
+    @{ Nombre = 'Rechazo por validación (descripción corta)'; Regla = 'F1, RN-03'; Metodo = 'POST'; Ruta = '/solicitudes'
        Cuerpo = '{"legajo":"10567","tipo":"OTRO","descripcion":"corta"}' }
-    @{ Nombre = 'Rechazo por regla de negocio (ya tiene una solicitud abierta del mismo tipo)'; Metodo = 'POST'; Ruta = '/solicitudes'
+    @{ Nombre = 'Rechazo por regla de negocio (ya tiene una solicitud abierta del mismo tipo)'; Regla = 'F1, RN-06'; Metodo = 'POST'; Ruta = '/solicitudes'
        Cuerpo = '{"legajo":"10234","tipo":"CERTIFICADO","descripcion":"Otro certificado de alumno regular"}' }
-    @{ Nombre = 'Asignar responsable (pasa automáticamente a EN_REVISION)'; Metodo = 'PUT'; Ruta = '/solicitudes/1/responsable'
+    @{ Nombre = 'Asignar responsable (pasa automáticamente a EN_REVISION)'; Regla = 'F5, RN-13, RN-15'; Metodo = 'PUT'; Ruta = '/solicitudes/1/responsable'
        Cuerpo = '{"responsableId":1}' }
-    @{ Nombre = 'Asignar responsable inactivo'; Metodo = 'PUT'; Ruta = '/solicitudes/5/responsable'
+    @{ Nombre = 'Asignar responsable inactivo'; Regla = 'F5, RN-11'; Metodo = 'PUT'; Ruta = '/solicitudes/5/responsable'
        Cuerpo = '{"responsableId":4}' }
-    @{ Nombre = 'Cambiar estado EN_REVISION -> RESUELTA'; Metodo = 'PUT'; Ruta = '/solicitudes/1/estado'
+    @{ Nombre = 'Cambiar estado EN_REVISION -> RESUELTA'; Regla = 'F4, RN-07, RN-15'; Metodo = 'PUT'; Ruta = '/solicitudes/1/estado'
        Cuerpo = '{"estado":"RESUELTA","comentario":"Certificado enviado por correo"}' }
-    @{ Nombre = 'Transición no permitida (RECHAZADA es estado final)'; Metodo = 'PUT'; Ruta = '/solicitudes/4/estado'
+    @{ Nombre = 'Transición no permitida (RECHAZADA es estado final)'; Regla = 'F4, RN-07'; Metodo = 'PUT'; Ruta = '/solicitudes/4/estado'
        Cuerpo = '{"estado":"PENDIENTE"}' }
-    @{ Nombre = 'Buscar / filtrar: solicitudes de prioridad ALTA'; Metodo = 'GET'; Ruta = '/solicitudes?prioridad=alta' }
-    @{ Nombre = 'Buscar / filtrar: solicitudes vencidas'; Metodo = 'GET'; Ruta = '/solicitudes?vencidas=true' }
-    @{ Nombre = 'Consultar una solicitud inexistente'; Metodo = 'GET'; Ruta = '/solicitudes/99' }
-    @{ Nombre = 'Reporte resumen'; Metodo = 'GET'; Ruta = '/reportes/resumen' }
+    @{ Nombre = 'Buscar / filtrar: solicitudes de prioridad ALTA'; Regla = 'F2'; Metodo = 'GET'; Ruta = '/solicitudes?prioridad=alta' }
+    @{ Nombre = 'Buscar / filtrar: solicitudes vencidas'; Regla = 'F2, RN-14'; Metodo = 'GET'; Ruta = '/solicitudes?vencidas=true' }
+    @{ Nombre = 'Consultar una solicitud inexistente'; Regla = 'F3'; Metodo = 'GET'; Ruta = '/solicitudes/99' }
+    @{ Nombre = 'Reporte resumen'; Regla = 'F6, RN-14'; Metodo = 'GET'; Ruta = '/reportes/resumen' }
+    @{ Nombre = 'Registrar con el legajo como número en lugar de texto (error 500 de la versión inicial)'; Regla = 'F1, RN-01'; Metodo = 'POST'; Ruta = '/solicitudes'
+       Cuerpo = '{"legajo":12345,"tipo":"OTRO","descripcion":"Prueba con el legajo enviado como número"}' }
+    @{ Nombre = 'Buscar / filtrar con vencidas=false (equivale a no filtrar)'; Regla = 'F2'; Metodo = 'GET'; Ruta = '/solicitudes?vencidas=false' }
 )
 
 function Resolver-Ruta([string]$ruta) {
@@ -134,34 +138,44 @@ try {
     }
     if (-not $lista) { throw "La aplicación no respondió en 90 segundos. Ver $log" }
 
-    $version = (& git describe --tags --always --dirty 2>$null)
+    $version = (& git describe --tags --always 2>$null)
     $commit = (& git rev-parse --short HEAD 2>$null)
+    # Lo que importa para comparar es si el código del sistema (src/) coincide con el último tag
+    $ultimoTag = (& git describe --tags --abbrev=0 2>$null)
+    $codigo = 'sin tags para comparar'
+    if ($ultimoTag) {
+        & git diff --quiet $ultimoTag -- src 2>$null
+        $codigo = if ($LASTEXITCODE -eq 0) { "idéntico al del tag ``$ultimoTag``" } else { "con cambios respecto del tag ``$ultimoTag``" }
+    }
 
     $lineas = New-Object System.Collections.Generic.List[string]
     $lineas.Add('# Línea base del comportamiento externo')
     $lineas.Add('')
     $lineas.Add("- **Versión del código:** ``$version`` (commit ``$commit``)")
+    $lineas.Add("- **Código del sistema (``src/``):** $codigo")
     $lineas.Add("- **Fecha de ejecución:** $((Get-Date).ToString('yyyy-MM-dd HH:mm'))")
     $lineas.Add('- **Generado con:** `scripts/linea_base.ps1`')
     $lineas.Add('- **Datos de partida:** datos de prueba sintéticos (se borra `datos/` antes de arrancar)')
-    $lineas.Add('- La fecha del día de la ejecución se reemplaza por `<HOY>` para poder comparar corridas de días distintos.')
+    $lineas.Add('- La fecha del día de la ejecución se reemplaza por `<HOY>`, y la hora de las respuestas de error del servidor por `<TIMESTAMP>`, para poder comparar corridas de días distintos.')
+    $lineas.Add('- La columna **Regla** indica qué funcionalidad (F) y qué regla de negocio (RN) de la sección 1 verifica cada caso.')
     $lineas.Add('')
-    $lineas.Add('| Caso | Pedido | Código |')
-    $lineas.Add('|---|---|---|')
+    $lineas.Add('| Caso | Pedido | Regla | Código |')
+    $lineas.Add('|---|---|---|---|')
 
     $detalle = New-Object System.Collections.Generic.List[string]
     $n = 0
     foreach ($caso in $casos) {
         $n++
         $r = Enviar $cliente $caso.Metodo $caso.Ruta $caso.Cuerpo
-        $cuerpoRespuesta = ($r.Cuerpo -replace "`r`n", "`n").Replace($hoy, '<HOY>').Trim()
+        $cuerpoRespuesta = ($r.Cuerpo -replace "`r`n", "`n").Replace($hoy, '<HOY>')
+        $cuerpoRespuesta = ($cuerpoRespuesta -replace '"timestamp"\s*:\s*"[^"]*"', '"timestamp" : "<TIMESTAMP>"').Trim()
         Write-Host ("  {0,2}. {1} {2} -> {3}" -f $n, $caso.Metodo, $caso.Ruta, $r.Codigo)
 
-        $lineas.Add("| $n | ``$($caso.Metodo) $($caso.Ruta)`` | $($r.Codigo) |")
+        $lineas.Add("| $n | ``$($caso.Metodo) $($caso.Ruta)`` | $($caso.Regla) | $($r.Codigo) |")
 
         $detalle.Add("### $n. $($caso.Nombre)")
         $detalle.Add('')
-        $detalle.Add("``$($caso.Metodo) $($caso.Ruta)``")
+        $detalle.Add("``$($caso.Metodo) $($caso.Ruta)`` · **Regla:** $($caso.Regla)")
         $detalle.Add('')
         if ($caso.Cuerpo) {
             $detalle.Add('```json')

@@ -35,7 +35,7 @@ Registro breve de las decisiones que condicionan el trabajo. Cada una indica el 
 ## DT-06 – Línea base del comportamiento externo con un script de caja negra
 
 - **Contexto:** las pruebas automatizadas usan clases internas del sistema (por ejemplo, para reiniciar los datos), y esas clases cambian con el refactoring.
-- **Decisión:** sumar `scripts/linea_base.ps1`, que levanta la aplicación y ejecuta siempre los mismos 12 pedidos HTTP. Se genera una referencia sobre `estado-inicial` y al final se compara caso por caso con `estado-refactorizado`.
+- **Decisión:** sumar `scripts/linea_base.ps1`, que levanta la aplicación y ejecuta siempre los mismos 14 pedidos HTTP. Se genera una referencia sobre `estado-inicial` y al final se compara caso por caso con `estado-refactorizado`.
 - **Motivo:** verifica el sistema solo desde afuera, sin depender del código interno, así que sirve igual antes y después. Es evidencia directa de que el comportamiento externo se conservó.
 
 ## DT-07 – Informe en Markdown y PDF al final
