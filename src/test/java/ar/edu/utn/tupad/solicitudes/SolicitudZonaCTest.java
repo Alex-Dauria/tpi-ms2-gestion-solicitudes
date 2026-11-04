@@ -66,7 +66,7 @@ class SolicitudZonaCTest {
         }
     }
 
-    // CP-C01: listar sin filtros devuelve las 5 solicitudes de prueba.
+    // Lista sin filtros devuelve las 5 solicitudes de prueba.
     @Test
     void listarSinFiltrosDevuelveTodas() throws Exception {
         mockMvc.perform(get("/solicitudes"))
@@ -74,7 +74,7 @@ class SolicitudZonaCTest {
                 .andExpect(jsonPath("$", hasSize(5)));
     }
 
-    // CP-C02: filtrar por estado PENDIENTE devuelve las solicitudes 1 y 5.
+    // Filtrar por estado PENDIENTE devuelve las solicitudes 5 y 1.
     @Test
     void filtrarPorEstadoPendiente() throws Exception {
         mockMvc.perform(get("/solicitudes").param("estado", "PENDIENTE"))
@@ -84,7 +84,7 @@ class SolicitudZonaCTest {
                 .andExpect(jsonPath("$[1].id").value(1));
     }
 
-    // CP-C03: filtrar por tipo CERTIFICADO devuelve la solicitud 1.
+    // Filtrar por tipo CERTIFICADO devuelve la solicitud 1.
     @Test
     void filtrarPorTipoCertificado() throws Exception {
         mockMvc.perform(get("/solicitudes").param("tipo", "CERTIFICADO"))
@@ -93,7 +93,7 @@ class SolicitudZonaCTest {
                 .andExpect(jsonPath("$[0].id").value(1));
     }
 
-    // CP-C04: filtrar por prioridad ALTA devuelve las solicitudes 3 y 5.
+    // Filtrar por prioridad ALTA devuelve las solicitudes 3 y 5.
     @Test
     void filtrarPorPrioridadAlta() throws Exception {
         mockMvc.perform(get("/solicitudes").param("prioridad", "ALTA"))
@@ -103,7 +103,7 @@ class SolicitudZonaCTest {
                 .andExpect(jsonPath("$[1].id").value(5));
     }
 
-    // CP-C05: filtrar por legajo devuelve las solicitudes de ese estudiante.
+    // Filtrar por legajo devuelve las solicitudes de ese estudiante.
     @Test
     void filtrarPorLegajo() throws Exception {
         mockMvc.perform(get("/solicitudes").param("legajo", "10234"))
@@ -111,7 +111,7 @@ class SolicitudZonaCTest {
                 .andExpect(jsonPath("$", hasSize(2)));
     }
 
-    // CP-C06: filtrar por responsableId devuelve las solicitudes asignadas.
+    // Filtrar por responsable devuelve las solicitudes asignadas a ese responsable.
     @Test
     void filtrarPorResponsable() throws Exception {
         mockMvc.perform(get("/solicitudes").param("responsableId", "3"))
@@ -120,7 +120,7 @@ class SolicitudZonaCTest {
                 .andExpect(jsonPath("$[0].id").value(2));
     }
 
-    // CP-C07: filtrar vencidas devuelve las solicitudes abiertas vencidas.
+    // Filtrar vencidas devuelve las solicitudes abiertas vencidas.
     @Test
     void filtrarVencidas() throws Exception {
         mockMvc.perform(get("/solicitudes").param("vencidas", "true"))
@@ -128,7 +128,7 @@ class SolicitudZonaCTest {
                 .andExpect(jsonPath("$", hasSize(3)));
     }
 
-    // CP-C08: combinación de filtros (estado + prioridad).
+    // Combinación de filtros (estado + prioridad).
     @Test
     void filtrarPorEstadoYPrioridad() throws Exception {
         mockMvc.perform(get("/solicitudes").param("estado", "PENDIENTE").param("prioridad", "ALTA"))
@@ -137,7 +137,7 @@ class SolicitudZonaCTest {
                 .andExpect(jsonPath("$[0].id").value(5));
     }
 
-    // CP-C09: filtro sin resultados devuelve lista vacía.
+    // Filtro sin resultados devuelve lista vacía.
     @Test
     void filtrarSinResultados() throws Exception {
         mockMvc.perform(get("/solicitudes").param("estado", "CERRADA").param("tipo", "CERTIFICADO"))
@@ -145,7 +145,7 @@ class SolicitudZonaCTest {
                 .andExpect(jsonPath("$", hasSize(0)));
     }
 
-    // CP-C10: el reporte resumen tiene la estructura y los totales esperados.
+    // El reporte resumen tiene la estructura y los totales esperados.
     @Test
     void resumenTieneEstructuraYTotales() throws Exception {
         mockMvc.perform(get("/reportes/resumen"))
@@ -163,7 +163,7 @@ class SolicitudZonaCTest {
                 .andExpect(jsonPath("$.porPrioridad.BAJA").value(1));
     }
 
-    // CP-C11: el catálogo de estudiantes devuelve los 4 estudiantes de prueba.
+    // El catálogo de estudiantes devuelve los 4 estudiantes de prueba.
     @Test
     void catalogoEstudiantes() throws Exception {
         mockMvc.perform(get("/estudiantes"))
@@ -172,7 +172,7 @@ class SolicitudZonaCTest {
                 .andExpect(jsonPath("$[0].legajo").value("10234"));
     }
 
-    // CP-C12: el catálogo de responsables devuelve los 4 responsables de prueba.
+    // El catálogo de responsables devuelve los 4 responsables de prueba.
     @Test
     void catalogoResponsables() throws Exception {
         mockMvc.perform(get("/responsables"))
