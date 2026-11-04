@@ -26,13 +26,16 @@ import ar.edu.utn.tupad.solicitudes.datos.BaseDeDatos;
 @AutoConfigureMockMvc
 class SolicitudZonaCTest {
 
+    // Herramienta para simular pedidos HTTP en las pruebas.
     @Autowired
     private MockMvc mockMvc;
 
+    // Archivo real que usa la persistencia; se restaura para no pisar los datos locales.
     private static final Path ARCHIVO_DATOS = Path.of("datos", "solicitudes.json");
     private static byte[] contenidoOriginal;
     private static boolean archivoExistia;
 
+    // Guarda el archivo de datos original antes de ejecutar las pruebas.
     @BeforeAll
     static void guardarDatosOriginales() throws IOException {
         archivoExistia = Files.exists(ARCHIVO_DATOS);
@@ -41,22 +44,26 @@ class SolicitudZonaCTest {
         }
     }
 
+    // Antes de cada prueba restaura el archivo y carga los datos de prueba iniciales.
     @BeforeEach
     void prepararDatos() throws IOException {
         restaurarArchivo();
         BaseDeDatos.cargarDatosDePrueba();
     }
 
+    // Después de cada prueba restaura el archivo original.
     @AfterEach
     void limpiarDespuesDeCadaPrueba() throws IOException {
         restaurarArchivo();
     }
 
+    // Al finalizar todas las pruebas restaura el archivo original.
     @AfterAll
     static void restaurarDatosOriginales() throws IOException {
         restaurarArchivo();
     }
 
+    // Restaura el archivo de datos a su estado original.
     private static void restaurarArchivo() throws IOException {
         if (archivoExistia) {
             Files.createDirectories(ARCHIVO_DATOS.getParent());
