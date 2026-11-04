@@ -91,7 +91,18 @@ _Un caso por regla o flujo. Tomar como base F1–F7 y RN-01 a RN-15 de la secci�
 
 | ID | Operación | Entrada / situación | Resultado esperado | Regla | Antes | Después |
 |---|---|---|---|---|---|---|
-| CP-C01 | | | | | | |
+| CP-C01 | Listar solicitudes | GET `/solicitudes` sin filtros | HTTP 200. Devuelve las 5 solicitudes de prueba. | F2 | OK | Pendiente |
+| CP-C02 | Filtrar por estado | GET `/solicitudes?estado=PENDIENTE` | HTTP 200. Devuelve las solicitudes 5 y 1 (ordenadas por prioridad). | F2, RN-07 | OK | Pendiente |
+| CP-C03 | Filtrar por tipo | GET `/solicitudes?tipo=CERTIFICADO` | HTTP 200. Devuelve la solicitud 1. | F2 | OK | Pendiente |
+| CP-C04 | Filtrar por prioridad | GET `/solicitudes?prioridad=ALTA` | HTTP 200. Devuelve las solicitudes 3 y 5. | F2 | OK | Pendiente |
+| CP-C05 | Filtrar por legajo | GET `/solicitudes?legajo=10234` | HTTP 200. Devuelve las solicitudes 1 y 5. | F2 | OK | Pendiente |
+| CP-C06 | Filtrar por responsable | GET `/solicitudes?responsableId=3` | HTTP 200. Devuelve la solicitud 2. | F2 | OK | Pendiente |
+| CP-C07 | Filtrar vencidas | GET `/solicitudes?vencidas=true` | HTTP 200. Devuelve las 3 solicitudes abiertas vencidas. | F2, RN-14 | OK | Pendiente |
+| CP-C08 | Filtrar combinado | GET `/solicitudes?estado=PENDIENTE&prioridad=ALTA` | HTTP 200. Devuelve la solicitud 5. | F2 | OK | Pendiente |
+| CP-C09 | Filtrar sin resultados | GET `/solicitudes?estado=CERRADA&tipo=CERTIFICADO` | HTTP 200. Devuelve lista vacía. | F2 | OK | Pendiente |
+| CP-C10 | Reporte resumen | GET `/reportes/resumen` | HTTP 200. Totales, conteos por estado/tipo/prioridad, 3 vencidas y abiertas por responsable. | F6 | OK | Pendiente |
+| CP-C11 | Catálogo estudiantes | GET `/estudiantes` | HTTP 200. Devuelve los 4 estudiantes de prueba. | F7 | OK | Pendiente |
+| CP-C12 | Catálogo responsables | GET `/responsables` | HTTP 200. Devuelve los 4 responsables de prueba. | F7 | OK | Pendiente |
 
 ## 6.3 Evidencia antes / después
 
