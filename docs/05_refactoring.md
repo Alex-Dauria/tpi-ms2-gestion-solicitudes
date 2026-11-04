@@ -270,7 +270,7 @@ if (descripcion.length() > LARGO_MAXIMO_DESCRIPCION) {
 - **Verificación:** 45 de 45.
 - **Comportamiento externo:** sin cambios.
 
-**Verificación de la zona completa (caja negra):** la línea base sobre el código refactorizado da **14 de 14 casos iguales** a la de `estado-inicial` ([evidencias/pruebas/zona-a/linea_base_refactoring_zona_a.md](evidencias/pruebas/zona-a/linea_base_refactoring_zona_a.md)). Informes de las pruebas después del refactoring: [evidencias/pruebas/zona-a/despues-refactoring/](evidencias/pruebas/zona-a/despues-refactoring/).
+**Verificación de la zona completa:** integrado con las pruebas finales de la zona B, el código refactorizado pasa **48 de 48 pruebas** (31 de la zona A y 17 de la zona B). De caja negra, la línea base da **14 de 14 casos iguales** a la de `estado-inicial` ([evidencias/pruebas/zona-a/linea_base_refactoring_zona_a.md](evidencias/pruebas/zona-a/linea_base_refactoring_zona_a.md)). Informes de las pruebas después del refactoring: [evidencias/pruebas/zona-a/despues-refactoring/](evidencias/pruebas/zona-a/despues-refactoring/).
 
 ### Modelo de ficha
 

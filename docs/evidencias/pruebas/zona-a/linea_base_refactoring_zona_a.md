@@ -1,8 +1,8 @@
 # Línea base del comportamiento externo
 
-- **Versión del código:** `estado-inicial-32-gc69ad8f` (commit `c69ad8f`)
+- **Versión del código:** `estado-inicial-52-g81d7bbc` (commit `81d7bbc`)
 - **Código del sistema (`src/`):** con cambios respecto del tag `estado-inicial`
-- **Fecha de ejecución:** 2026-11-01 15:11
+- **Fecha de ejecución:** 2026-11-04 10:37
 - **Generado con:** `scripts/linea_base.ps1`
 - **Datos de partida:** datos de prueba sintéticos (se borra `datos/` antes de arrancar)
 - La fecha del día de la ejecución se reemplaza por `<HOY>`, y la hora de las respuestas de error del servidor por `<TIMESTAMP>`, para poder comparar corridas de días distintos.
