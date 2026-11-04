@@ -1,5 +1,5 @@
 
-# IA-08 – Pruebas de caracterización de la Zona B
+# IA-11 – Pruebas de caracterización de la Zona B
 
 **Integrante:** Marina Giselle Cordero  
 **Herramienta:** ChatGPT (OpenAI)  
