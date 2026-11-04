@@ -19,4 +19,4 @@ Registro resumido de los pedidos principales, lo que devolvió la herramienta y 
 - `docs/evidencias/etapa2/01` a `07`: capturas de Swagger UI y de las respuestas de la API.
 - `docs/evidencias/etapa2/08_pruebas_caja_negra.md`: los 21 pedidos, el rastro del error 500 y la prueba de persistencia.
 - `docs/evidencias/etapa2/09_tiempos_respuesta.png` y `10_url_pedido.png`: medición de tiempos en la pestaña Network de DevTools y headers del pedido.
-- Conversación completa: Gemini: [Conversación](https://share.gemini.google/epkkZgawv19N), OpenCode: Sin enlace público (sesión local)
+- Conversación completa: Gemini: [Conversación](https://share.gemini.google/epkkZgawv19N), OpenCode: Sin enlace público (sesión local) 

@@ -3,7 +3,7 @@
 
 **Integrante:** Marina Giselle Cordero  
 **Herramienta:** ChatGPT (OpenAI)  
-**Fecha:** 29/10/2026  
+**Período de trabajo:** 29/10/2026 al 03/11/2026
 **Grado de intervención:** Alto  
 **Issue:** #9  
 **Pull Request:** #24
