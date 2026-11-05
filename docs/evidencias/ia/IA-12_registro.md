@@ -15,13 +15,13 @@
 
 ## 2. Resultado de la revisión
 
-Todos los casos propuestos (CP-C01 a CP-C12, persistencia, límites de vencimiento, filtros y orden) fueron considerados válidos. Se identificaron tres posibles faltantes (CP-C13 a CP-C15), que se evaluaron contra el código y no se incorporaron por no aplicar a la versión inicial.
+Los identificadores CP-C01 a CP-C21 corresponden a los casos de la tabla 6.2.C de `docs/06_pruebas.md` (un ID por prueba). Todos los casos propuestos (CP-C01 a CP-C12, persistencia, límites de vencimiento, filtros y orden) fueron considerados válidos. Se identificaron tres posibles faltantes (CP-C13 a CP-C15), que se evaluaron contra el código y no se incorporaron por no aplicar a la versión inicial.
 
 ## 3. Qué no aportó la herramienta
 
 - No leyó el código: no podía decir qué señal aplica en esta zona, y lo dijo.
 - Las observaciones sobre los casos son orientativas; cada una se verificó contra el tag `estado-inicial`.
-- La implementación siguió el patrón estándar del proyecto (JUnit 5 + MockMvc + restauración de `datos/solicitudes.json`), tomado de las pruebas de las zonas A y B; no se generó código completo por la IA.
+- La implementación siguió el patrón estándar del proyecto (JUnit 5 + MockMvc + restauración de `datos/solicitudes.json`), tomado de las pruebas de las zonas A y B.
 
 ## 4. Evidencia
 
