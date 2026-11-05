@@ -9,7 +9,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.DisplayName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -77,7 +76,6 @@ class SolicitudZonaCTest {
 
     // Lista sin filtros devuelve las 5 solicitudes de prueba.
     // CP-C01: listar sin filtros devuelve las 5 solicitudes de prueba.
-    @DisplayName("CP-C01 – Listar sin filtros")
     @Test
     void listarSinFiltrosDevuelveTodas() throws Exception {
         mockMvc.perform(get("/solicitudes"))
@@ -87,7 +85,6 @@ class SolicitudZonaCTest {
 
     // Filtrar por estado PENDIENTE devuelve las solicitudes 5 y 1.
     // CP-C02: filtrar por estado PENDIENTE devuelve las solicitudes 5 y 1.
-    @DisplayName("CP-C02 – Filtrar por estado")
     @Test
     void filtrarPorEstadoPendiente() throws Exception {
         mockMvc.perform(get("/solicitudes").param("estado", "PENDIENTE"))
@@ -99,7 +96,6 @@ class SolicitudZonaCTest {
 
     // Filtrar por tipo CERTIFICADO devuelve la solicitud 1.
     // CP-C03: filtrar por tipo CERTIFICADO devuelve la solicitud 1.
-    @DisplayName("CP-C03 – Filtrar por tipo")
     @Test
     void filtrarPorTipoCertificado() throws Exception {
         mockMvc.perform(get("/solicitudes").param("tipo", "CERTIFICADO"))
@@ -110,7 +106,6 @@ class SolicitudZonaCTest {
 
     // Filtrar por prioridad ALTA devuelve las solicitudes 3 y 5.
     // CP-C04: filtrar por prioridad ALTA devuelve las solicitudes 3 y 5.
-    @DisplayName("CP-C04 – Filtrar por prioridad")
     @Test
     void filtrarPorPrioridadAlta() throws Exception {
         mockMvc.perform(get("/solicitudes").param("prioridad", "ALTA"))
@@ -122,7 +117,6 @@ class SolicitudZonaCTest {
 
     // Filtrar por legajo devuelve las solicitudes de ese estudiante.
     // CP-C05: filtrar por legajo devuelve las solicitudes 5 y 1.
-    @DisplayName("CP-C05 – Filtrar por legajo")
     @Test
     void filtrarPorLegajo() throws Exception {
         mockMvc.perform(get("/solicitudes").param("legajo", "10234"))
@@ -134,7 +128,6 @@ class SolicitudZonaCTest {
 
     // Filtrar por responsable devuelve las solicitudes asignadas a ese responsable.
     // CP-C06: filtrar por responsable devuelve las solicitudes asignadas.
-    @DisplayName("CP-C06 – Filtrar por responsable")
     @Test
     void filtrarPorResponsable() throws Exception {
         mockMvc.perform(get("/solicitudes").param("responsableId", "3"))
@@ -145,7 +138,6 @@ class SolicitudZonaCTest {
 
     // Filtrar vencidas devuelve las solicitudes abiertas vencidas.
     // CP-C07: filtrar vencidas devuelve las solicitudes abiertas vencidas.
-    @DisplayName("CP-C07 – Filtrar vencidas")
     @Test
     void filtrarVencidas() throws Exception {
         mockMvc.perform(get("/solicitudes").param("vencidas", "true"))
@@ -155,7 +147,6 @@ class SolicitudZonaCTest {
 
     // Combinación de filtros (estado + prioridad).
     // CP-C08: combinación de filtros (estado + prioridad).
-    @DisplayName("CP-C08 – Filtros combinados")
     @Test
     void filtrarPorEstadoYPrioridad() throws Exception {
         mockMvc.perform(get("/solicitudes").param("estado", "PENDIENTE").param("prioridad", "ALTA"))
@@ -166,7 +157,6 @@ class SolicitudZonaCTest {
 
     // Filtro sin resultados devuelve lista vacía.
     // CP-C09: filtro sin resultados devuelve lista vacía.
-    @DisplayName("CP-C09 – Filtro sin resultados")
     @Test
     void filtrarSinResultados() throws Exception {
         mockMvc.perform(get("/solicitudes").param("estado", "CERRADA").param("tipo", "CERTIFICADO"))
@@ -176,7 +166,6 @@ class SolicitudZonaCTest {
 
     // El reporte resumen tiene la estructura y los totales esperados.
     // CP-C10: el reporte resumen tiene la estructura y los totales esperados.
-    @DisplayName("CP-C10 – Reporte resumen")
     @Test
     void resumenTieneEstructuraYTotales() throws Exception {
         mockMvc.perform(get("/reportes/resumen"))
@@ -198,7 +187,6 @@ class SolicitudZonaCTest {
 
     // El catálogo de estudiantes devuelve los 4 estudiantes de prueba.
     // CP-C11: el catálogo de estudiantes devuelve los 4 estudiantes de prueba.
-    @DisplayName("CP-C11 – Catálogo estudiantes")
     @Test
     void catalogoEstudiantes() throws Exception {
         mockMvc.perform(get("/estudiantes"))
@@ -209,7 +197,6 @@ class SolicitudZonaCTest {
 
     // El catálogo de responsables devuelve los 4 responsables de prueba.
     // CP-C12: el catálogo de responsables devuelve los 4 responsables de prueba.
-    @DisplayName("CP-C12 – Catálogo responsables")
     @Test
     void catalogoResponsables() throws Exception {
         mockMvc.perform(get("/responsables"))
@@ -221,7 +208,6 @@ class SolicitudZonaCTest {
 
     // El listado sin filtros devuelve los ids en el orden: 3, 5, 2, 4, 1.
     // CP-C13: el listado sin filtros devuelve los ids en el orden 3, 5, 2, 4, 1.
-    @DisplayName("CP-C13 – Orden del listado")
     @Test
     void listadoSinFiltrosOrdenPorPrioridadEId() throws Exception {
         mockMvc.perform(get("/solicitudes"))
@@ -236,7 +222,6 @@ class SolicitudZonaCTest {
 
     // vencidas=false devuelve todas las solicitudes.
     // CP-C14: vencidas=false devuelve todas las solicitudes.
-    @DisplayName("CP-C14 – vencidas=false")
     @Test
     void filtrarVencidasFalseDevuelveTodas() throws Exception {
         mockMvc.perform(get("/solicitudes").param("vencidas", "false"))
@@ -246,7 +231,6 @@ class SolicitudZonaCTest {
 
     // Un filtro con valor vacío no filtra.
     // CP-C15: un filtro con valor vacío no filtra.
-    @DisplayName("CP-C15 – Estado vacío")
     @Test
     void filtroEstadoVacioNoFiltra() throws Exception {
         mockMvc.perform(get("/solicitudes").param("estado", ""))
@@ -256,7 +240,6 @@ class SolicitudZonaCTest {
 
     // Los filtros no distinguen mayúsculas de minúsculas.
     // CP-C16: los filtros no distinguen mayúsculas de minúsculas.
-    @DisplayName("CP-C16 – Filtros en minúsculas")
     @Test
     void filtrosNoDistinguenMayusculas() throws Exception {
         mockMvc.perform(get("/solicitudes")
@@ -270,7 +253,6 @@ class SolicitudZonaCTest {
 
     // responsableId no numérico responde 400.
     // CP-C17: responsableId no numérico responde 400.
-    @DisplayName("CP-C17 – responsableId no numérico")
     @Test
     void responsableIdNoNumericoResponde400() throws Exception {
         mockMvc.perform(get("/solicitudes").param("responsableId", "abc"))
@@ -279,7 +261,6 @@ class SolicitudZonaCTest {
 
     // Persistencia: sin archivo se cargan los datos de prueba y se crea el archivo.
     // CP-C18: sin archivo se cargan los datos de prueba y se crea el archivo.
-    @DisplayName("CP-C18 – Persistencia sin archivo")
     @Test
     void cargarSinArchivoCreaDatosDePrueba() throws Exception {
         java.nio.file.Files.deleteIfExists(ARCHIVO_DATOS);
@@ -290,7 +271,6 @@ class SolicitudZonaCTest {
 
     // Persistencia: guardar y cargar recuperan las solicitudes y ultimoId.
     // CP-C19: guardar y cargar recuperan los datos.
-    @DisplayName("CP-C19 – Persistencia ida y vuelta")
     @Test
     void guardarYCargarRecuperaDatos() throws Exception {
         int cantidad = BaseDeDatos.solicitudes.size();
@@ -303,7 +283,6 @@ class SolicitudZonaCTest {
 
     // Persistencia: archivo corrupto arranca con datos de prueba.
     // CP-C20: archivo corrupto arranca con datos de prueba.
-    @DisplayName("CP-C20 – Archivo corrupto")
     @Test
     void cargarArchivoCorruptoUsaDatosDePrueba() throws Exception {
         java.nio.file.Files.writeString(ARCHIVO_DATOS, "{basura");
@@ -313,7 +292,6 @@ class SolicitudZonaCTest {
 
     // Límites exactos de vencimiento: 3/7/15 días no vencida, 4/8/16 sí.
     // CP-C21: límites exactos de vencimiento (3/4, 7/8, 15/16).
-    @DisplayName("CP-C21 – Límites de vencimiento")
     @Test
     void limitesExactosDeVencimiento() throws Exception {
         BaseDeDatos.solicitudes.clear();
