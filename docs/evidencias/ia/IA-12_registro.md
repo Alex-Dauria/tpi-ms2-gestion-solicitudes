@@ -21,6 +21,7 @@ Todos los casos propuestos (CP-C01 a CP-C12, persistencia, límites de vencimien
 
 - No leyó el código: no podía decir qué señal aplica en esta zona, y lo dijo.
 - Las observaciones sobre los casos son orientativas; cada una se verificó contra el tag `estado-inicial`.
+- La implementación siguió el patrón estándar del proyecto (JUnit 5 + MockMvc + restauración de `datos/solicitudes.json`), tomado de las pruebas de las zonas A y B; no se generó código completo por la IA.
 
 ## 4. Evidencia
 
