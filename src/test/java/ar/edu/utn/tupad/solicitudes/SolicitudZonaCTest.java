@@ -20,6 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import ar.edu.utn.tupad.solicitudes.datos.BaseDeDatos;
+import ar.edu.utn.tupad.solicitudes.modelo.Solicitud;
 
 // Pruebas de caracterización de la zona C (consultas y persistencia), sobre el código de estado-inicial.
 @SpringBootTest
@@ -115,7 +116,9 @@ class SolicitudZonaCTest {
     void filtrarPorLegajo() throws Exception {
         mockMvc.perform(get("/solicitudes").param("legajo", "10234"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(2)));
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].id").value(5))
+                .andExpect(jsonPath("$[1].id").value(1));
     }
 
     // Filtrar por responsable devuelve las solicitudes asignadas a ese responsable.
@@ -167,7 +170,9 @@ class SolicitudZonaCTest {
                 .andExpect(jsonPath("$.porTipo.CERTIFICADO").value(1))
                 .andExpect(jsonPath("$.porPrioridad.ALTA").value(2))
                 .andExpect(jsonPath("$.porPrioridad.MEDIA").value(2))
-                .andExpect(jsonPath("$.porPrioridad.BAJA").value(1));
+                .andExpect(jsonPath("$.porPrioridad.BAJA").value(1))
+                .andExpect(jsonPath("$.abiertasPorResponsable['Carla Ibáñez (Coordinación de Carrera)']").value(1))
+                .andExpect(jsonPath("$.porTipo.OTRO").value(0));
     }
 
     // El catálogo de estudiantes devuelve los 4 estudiantes de prueba.
@@ -188,4 +193,114 @@ class SolicitudZonaCTest {
                 .andExpect(jsonPath("$[0].id").value(1))
                 .andExpect(jsonPath("$[0].activo").value(true));
     }
+
+    // El listado sin filtros devuelve los ids en el orden: 3, 5, 2, 4, 1.
+    @Test
+    void listadoSinFiltrosOrdenPorPrioridadEId() throws Exception {
+        mockMvc.perform(get("/solicitudes"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(5)))
+                .andExpect(jsonPath("$[0].id").value(3))
+                .andExpect(jsonPath("$[1].id").value(5))
+                .andExpect(jsonPath("$[2].id").value(2))
+                .andExpect(jsonPath("$[3].id").value(4))
+                .andExpect(jsonPath("$[4].id").value(1));
+    }
+
+    // vencidas=false devuelve todas las solicitudes.
+    @Test
+    void filtrarVencidasFalseDevuelveTodas() throws Exception {
+        mockMvc.perform(get("/solicitudes").param("vencidas", "false"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(5)));
+    }
+
+    // Un filtro con valor vacío no filtra.
+    @Test
+    void filtroEstadoVacioNoFiltra() throws Exception {
+        mockMvc.perform(get("/solicitudes").param("estado", ""))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(5)));
+    }
+
+    // Los filtros no distinguen mayúsculas de minúsculas.
+    @Test
+    void filtrosNoDistinguenMayusculas() throws Exception {
+        mockMvc.perform(get("/solicitudes")
+                        .param("tipo", "revision_nota")
+                        .param("estado", "pendiente")
+                        .param("prioridad", "alta"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].id").value(5));
+    }
+
+    // responsableId no numérico responde 400.
+    @Test
+    void responsableIdNoNumericoResponde400() throws Exception {
+        mockMvc.perform(get("/solicitudes").param("responsableId", "abc"))
+                .andExpect(status().isBadRequest());
+    }
+
+    // Persistencia: sin archivo se cargan los datos de prueba y se crea el archivo.
+    @Test
+    void cargarSinArchivoCreaDatosDePrueba() throws Exception {
+        java.nio.file.Files.deleteIfExists(ARCHIVO_DATOS);
+        BaseDeDatos.cargar();
+        org.junit.jupiter.api.Assertions.assertEquals(5, BaseDeDatos.solicitudes.size());
+        org.junit.jupiter.api.Assertions.assertTrue(java.nio.file.Files.exists(ARCHIVO_DATOS));
+    }
+
+    // Persistencia: guardar y cargar recuperan las solicitudes y ultimoId.
+    @Test
+    void guardarYCargarRecuperaDatos() throws Exception {
+        int cantidad = BaseDeDatos.solicitudes.size();
+        int ultimoId = BaseDeDatos.ultimoId;
+        BaseDeDatos.guardar();
+        BaseDeDatos.cargar();
+        org.junit.jupiter.api.Assertions.assertEquals(cantidad, BaseDeDatos.solicitudes.size());
+        org.junit.jupiter.api.Assertions.assertEquals(ultimoId, BaseDeDatos.ultimoId);
+    }
+
+    // Persistencia: archivo corrupto arranca con datos de prueba.
+    @Test
+    void cargarArchivoCorruptoUsaDatosDePrueba() throws Exception {
+        java.nio.file.Files.writeString(ARCHIVO_DATOS, "{basura");
+        BaseDeDatos.cargar();
+        org.junit.jupiter.api.Assertions.assertEquals(5, BaseDeDatos.solicitudes.size());
+    }
+
+    // Límites exactos de vencimiento: 3/7/15 días no vencida, 4/8/16 sí.
+    @Test
+    void limitesExactosDeVencimiento() throws Exception {
+        BaseDeDatos.solicitudes.clear();
+        agregarSolicitudAbierta(10, "ALTA", "PENDIENTE", 3);
+        agregarSolicitudAbierta(11, "ALTA", "PENDIENTE", 4);
+        agregarSolicitudAbierta(12, "MEDIA", "PENDIENTE", 7);
+        agregarSolicitudAbierta(13, "MEDIA", "PENDIENTE", 8);
+        agregarSolicitudAbierta(14, "BAJA", "PENDIENTE", 15);
+        agregarSolicitudAbierta(15, "BAJA", "PENDIENTE", 16);
+        agregarSolicitudAbierta(16, "ALTA", "RESUELTA", 10);
+
+        mockMvc.perform(get("/solicitudes").param("vencidas", "true"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(3)));
+        mockMvc.perform(get("/reportes/resumen"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.vencidas").value(3));
+    }
+
+    private void agregarSolicitudAbierta(int id, String prioridad, String estado, int diasAtras) {
+        Solicitud solicitud = new Solicitud();
+        solicitud.setId(id);
+        solicitud.setLegajo("10234");
+        solicitud.setTipo("CERTIFICADO");
+        solicitud.setDescripcion("Solicitud sintética para pruebas");
+        solicitud.setPrioridad(prioridad);
+        solicitud.setEstado(estado);
+        solicitud.setFechaCreacion(java.time.LocalDate.now().minusDays(diasAtras).toString());
+        solicitud.setFechaUltimoCambio(java.time.LocalDate.now().minusDays(diasAtras).toString());
+        BaseDeDatos.solicitudes.add(solicitud);
+    }
 }
+

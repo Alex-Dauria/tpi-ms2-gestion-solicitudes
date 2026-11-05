@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="ar.edu.utn.tupad.solicitudes.SolicitudZonaCTest" time="1.528" tests="12" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="ar.edu.utn.tupad.solicitudes.SolicitudZonaCTest" time="1.572" tests="21" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="25"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
@@ -13,7 +13,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="ES"/>
     <property name="sun.boot.library.path" value="/Library/Java/JavaVirtualMachines/jdk-25.jdk/Contents/Home/lib"/>
-    <property name="sun.java.command" value="/Users/Sil/Documents/Projects/proyects/TP-FINAL-METODOLOGIA2/tpi-ms2-gestion-solicitudes/target/surefire/surefirebooter-20261104093603745_3.jar /Users/Sil/Documents/Projects/proyects/TP-FINAL-METODOLOGIA2/tpi-ms2-gestion-solicitudes/target/surefire 2026-11-04T09-36-03_700-jvmRun1 surefire-20261104093603745_1tmp surefire_0-20261104093603745_2tmp"/>
+    <property name="sun.java.command" value="/Users/Sil/Documents/Projects/proyects/TP-FINAL-METODOLOGIA2/tpi-ms2-gestion-solicitudes/target/surefire/surefirebooter-20261105172204984_3.jar /Users/Sil/Documents/Projects/proyects/TP-FINAL-METODOLOGIA2/tpi-ms2-gestion-solicitudes/target/surefire 2026-11-05T17-22-04_942-jvmRun1 surefire-20261105172204984_1tmp surefire_0-20261105172204984_2tmp"/>
     <property name="http.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="jdk.debug" value="release"/>
     <property name="test" value="SolicitudZonaCTest"/>
@@ -33,7 +33,7 @@
     <property name="FILE_LOG_CHARSET" value="UTF-8"/>
     <property name="java.awt.headless" value="true"/>
     <property name="apple.awt.application.name" value="ForkedBooter"/>
-    <property name="surefire.real.class.path" value="/Users/Sil/Documents/Projects/proyects/TP-FINAL-METODOLOGIA2/tpi-ms2-gestion-solicitudes/target/surefire/surefirebooter-20261104093603745_3.jar"/>
+    <property name="surefire.real.class.path" value="/Users/Sil/Documents/Projects/proyects/TP-FINAL-METODOLOGIA2/tpi-ms2-gestion-solicitudes/target/surefire/surefirebooter-20261105172204984_3.jar"/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="ftp.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="java.runtime.version" value="25.0.1+8-LTS-27"/>
@@ -51,7 +51,7 @@
     <property name="user.dir" value="/Users/Sil/Documents/Projects/proyects/TP-FINAL-METODOLOGIA2/tpi-ms2-gestion-solicitudes"/>
     <property name="os.arch" value="aarch64"/>
     <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
-    <property name="PID" value="96338"/>
+    <property name="PID" value="44314"/>
     <property name="CONSOLE_LOG_CHARSET" value="UTF-8"/>
     <property name="native.encoding" value="UTF-8"/>
     <property name="java.library.path" value="/Users/Sil/Library/Java/Extensions:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java:."/>
@@ -65,9 +65,9 @@
     <property name="java.class.version" value="69.0"/>
     <property name="LOGGED_APPLICATION_NAME" value="[gestion-solicitudes] "/>
   </properties>
-  <testcase name="filtrarPorResponsable" classname="ar.edu.utn.tupad.solicitudes.SolicitudZonaCTest" time="0.437">
-    <system-out><![CDATA[09:36:04.142 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [ar.edu.utn.tupad.solicitudes.SolicitudZonaCTest]: SolicitudZonaCTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-09:36:04.204 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration ar.edu.utn.tupad.solicitudes.SolicitudesApplication for test class ar.edu.utn.tupad.solicitudes.SolicitudZonaCTest
+  <testcase name="filtrarPorResponsable" classname="ar.edu.utn.tupad.solicitudes.SolicitudZonaCTest" time="0.417">
+    <system-out><![CDATA[17:22:05.412 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [ar.edu.utn.tupad.solicitudes.SolicitudZonaCTest]: SolicitudZonaCTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+17:22:05.493 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration ar.edu.utn.tupad.solicitudes.SolicitudesApplication for test class ar.edu.utn.tupad.solicitudes.SolicitudZonaCTest
 
   .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
@@ -78,12 +78,12 @@
 
  :: Spring Boot ::                (v3.3.5)
 
-2026-11-04T09:36:04.414-03:00  INFO 96338 --- [gestion-solicitudes] [           main] a.e.u.t.solicitudes.SolicitudZonaCTest   : Starting SolicitudZonaCTest using Java 25.0.1 with PID 96338 (started by Sil in /Users/Sil/Documents/Projects/proyects/TP-FINAL-METODOLOGIA2/tpi-ms2-gestion-solicitudes)
-2026-11-04T09:36:04.414-03:00  INFO 96338 --- [gestion-solicitudes] [           main] a.e.u.t.solicitudes.SolicitudZonaCTest   : No active profile set, falling back to 1 default profile: "default"
-2026-11-04T09:36:05.097-03:00  INFO 96338 --- [gestion-solicitudes] [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
-2026-11-04T09:36:05.097-03:00  INFO 96338 --- [gestion-solicitudes] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
-2026-11-04T09:36:05.098-03:00  INFO 96338 --- [gestion-solicitudes] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
-2026-11-04T09:36:05.111-03:00  INFO 96338 --- [gestion-solicitudes] [           main] a.e.u.t.solicitudes.SolicitudZonaCTest   : Started SolicitudZonaCTest in 0.822 seconds (process running for 1.322)
+2026-11-05T17:22:05.733-03:00  INFO 44314 --- [gestion-solicitudes] [           main] a.e.u.t.solicitudes.SolicitudZonaCTest   : Starting SolicitudZonaCTest using Java 25.0.1 with PID 44314 (started by Sil in /Users/Sil/Documents/Projects/proyects/TP-FINAL-METODOLOGIA2/tpi-ms2-gestion-solicitudes)
+2026-11-05T17:22:05.734-03:00  INFO 44314 --- [gestion-solicitudes] [           main] a.e.u.t.solicitudes.SolicitudZonaCTest   : No active profile set, falling back to 1 default profile: "default"
+2026-11-05T17:22:06.367-03:00  INFO 44314 --- [gestion-solicitudes] [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-05T17:22:06.367-03:00  INFO 44314 --- [gestion-solicitudes] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-05T17:22:06.368-03:00  INFO 44314 --- [gestion-solicitudes] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 1 ms
+2026-11-05T17:22:06.381-03:00  INFO 44314 --- [gestion-solicitudes] [           main] a.e.u.t.solicitudes.SolicitudZonaCTest   : Started SolicitudZonaCTest in 0.78 seconds (process running for 1.323)
 ]]></system-out>
     <system-err><![CDATA[WARNING: A Java agent has been loaded dynamically (/Users/Sil/.m2/repository/net/bytebuddy/byte-buddy-agent/1.14.19/byte-buddy-agent-1.14.19.jar)
 WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
@@ -91,15 +91,111 @@ WARNING: If a serviceability tool is not in use, please run with -Djdk.instrumen
 WARNING: Dynamic loading of agents will be disallowed by default in a future release
 ]]></system-err>
   </testcase>
-  <testcase name="filtrarPorEstadoYPrioridad" classname="ar.edu.utn.tupad.solicitudes.SolicitudZonaCTest" time="0.004"/>
-  <testcase name="filtrarPorEstadoPendiente" classname="ar.edu.utn.tupad.solicitudes.SolicitudZonaCTest" time="0.003"/>
+  <testcase name="listadoSinFiltrosOrdenPorPrioridadEId" classname="ar.edu.utn.tupad.solicitudes.SolicitudZonaCTest" time="0.004"/>
+  <testcase name="filtrarPorEstadoYPrioridad" classname="ar.edu.utn.tupad.solicitudes.SolicitudZonaCTest" time="0.002"/>
+  <testcase name="filtrarPorEstadoPendiente" classname="ar.edu.utn.tupad.solicitudes.SolicitudZonaCTest" time="0.002"/>
+  <testcase name="filtrosNoDistinguenMayusculas" classname="ar.edu.utn.tupad.solicitudes.SolicitudZonaCTest" time="0.003"/>
+  <testcase name="guardarYCargarRecuperaDatos" classname="ar.edu.utn.tupad.solicitudes.SolicitudZonaCTest" time="0.03"/>
   <testcase name="filtrarPorTipoCertificado" classname="ar.edu.utn.tupad.solicitudes.SolicitudZonaCTest" time="0.002"/>
-  <testcase name="listarSinFiltrosDevuelveTodas" classname="ar.edu.utn.tupad.solicitudes.SolicitudZonaCTest" time="0.003"/>
+  <testcase name="listarSinFiltrosDevuelveTodas" classname="ar.edu.utn.tupad.solicitudes.SolicitudZonaCTest" time="0.002"/>
+  <testcase name="responsableIdNoNumericoResponde400" classname="ar.edu.utn.tupad.solicitudes.SolicitudZonaCTest" time="0.003">
+    <system-out><![CDATA[2026-11-05T17:22:06.858-03:00  WARN 44314 --- [gestion-solicitudes] [           main] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.method.annotation.MethodArgumentTypeMismatchException: Method parameter 'responsableId': Failed to convert value of type 'java.lang.String' to required type 'java.lang.Integer'; For input string: "abc"]
+]]></system-out>
+  </testcase>
   <testcase name="catalogoResponsables" classname="ar.edu.utn.tupad.solicitudes.SolicitudZonaCTest" time="0.004"/>
   <testcase name="filtrarPorPrioridadAlta" classname="ar.edu.utn.tupad.solicitudes.SolicitudZonaCTest" time="0.003"/>
+  <testcase name="cargarSinArchivoCreaDatosDePrueba" classname="ar.edu.utn.tupad.solicitudes.SolicitudZonaCTest" time="0.003"/>
   <testcase name="filtrarVencidas" classname="ar.edu.utn.tupad.solicitudes.SolicitudZonaCTest" time="0.004"/>
-  <testcase name="filtrarSinResultados" classname="ar.edu.utn.tupad.solicitudes.SolicitudZonaCTest" time="0.002"/>
+  <testcase name="filtrarSinResultados" classname="ar.edu.utn.tupad.solicitudes.SolicitudZonaCTest" time="0.003"/>
   <testcase name="resumenTieneEstructuraYTotales" classname="ar.edu.utn.tupad.solicitudes.SolicitudZonaCTest" time="0.005"/>
   <testcase name="catalogoEstudiantes" classname="ar.edu.utn.tupad.solicitudes.SolicitudZonaCTest" time="0.003"/>
+  <testcase name="cargarArchivoCorruptoUsaDatosDePrueba" classname="ar.edu.utn.tupad.solicitudes.SolicitudZonaCTest" time="0.003">
+    <system-err><![CDATA[com.fasterxml.jackson.core.JsonParseException: Unexpected character ('b' (code 98)): was expecting double-quote to start field name
+ at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 1, column: 2]
+	at com.fasterxml.jackson.core.JsonParser._constructReadException(JsonParser.java:2648)
+	at com.fasterxml.jackson.core.base.ParserMinimalBase._reportUnexpectedChar(ParserMinimalBase.java:685)
+	at com.fasterxml.jackson.core.json.UTF8StreamJsonParser._handleOddName(UTF8StreamJsonParser.java:2103)
+	at com.fasterxml.jackson.core.json.UTF8StreamJsonParser._parseName(UTF8StreamJsonParser.java:1753)
+	at com.fasterxml.jackson.core.json.UTF8StreamJsonParser.nextToken(UTF8StreamJsonParser.java:757)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializer.deserialize(BeanDeserializer.java:177)
+	at com.fasterxml.jackson.databind.deser.DefaultDeserializationContext.readRootValue(DefaultDeserializationContext.java:342)
+	at com.fasterxml.jackson.databind.ObjectMapper._readMapAndClose(ObjectMapper.java:4905)
+	at com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:3713)
+	at ar.edu.utn.tupad.solicitudes.datos.BaseDeDatos.cargar(BaseDeDatos.java:33)
+	at ar.edu.utn.tupad.solicitudes.SolicitudZonaCTest.cargarArchivoCorruptoUsaDatosDePrueba(SolicitudZonaCTest.java:269)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:728)
+	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.intercept(TimeoutExtension.java:156)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestableMethod(TimeoutExtension.java:147)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestMethod(TimeoutExtension.java:86)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker$ReflectiveInterceptorCall.lambda$ofVoidMethod$0(InterceptingExecutableInvoker.java:103)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.lambda$invoke$0(InterceptingExecutableInvoker.java:93)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$InterceptedInvocation.proceed(InvocationInterceptorChain.java:106)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.proceed(InvocationInterceptorChain.java:64)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.chainAndInvoke(InvocationInterceptorChain.java:45)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.invoke(InvocationInterceptorChain.java:37)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:92)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:86)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$invokeTestMethod$7(TestMethodTestDescriptor.java:218)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.invokeTestMethod(TestMethodTestDescriptor.java:214)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:139)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:69)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:156)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:160)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:160)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:35)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:54)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:198)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:169)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:93)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:58)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:141)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:57)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:103)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:85)
+	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:47)
+	at org.apache.maven.surefire.junitplatform.LazyLauncher.execute(LazyLauncher.java:56)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.execute(JUnitPlatformProvider.java:184)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invokeAllTests(JUnitPlatformProvider.java:148)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invoke(JUnitPlatformProvider.java:122)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:385)
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:162)
+	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:507)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)
+]]></system-err>
+  </testcase>
   <testcase name="filtrarPorLegajo" classname="ar.edu.utn.tupad.solicitudes.SolicitudZonaCTest" time="0.003"/>
+  <testcase name="limitesExactosDeVencimiento" classname="ar.edu.utn.tupad.solicitudes.SolicitudZonaCTest" time="0.004"/>
+  <testcase name="filtroEstadoVacioNoFiltra" classname="ar.edu.utn.tupad.solicitudes.SolicitudZonaCTest" time="0.003"/>
+  <testcase name="filtrarVencidasFalseDevuelveTodas" classname="ar.edu.utn.tupad.solicitudes.SolicitudZonaCTest" time="0.002"/>
 </testsuite>

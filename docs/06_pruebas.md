@@ -92,7 +92,7 @@ _Un caso por regla o flujo. Tomar como base F1–F7 y RN-01 a RN-15 de la secci�
 | ID | Operación | Entrada / situación | Resultado esperado | Regla | Antes | Después |
 |---|---|---|---|---|---|---|
 | CP-C01 | Listar solicitudes | GET `/solicitudes` sin filtros | HTTP 200. Devuelve las 5 solicitudes de prueba. | F2 | OK | Pendiente |
-| CP-C02 | Filtrar por estado | GET `/solicitudes?estado=PENDIENTE` | HTTP 200. Devuelve las solicitudes 5 y 1 (ordenadas por prioridad). | F2, RN-07 | OK | Pendiente |
+| CP-C02 | Filtrar por estado | GET `/solicitudes?estado=PENDIENTE` | HTTP 200. Devuelve las solicitudes 5 y 1 (ordenadas por prioridad). | F2 | OK | Pendiente |
 | CP-C03 | Filtrar por tipo | GET `/solicitudes?tipo=CERTIFICADO` | HTTP 200. Devuelve la solicitud 1. | F2 | OK | Pendiente |
 | CP-C04 | Filtrar por prioridad | GET `/solicitudes?prioridad=ALTA` | HTTP 200. Devuelve las solicitudes 3 y 5. | F2 | OK | Pendiente |
 | CP-C05 | Filtrar por legajo | GET `/solicitudes?legajo=10234` | HTTP 200. Devuelve las solicitudes 1 y 5. | F2 | OK | Pendiente |
@@ -103,6 +103,15 @@ _Un caso por regla o flujo. Tomar como base F1–F7 y RN-01 a RN-15 de la secci�
 | CP-C10 | Reporte resumen | GET `/reportes/resumen` | HTTP 200. Totales, conteos por estado/tipo/prioridad, 3 vencidas y abiertas por responsable. | F6 | OK | Pendiente |
 | CP-C11 | Catálogo estudiantes | GET `/estudiantes` | HTTP 200. Devuelve los 4 estudiantes de prueba. | F7 | OK | Pendiente |
 | CP-C12 | Catálogo responsables | GET `/responsables` | HTTP 200. Devuelve los 4 responsables de prueba. | F7 | OK | Pendiente |
+| CP-C13 | Orden del listado | GET `/solicitudes` sin filtros | HTTP 200. Devuelve los ids en el orden 3, 5, 2, 4, 1. | F2 | OK | Pendiente |
+| CP-C14 | Filtrar vencidas=false | GET `/solicitudes?vencidas=false` | HTTP 200. Devuelve las 5 solicitudes. | F2 | OK | Pendiente |
+| CP-C15 | Filtro con valor vacío | GET `/solicitudes?estado=` | HTTP 200. No filtra; devuelve las 5 solicitudes. | F2 | OK | Pendiente |
+| CP-C16 | Filtros en minúsculas | GET `/solicitudes?tipo=revision_nota&estado=pendiente&prioridad=alta` | HTTP 200. Devuelve la solicitud 5 (igual que en mayúsculas). | F2 | OK | Pendiente |
+| CP-C17 | responsableId no numérico | GET `/solicitudes?responsableId=abc` | HTTP 400. | F2 | OK | Pendiente |
+| CP-C18 | Persistencia sin archivo | Eliminar `datos/solicitudes.json` y llamar `cargar()` | Carga los datos de prueba (5 solicitudes) y crea el archivo. | SC-03 | OK | Pendiente |
+| CP-C19 | Persistencia ida y vuelta | `guardar()` y luego `cargar()` | Recupera las 5 solicitudes y `ultimoId`. | SC-03 | OK | Pendiente |
+| CP-C20 | Persistencia archivo corrupto | Escribir basura en el JSON y llamar `cargar()` | Arranca con los datos de prueba (5 solicitudes). | SC-03 | OK | Pendiente |
+| CP-C21 | Límites de vencimiento | Solicitudes abiertas con 3/7/15 y 4/8/16 días; una RESUELTA vieja | `vencidas=true` devuelve 3; el reporte cuenta 3 vencidas. | SC-02, RN-14 | OK | Pendiente |
 
 ## 6.3 Evidencia antes / después
 
