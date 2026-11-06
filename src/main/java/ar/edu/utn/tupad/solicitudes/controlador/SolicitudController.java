@@ -27,8 +27,6 @@ import java.util.Optional;
 @RestController
 public class SolicitudController {
 
-    private static final String CARRERA_POR_DEFECTO = "Sin especificar";
-
     // ===================== SOLICITUDES =====================
 
     @PostMapping("/solicitudes")
@@ -52,9 +50,7 @@ public class SolicitudController {
 
         String legajo = datos.legajo();
         String tipo = datos.tipo().toUpperCase();
-        String prioridad = ReglasRegistro.estaVacio(datos.prioridad())
-                ? prioridadPorDefecto(tipo)
-                : datos.prioridad().toUpperCase();
+        String prioridad = ReglasRegistro.prioridadDe(datos);
         String descripcion = datos.descripcion();
 
         // Si el estudiante no existe, se lo da de alta con los datos del pedido (RN-05)
@@ -63,7 +59,7 @@ public class SolicitudController {
             if (errorAlta.isPresent()) {
                 return respuestaError(HttpStatus.BAD_REQUEST, errorAlta.get());
             }
-            BaseDeDatos.estudiantes.add(crearEstudiante(datos));
+            BaseDeDatos.estudiantes.add(ReglasRegistro.crearEstudiante(datos));
         }
 
         // RN-06: no puede tener otra solicitud abierta del mismo tipo
@@ -114,25 +110,6 @@ public class SolicitudController {
             }
         }
         return Optional.empty();
-    }
-
-    // RN-05: el email se guarda en minúsculas y, sin carrera, se registra "Sin especificar"
-    private Estudiante crearEstudiante(DatosSolicitud datos) {
-        String carrera = datos.carrera() == null ? CARRERA_POR_DEFECTO : datos.carrera();
-        return new Estudiante(datos.legajo(), datos.nombre().trim(), datos.email().trim().toLowerCase(), carrera);
-    }
-
-    // Prioridad que corresponde a cada tipo cuando la solicitud no indica una (RN-04)
-    private String prioridadPorDefecto(String tipo) {
-        switch (tipo) {
-            case "REVISION_NOTA":
-                return "ALTA";
-            case "EQUIVALENCIA":
-            case "CAMBIO_COMISION":
-                return "MEDIA";
-            default:
-                return "BAJA";
-        }
     }
 
     @GetMapping("/solicitudes")

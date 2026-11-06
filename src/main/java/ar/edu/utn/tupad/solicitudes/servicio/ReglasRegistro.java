@@ -1,5 +1,7 @@
 package ar.edu.utn.tupad.solicitudes.servicio;
 
+import ar.edu.utn.tupad.solicitudes.modelo.Estudiante;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -15,6 +17,7 @@ public final class ReglasRegistro {
     private static final List<String> TIPOS_VALIDOS =
             List.of("CERTIFICADO", "EQUIVALENCIA", "REVISION_NOTA", "CAMBIO_COMISION", "OTRO");
     private static final List<String> PRIORIDADES_VALIDAS = List.of("ALTA", "MEDIA", "BAJA");
+    private static final String CARRERA_POR_DEFECTO = "Sin especificar";
 
     private ReglasRegistro() {
     }
@@ -42,8 +45,34 @@ public final class ReglasRegistro {
         return Optional.empty();
     }
 
-    public static boolean estaVacio(String valor) {
+    // RN-04: la prioridad indicada, en mayúsculas; si no viene, la que corresponde al tipo
+    public static String prioridadDe(DatosSolicitud datos) {
+        return estaVacio(datos.prioridad())
+                ? prioridadPorDefecto(datos.tipo().toUpperCase())
+                : datos.prioridad().toUpperCase();
+    }
+
+    // RN-05: el email se guarda en minúsculas y, sin carrera, se registra "Sin especificar"
+    public static Estudiante crearEstudiante(DatosSolicitud datos) {
+        String carrera = datos.carrera() == null ? CARRERA_POR_DEFECTO : datos.carrera();
+        return new Estudiante(datos.legajo(), datos.nombre().trim(), datos.email().trim().toLowerCase(), carrera);
+    }
+
+    private static boolean estaVacio(String valor) {
         return valor == null || valor.trim().isEmpty();
+    }
+
+    // Prioridad que corresponde a cada tipo cuando la solicitud no indica una (RN-04)
+    private static String prioridadPorDefecto(String tipo) {
+        switch (tipo) {
+            case "REVISION_NOTA":
+                return "ALTA";
+            case "EQUIVALENCIA":
+            case "CAMBIO_COMISION":
+                return "MEDIA";
+            default:
+                return "BAJA";
+        }
     }
 
     // RN-01
