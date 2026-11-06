@@ -212,9 +212,11 @@ public class SolicitudController {
                                   @RequestParam(required = false) String legajo,
                                   @RequestParam(required = false) Integer responsableId,
                                   @RequestParam(required = false) Boolean vencidas) {
+        // Agrupa los seis criterios de filtrado en un solo objeto.
         return filtrar(new FiltroSolicitudes(estado, tipo, prioridad, legajo, responsableId, vencidas));
     }
 
+    // Filtra las solicitudes según los criterios recibidos.
     private List<Solicitud> filtrar(FiltroSolicitudes filtro) {
         String estado = filtro.estado();
         String tipo = filtro.tipo();
@@ -487,11 +489,13 @@ public class SolicitudController {
 
     @GetMapping("/estudiantes")
     public List<Estudiante> estudiantes() {
+        // Devuelve una copia para no exponer la lista interna.
         return List.copyOf(BaseDeDatos.estudiantes);
     }
 
     @GetMapping("/responsables")
     public List<Responsable> responsables() {
+        // Devuelve una copia para no exponer la lista interna.
         return List.copyOf(BaseDeDatos.responsables);
     }
 }
