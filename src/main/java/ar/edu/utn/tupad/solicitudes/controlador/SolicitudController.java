@@ -17,132 +17,192 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 public class SolicitudController {
+
+    // Reglas del registro (RN-01 a RN-05)
+    private static final int DIGITOS_LEGAJO = 5;
+    private static final int LARGO_MINIMO_DESCRIPCION = 10;
+    private static final int LARGO_MAXIMO_DESCRIPCION = 500;
+    private static final List<String> TIPOS_VALIDOS =
+            List.of("CERTIFICADO", "EQUIVALENCIA", "REVISION_NOTA", "CAMBIO_COMISION", "OTRO");
+    private static final List<String> PRIORIDADES_VALIDAS = List.of("ALTA", "MEDIA", "BAJA");
+    private static final String CARRERA_POR_DEFECTO = "Sin especificar";
 
     // ===================== SOLICITUDES =====================
 
     @PostMapping("/solicitudes")
     public ResponseEntity<Object> crear(@RequestBody Map<String, Object> body) {
-        String legajo = (String) body.get("legajo");
-        String nombre = (String) body.get("nombre");
-        String email = (String) body.get("email");
-        String carrera = (String) body.get("carrera");
-        String tipo = (String) body.get("tipo");
-        String prioridad = (String) body.get("prioridad");
-        String descripcion = (String) body.get("descripcion");
-        return registrarSolicitud(legajo, nombre, email, carrera, tipo, prioridad, descripcion);
+        DatosSolicitud datos = new DatosSolicitud(
+                (String) body.get("legajo"),
+                (String) body.get("nombre"),
+                (String) body.get("email"),
+                (String) body.get("carrera"),
+                (String) body.get("tipo"),
+                (String) body.get("prioridad"),
+                (String) body.get("descripcion"));
+        return registrarSolicitud(datos);
     }
 
-    private ResponseEntity<Object> registrarSolicitud(String legajo, String nombre, String email, String carrera,
-                                                      String tipo, String prioridad, String descripcion) {
-        Map<String, Object> m = new HashMap<>();
-
-        // validaciones
-        if (legajo == null || legajo.trim().isEmpty()) {
-            m.put("error", "El legajo es obligatorio");
-            return ResponseEntity.badRequest().body(m);
-        }
-        if (!legajo.matches("\\d{5}")) {
-            m.put("error", "El legajo debe tener 5 dígitos");
-            return ResponseEntity.badRequest().body(m);
-        }
-        if (tipo == null || tipo.trim().isEmpty()) {
-            m.put("error", "El tipo es obligatorio");
-            return ResponseEntity.badRequest().body(m);
-        }
-        tipo = tipo.toUpperCase();
-        if (!tipo.equals("CERTIFICADO") && !tipo.equals("EQUIVALENCIA") && !tipo.equals("REVISION_NOTA")
-                && !tipo.equals("CAMBIO_COMISION") && !tipo.equals("OTRO")) {
-            m.put("error", "Tipo de solicitud inválido: " + tipo);
-            return ResponseEntity.badRequest().body(m);
-        }
-        if (descripcion == null || descripcion.trim().length() < 10) {
-            m.put("error", "La descripción debe tener al menos 10 caracteres");
-            return ResponseEntity.badRequest().body(m);
-        }
-        if (descripcion.length() > 500) {
-            m.put("error", "La descripción no puede superar los 500 caracteres");
-            return ResponseEntity.badRequest().body(m);
-        }
-        if (prioridad != null && !prioridad.trim().isEmpty()) {
-            prioridad = prioridad.toUpperCase();
-            if (!prioridad.equals("ALTA") && !prioridad.equals("MEDIA") && !prioridad.equals("BAJA")) {
-                m.put("error", "Prioridad inválida: " + prioridad);
-                return ResponseEntity.badRequest().body(m);
-            }
-        } else {
-            // la prioridad se calcula segun el tipo
-            switch (tipo) {
-                case "REVISION_NOTA":
-                    prioridad = "ALTA";
-                    break;
-                case "EQUIVALENCIA":
-                case "CAMBIO_COMISION":
-                    prioridad = "MEDIA";
-                    break;
-                default:
-                    prioridad = "BAJA";
-            }
+    private ResponseEntity<Object> registrarSolicitud(DatosSolicitud datos) {
+        // Se valida campo por campo, en este orden, y se corta en el primer error
+        Optional<String> error = validarLegajo(datos.legajo())
+                .or(() -> validarTipo(datos.tipo()))
+                .or(() -> validarDescripcion(datos.descripcion()))
+                .or(() -> validarPrioridad(datos.prioridad()));
+        if (error.isPresent()) {
+            return respuestaError(HttpStatus.BAD_REQUEST, error.get());
         }
 
-        // buscar estudiante
-        Estudiante est = null;
-        for (Estudiante e : BaseDeDatos.estudiantes) {
-            if (e.getLegajo().equals(legajo)) {
-                est = e;
-                break;
+        String legajo = datos.legajo();
+        String tipo = datos.tipo().toUpperCase();
+        String prioridad = estaVacio(datos.prioridad())
+                ? prioridadPorDefecto(tipo)
+                : datos.prioridad().toUpperCase();
+        String descripcion = datos.descripcion();
+
+        // Si el estudiante no existe, se lo da de alta con los datos del pedido (RN-05)
+        if (buscarEstudiantePorLegajo(legajo).isEmpty()) {
+            Optional<String> errorAlta = validarDatosDeAlta(datos.nombre(), datos.email());
+            if (errorAlta.isPresent()) {
+                return respuestaError(HttpStatus.BAD_REQUEST, errorAlta.get());
             }
-        }
-        if (est == null) {
-            // si no existe lo damos de alta
-            if (nombre == null || nombre.trim().isEmpty() || email == null || email.trim().isEmpty()) {
-                m.put("error", "El estudiante no existe: se requieren nombre y email para darlo de alta");
-                return ResponseEntity.badRequest().body(m);
-            }
-            if (!email.contains("@") || !email.contains(".")) {
-                m.put("error", "El email no es válido");
-                return ResponseEntity.badRequest().body(m);
-            }
-            est = new Estudiante();
-            est.setLegajo(legajo);
-            est.setNombre(nombre.trim());
-            est.setEmail(email.trim().toLowerCase());
-            est.setCarrera(carrera == null ? "Sin especificar" : carrera);
-            BaseDeDatos.estudiantes.add(est);
+            BaseDeDatos.estudiantes.add(crearEstudiante(datos));
         }
 
-        // no puede tener otra solicitud abierta del mismo tipo
-        for (Solicitud s : BaseDeDatos.solicitudes) {
-            if (s.getLegajo().equals(legajo) && s.getTipo().equals(tipo)
-                    && (s.getEstado().equals("PENDIENTE") || s.getEstado().equals("EN_REVISION"))) {
-                m.put("error", "El estudiante ya tiene una solicitud abierta de tipo " + tipo + " (id " + s.getId() + ")");
-                return ResponseEntity.status(HttpStatus.CONFLICT).body(m);
-            }
+        // RN-06: no puede tener otra solicitud abierta del mismo tipo
+        Optional<Solicitud> abierta = buscarSolicitudAbierta(legajo, tipo);
+        if (abierta.isPresent()) {
+            return respuestaError(HttpStatus.CONFLICT, "El estudiante ya tiene una solicitud abierta de tipo "
+                    + tipo + " (id " + abierta.get().getId() + ")");
         }
 
-        Solicitud s = new Solicitud();
         BaseDeDatos.ultimoId++;
-        s.setId(BaseDeDatos.ultimoId);
-        s.setLegajo(legajo);
-        s.setTipo(tipo);
-        s.setDescripcion(descripcion.trim());
-        s.setPrioridad(prioridad);
-        s.setEstado("PENDIENTE");
-        String hoy = LocalDate.now().toString();
-        s.setFechaCreacion(hoy);
-        s.setFechaUltimoCambio(hoy);
-        s.getHistorial().add(hoy + ": solicitud registrada (PENDIENTE)");
-        BaseDeDatos.solicitudes.add(s);
+        Solicitud solicitud = construirSolicitud(BaseDeDatos.ultimoId, legajo, tipo, descripcion.trim(), prioridad);
+        BaseDeDatos.solicitudes.add(solicitud);
         BaseDeDatos.guardar();
-        // TODO: avisar por mail al estudiante
-        // System.out.println("Se creo la solicitud " + s.getId());
-        return ResponseEntity.status(HttpStatus.CREATED).body(s);
+        return ResponseEntity.status(HttpStatus.CREATED).body(solicitud);
+    }
+
+    // Una solicitud está abierta mientras está PENDIENTE o EN_REVISION (regla de estados de la zona B)
+    private Optional<Solicitud> buscarSolicitudAbierta(String legajo, String tipo) {
+        for (Solicitud solicitud : BaseDeDatos.solicitudes) {
+            if (solicitud.getLegajo().equals(legajo) && solicitud.getTipo().equals(tipo)
+                    && (solicitud.getEstado().equals("PENDIENTE") || solicitud.getEstado().equals("EN_REVISION"))) {
+                return Optional.of(solicitud);
+            }
+        }
+        return Optional.empty();
+    }
+
+    // Toda solicitud nueva nace PENDIENTE, con la fecha de hoy y su primera entrada en el historial (RN-15)
+    private Solicitud construirSolicitud(int id, String legajo, String tipo, String descripcion, String prioridad) {
+        String hoy = LocalDate.now().toString();
+        Solicitud solicitud = new Solicitud();
+        solicitud.setId(id);
+        solicitud.setLegajo(legajo);
+        solicitud.setTipo(tipo);
+        solicitud.setDescripcion(descripcion);
+        solicitud.setPrioridad(prioridad);
+        solicitud.setEstado("PENDIENTE");
+        solicitud.setFechaCreacion(hoy);
+        solicitud.setFechaUltimoCambio(hoy);
+        solicitud.getHistorial().add(hoy + ": solicitud registrada (PENDIENTE)");
+        return solicitud;
+    }
+
+    // RN-01
+    private Optional<String> validarLegajo(String legajo) {
+        if (estaVacio(legajo)) {
+            return Optional.of("El legajo es obligatorio");
+        }
+        if (!legajo.matches("\\d{" + DIGITOS_LEGAJO + "}")) {
+            return Optional.of("El legajo debe tener " + DIGITOS_LEGAJO + " dígitos");
+        }
+        return Optional.empty();
+    }
+
+    // RN-02: el tipo no distingue mayúsculas y el mensaje muestra el valor ya pasado a mayúsculas
+    private Optional<String> validarTipo(String tipo) {
+        if (estaVacio(tipo)) {
+            return Optional.of("El tipo es obligatorio");
+        }
+        String tipoNormalizado = tipo.toUpperCase();
+        if (!TIPOS_VALIDOS.contains(tipoNormalizado)) {
+            return Optional.of("Tipo de solicitud inválido: " + tipoNormalizado);
+        }
+        return Optional.empty();
+    }
+
+    // RN-03: el mínimo se mide sin los espacios de los extremos y el máximo con ellos
+    private Optional<String> validarDescripcion(String descripcion) {
+        if (descripcion == null || descripcion.trim().length() < LARGO_MINIMO_DESCRIPCION) {
+            return Optional.of("La descripción debe tener al menos " + LARGO_MINIMO_DESCRIPCION + " caracteres");
+        }
+        if (descripcion.length() > LARGO_MAXIMO_DESCRIPCION) {
+            return Optional.of("La descripción no puede superar los " + LARGO_MAXIMO_DESCRIPCION + " caracteres");
+        }
+        return Optional.empty();
+    }
+
+    // RN-04: la prioridad es opcional; si viene, tiene que ser válida
+    private Optional<String> validarPrioridad(String prioridad) {
+        if (estaVacio(prioridad)) {
+            return Optional.empty();
+        }
+        String prioridadNormalizada = prioridad.toUpperCase();
+        if (!PRIORIDADES_VALIDAS.contains(prioridadNormalizada)) {
+            return Optional.of("Prioridad inválida: " + prioridadNormalizada);
+        }
+        return Optional.empty();
+    }
+
+    private Optional<Estudiante> buscarEstudiantePorLegajo(String legajo) {
+        for (Estudiante estudiante : BaseDeDatos.estudiantes) {
+            if (estudiante.getLegajo().equals(legajo)) {
+                return Optional.of(estudiante);
+            }
+        }
+        return Optional.empty();
+    }
+
+    // RN-05: para dar de alta a un estudiante nuevo hacen falta nombre y un email válido
+    private Optional<String> validarDatosDeAlta(String nombre, String email) {
+        if (estaVacio(nombre) || estaVacio(email)) {
+            return Optional.of("El estudiante no existe: se requieren nombre y email para darlo de alta");
+        }
+        if (!email.contains("@") || !email.contains(".")) {
+            return Optional.of("El email no es válido");
+        }
+        return Optional.empty();
+    }
+
+    // RN-05: el email se guarda en minúsculas y, sin carrera, se registra "Sin especificar"
+    private Estudiante crearEstudiante(DatosSolicitud datos) {
+        String carrera = datos.carrera() == null ? CARRERA_POR_DEFECTO : datos.carrera();
+        return new Estudiante(datos.legajo(), datos.nombre().trim(), datos.email().trim().toLowerCase(), carrera);
+    }
+
+    private boolean estaVacio(String valor) {
+        return valor == null || valor.trim().isEmpty();
+    }
+
+    // Prioridad que corresponde a cada tipo cuando la solicitud no indica una (RN-04)
+    private String prioridadPorDefecto(String tipo) {
+        switch (tipo) {
+            case "REVISION_NOTA":
+                return "ALTA";
+            case "EQUIVALENCIA":
+            case "CAMBIO_COMISION":
+                return "MEDIA";
+            default:
+                return "BAJA";
+        }
     }
 
     @GetMapping("/solicitudes")
@@ -227,14 +287,11 @@ public class SolicitudController {
                 return ResponseEntity.ok(s);
             }
         }
-        Map<String, Object> m = new HashMap<>();
-        m.put("error", "No existe la solicitud " + id);
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(m);
+        return respuestaError(HttpStatus.NOT_FOUND, "No existe la solicitud " + id);
     }
 
     @PutMapping("/solicitudes/{id}/estado")
     public ResponseEntity<Object> cambiarEstado(@PathVariable int id, @RequestBody Map<String, String> body) {
-        Map<String, Object> m = new HashMap<>();
         Solicitud sol = null;
         for (Solicitud s : BaseDeDatos.solicitudes) {
             if (s.getId() == id) {
@@ -243,15 +300,13 @@ public class SolicitudController {
             }
         }
         if (sol == null) {
-            m.put("error", "No existe la solicitud " + id);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(m);
+            return respuestaError(HttpStatus.NOT_FOUND, "No existe la solicitud " + id);
         }
 
         String nuevo = body.get("estado");
         String comentario = body.get("comentario");
         if (nuevo == null || nuevo.trim().isEmpty()) {
-            m.put("error", "El nuevo estado es obligatorio");
-            return ResponseEntity.badRequest().body(m);
+            return respuestaError(HttpStatus.BAD_REQUEST, "El nuevo estado es obligatorio");
         }
         nuevo = nuevo.toUpperCase();
         String actual = sol.getEstado();
@@ -274,16 +329,13 @@ public class SolicitudController {
             valido = false;
         }
         if (!valido) {
-            m.put("error", "Transición no permitida: " + actual + " -> " + nuevo);
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(m);
+            return respuestaError(HttpStatus.CONFLICT, "Transición no permitida: " + actual + " -> " + nuevo);
         }
         if (nuevo.equals("EN_REVISION") && sol.getResponsableId() == null) {
-            m.put("error", "Para pasar a EN_REVISION la solicitud debe tener un responsable asignado");
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(m);
+            return respuestaError(HttpStatus.CONFLICT, "Para pasar a EN_REVISION la solicitud debe tener un responsable asignado");
         }
         if (nuevo.equals("RECHAZADA") && (comentario == null || comentario.trim().isEmpty())) {
-            m.put("error", "Para rechazar una solicitud hay que indicar un comentario");
-            return ResponseEntity.badRequest().body(m);
+            return respuestaError(HttpStatus.BAD_REQUEST, "Para rechazar una solicitud hay que indicar un comentario");
         }
 
         String hoy = LocalDate.now().toString();
@@ -300,7 +352,6 @@ public class SolicitudController {
 
     @PutMapping("/solicitudes/{id}/responsable")
     public ResponseEntity<Object> asignarResponsable(@PathVariable int id, @RequestBody Map<String, Integer> body) {
-        Map<String, Object> m = new HashMap<>();
         Solicitud sol = null;
         for (Solicitud s : BaseDeDatos.solicitudes) {
             if (s.getId() == id) {
@@ -309,18 +360,15 @@ public class SolicitudController {
             }
         }
         if (sol == null) {
-            m.put("error", "No existe la solicitud " + id);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(m);
+            return respuestaError(HttpStatus.NOT_FOUND, "No existe la solicitud " + id);
         }
         if (sol.getEstado().equals("CERRADA") || sol.getEstado().equals("RECHAZADA")) {
-            m.put("error", "No se puede asignar responsable a una solicitud " + sol.getEstado());
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(m);
+            return respuestaError(HttpStatus.CONFLICT, "No se puede asignar responsable a una solicitud " + sol.getEstado());
         }
 
         Integer rid = body.get("responsableId");
         if (rid == null) {
-            m.put("error", "El responsableId es obligatorio");
-            return ResponseEntity.badRequest().body(m);
+            return respuestaError(HttpStatus.BAD_REQUEST, "El responsableId es obligatorio");
         }
         Responsable r = null;
         for (Responsable x : BaseDeDatos.responsables) {
@@ -330,12 +378,10 @@ public class SolicitudController {
             }
         }
         if (r == null) {
-            m.put("error", "No existe el responsable " + rid);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(m);
+            return respuestaError(HttpStatus.NOT_FOUND, "No existe el responsable " + rid);
         }
         if (!r.isActivo()) {
-            m.put("error", "El responsable " + r.getNombre() + " no está activo");
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(m);
+            return respuestaError(HttpStatus.CONFLICT, "El responsable " + r.getNombre() + " no está activo");
         }
 
         int cant = 0;
@@ -346,8 +392,7 @@ public class SolicitudController {
             }
         }
         if (cant >= 5) {
-            m.put("error", "El responsable ya tiene 5 solicitudes abiertas");
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(m);
+            return respuestaError(HttpStatus.CONFLICT, "El responsable ya tiene 5 solicitudes abiertas");
         }
 
         String hoy = LocalDate.now().toString();
@@ -425,6 +470,12 @@ public class SolicitudController {
         r.put("vencidas", venc);
         r.put("abiertasPorResponsable", porResp);
         return r;
+    }
+
+    // ===================== RESPUESTAS DE ERROR =====================
+
+    private ResponseEntity<Object> respuestaError(HttpStatus status, String mensaje) {
+        return ResponseEntity.status(status).body(Map.of("error", mensaje));
     }
 
     // ===================== CATALOGOS =====================
