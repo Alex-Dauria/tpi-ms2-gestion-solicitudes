@@ -13,8 +13,8 @@
 | R-02 | | | | A – Alex | |
 | R-03 | Move Method | | | B – Marina | |
 | R-04 | | | | B – Marina | |
-| R-05 | Introduce Parameter Object (`FiltroSolicitudes`) | S-12 (SC-01) | Clean Code (pocos argumentos) | C – Silvia | [`0624db5`](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/0624db5) |
-| R-06 | Encapsulate Collection (catálogos) | S-14 (SC-05) | Encapsulamiento, bajo acoplamiento | C – Silvia | [`faf4849`](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/faf4849) |
+| R-05 | Introduce Parameter Object (`FiltroSolicitudes`) | S-12 (SC-01 – lista de parámetros larga en `filtrar`) | Clean Code (pocos argumentos) | C – Silvia | [`0624db5`](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/0624db5) |
+| R-06 | Encapsulate Collection (catálogos) | S-14 (SC-05 – catálogos devuelven las listas internas) | Encapsulamiento, bajo acoplamiento | C – Silvia | [`faf4849`](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/faf4849) |
 
 ## 5.2 Detalle
 
@@ -309,7 +309,7 @@ Dos refactorings sobre `SolicitudController`, aplicados en la rama `zona-c/refac
 
 #### RC-01 – Introduce Parameter Object: `FiltroSolicitudes`
 
-- **Smell que resuelve:** S-12 (SC-01, lista de parámetros larga en `filtrar`).
+- **Smell que resuelve:** S-12 (SC-01 – lista de parámetros larga en `filtrar`).
 - **Zona / autora:** C – Silvia.
 - **Commit:** [`0624db5`](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/0624db5).
 - **Motivación:** `filtrar` recibía seis parámetros sueltos (cuatro `String`), lo que dificultaba leer la llamada y agregar filtros. Se agrupan en un objeto con nombre.
@@ -337,7 +337,7 @@ private List<Solicitud> filtrar(FiltroSolicitudes filtro) {
 
 #### RC-02 – Encapsulate Collection: catálogos inmutables
 
-- **Smell que resuelve:** S-14 (SC-05, los catálogos devuelven las listas internas).
+- **Smell que resuelve:** S-14 (SC-05 – los catálogos devuelven las listas internas).
 - **Zona / autora:** C – Silvia.
 - **Commit:** [`faf4849`](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/faf4849).
 - **Motivación:** `estudiantes()` y `responsables()` devolvían la lista interna de `BaseDeDatos`, permitiendo mutar el estado global.
