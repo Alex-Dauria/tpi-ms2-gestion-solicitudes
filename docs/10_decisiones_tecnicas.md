@@ -43,3 +43,9 @@ Registro breve de las decisiones que condicionan el trabajo. Cada una indica el 
 - **Contexto:** el informe lo escriben y revisan tres personas, y la consigna pide un PDF único.
 - **Decisión:** cada sección se escribe en `docs/` en Markdown y se revisa por PR. El PDF se arma una sola vez al final, en `entrega/`, siguiendo `entrega/README.md`.
 - **Motivo:** los Markdown permiten revisar por PR, ver los cambios y comentar línea por línea. Armar el PDF antes obligaría a rehacerlo con cada corrección.
+
+## DT-08 – Refactorings de las zonas B y C en paralelo
+
+- **Contexto:** DT-05 preveía refactorizar en cadena (A → B → C) para evitar conflictos. El 6/11, con la zona A mergeada, quedaban dos días para la entrega.
+- **Decisión:** B y C avanzan en paralelo desde `main`. La que mergea segunda actualiza su rama, resuelve los conflictos y vuelve a correr todas las pruebas y la línea base.
+- **Motivo:** la zona A ya separó el registro y unificó las respuestas de error, y B y C tocan métodos distintos. Las 69 pruebas de caracterización y la línea base detectan si un merge altera el comportamiento.

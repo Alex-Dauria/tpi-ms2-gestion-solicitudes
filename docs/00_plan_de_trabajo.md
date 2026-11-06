@@ -54,34 +54,35 @@ Los demás refactorings de cada zona se eligen **a partir del diagnóstico**, no
 | Hito | Issues | Fechas | Tag al cerrar |
 |---|---|---|---|
 | 1. Estado inicial | #1 | hasta el mar 27/10 | `estado-inicial` |
-| 2. Diagnóstico | #2 a #7 | hasta el mar 3/11 | `etapa-diagnostico` |
-| 3. Refactoring y pruebas | #8 a #13 | hasta el vie 6/11 | `etapa-refactoring` y `etapa-pruebas` |
-| 4. Code review y documentación | #14 a #16 | vie 6/11 | `estado-refactorizado` (código final) |
-| 5. Entrega | #17 y #18 | sáb 7/11 | `etapa-docs` (documentación completa) |
+| 2. Diagnóstico | #2 a #7 | cerrado el vie 6/11 | `etapa-diagnostico` |
+| 3. Refactoring y pruebas | #8 a #13 | hasta el sáb 7/11 | `etapa-refactoring` y `etapa-pruebas` |
+| 4. Code review y documentación | #14 a #16 | sáb 7/11 | `estado-refactorizado` (código final) |
+| 5. Entrega | #17 y #18 | sáb 7/11 y dom 8/11 | `etapa-docs` (documentación completa) |
 
-El domingo 8/11 queda como margen para subir todo a la plataforma.
+El domingo 8/11 se termina el PDF y el ZIP, y se sube todo a la plataforma.
 
 Fechas internas de los hitos 2 y 3:
 
 | Tarea | Fecha límite |
 |---|---|
-| Diagnóstico de cada zona (#3, #4, #5), calidad externa/interna (#2) y checklist de code review (#7) | mar 3/11 |
-| Catálogo consolidado (#6) | mar 3/11 |
-| Pruebas de caracterización de las tres zonas (fase 1 de #8, #9, #10). Se pueden empezar apenas exista el tag `estado-inicial` | mié 4/11 |
-| Refactoring zona A (#8): revisión y merge | mar 3/11 |
-| Refactoring zona B (#9) | mié 4/11 |
-| Refactoring zona C (#10) | jue 5/11 |
-| Secciones de SOLID, refactorings y pruebas (#11, #12, #13) | vie 6/11 |
+| Diagnóstico de cada zona (#3, #4, #5), calidad externa/interna (#2) y checklist de code review (#7) | Hecho |
+| Catálogo consolidado (#6) | Hecho |
+| Pruebas de caracterización de las tres zonas (fase 1 de #8, #9, #10). Se pueden empezar apenas exista el tag `estado-inicial` | Hecho |
+| Refactoring zona A (#8) | Hecho |
+| Refactoring zona B (#9) | sáb 7/11, mediodía |
+| Refactoring zona C (#10) | sáb 7/11, mediodía |
+| Secciones de SOLID, refactorings y pruebas (#11, #12, #13) | sáb 7/11 |
 
 ## 5. Orden del refactoring
 
 Las tres zonas tocan `SolicitudController`. Para no pisarnos:
 
 1. **Pruebas de caracterización primero, en paralelo.** Cada una escribe las pruebas de su zona sobre la versión inicial, en un PR solo de pruebas (`src/test`), sin tocar `src/main`. Tienen que pasar en verde sobre el código original: son la red de seguridad.
-2. **Refactorings en secuencia: A → B → C.** Cada PR de refactoring se abre desde `main` actualizado, después de mergear el anterior.
-   - A va primero porque ordena el registro y el manejo de errores, que usan todos los endpoints.
-   - B trabaja sobre esa base y reubica la lógica de estados.
-   - C cierra con las consultas y la persistencia, que atraviesan todo lo anterior.
+2. **Refactorings: primero A, después B y C en paralelo.** Cada PR de refactoring se abre desde `main` actualizado.
+   - A fue primero porque ordena el registro y el manejo de errores, que usan todos los endpoints.
+   - B reubica la lógica de estados y C trabaja sobre las consultas y la persistencia. Tocan métodos distintos, así que pueden avanzar a la vez.
+   - La que mergea segunda actualiza su rama con `main`, resuelve los conflictos y vuelve a correr todas las pruebas y la línea base antes de mergear.
+   - El plan original era A → B → C en cadena. Se cambió el 6/11 para llegar a la entrega (DT-08).
 3. Mientras una zona refactoriza, las otras avanzan con su documentación.
 
 ## 6. Reglas de refactoring seguro
