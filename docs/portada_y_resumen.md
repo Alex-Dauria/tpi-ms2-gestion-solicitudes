@@ -6,12 +6,15 @@
 
 Tecnicatura Universitaria en Programación a Distancia – Universidad Tecnológica Nacional
 
+| Integrante | Comisión |
+|---|---|
+| Alex Pedro Dauria | 07 |
+| Silvia Giardini | 04 |
+| Marina Giselle Cordero | 07 |
+
 | | |
 |---|---|
-| **Comisión** | _completar_ |
-| **Docente** | _completar_ |
-| **Integrantes** | Alex Pedro Dauria · Silvia Giardini · Marina Giselle Cordero |
-| **Fecha** | _completar_ |
+| **Fecha** | 8 de noviembre de 2026 |
 | **Repositorio** | <https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes> |
 | **Video** | _completar_ |
 

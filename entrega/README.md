@@ -28,7 +28,7 @@ El PDF sigue la estructura sugerida por la consigna. Cada parte sale de un archi
 | 9 | Pruebas y verificación | `docs/06_pruebas.md` |
 | 10 | Code review y checklist técnico | `docs/07_code_review.md` |
 | 11 | Conclusiones (grupales, individuales y participación de cada integrante) | `docs/08_conclusiones.md` |
-| 12 | Uso de IA y registro de prompts | `docs/09_uso_ia.md` |
+| 12 | Uso de IA y registro de prompts | `docs/09_uso_ia.md` y los registros de `docs/evidencias/ia/`, ordenados por id |
 | 13 | Anexos y enlaces (incluye las decisiones técnicas) | `docs/11_anexos_y_enlaces.md` y `docs/10_decisiones_tecnicas.md` |
 
 `docs/00_plan_de_trabajo.md` **no va en el PDF**: es la organización interna del equipo. La participación de cada integrante se informa en la sección 8.3.
