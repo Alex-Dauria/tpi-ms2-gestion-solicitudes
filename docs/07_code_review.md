@@ -23,7 +23,7 @@ Los documentos que consolidan aportes de las tres (#6, #7, #15, #16, #17) los re
 Cada ítem se responde con **Sí / No / No aplica**. Un **No** en un ítem bloqueante impide aprobar el PR.
 
 | # | Categoría | Ítem de verificación | Concepto (materia) | Bloqueante |
-|---|---|---|---|
+|---|---|---|---|---|
 | 1 | Funcionalidad y pruebas | Las pruebas automatizadas pasan en verde sobre el PR | Pruebas de caracterización, regresión | Sí |
 | 2 | Funcionalidad y pruebas | El comportamiento externo (respuestas, códigos HTTP, mensajes) no cambió sin documentarlo: la línea base (`scripts/linea_base.ps1 -CompararCon …`) da 14 de 14 iguales, o los casos distintos están documentados como cambio intencional | Compatibilidad, no regresión | Sí |
 | 3 | Funcionalidad y pruebas | Se cubren los casos límite y de error de la zona tocada | Casos de prueba, calidad interna | No |

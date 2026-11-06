@@ -20,7 +20,7 @@ Registro resumido de los pedidos principales, lo que devolvió la herramienta y 
 |---|---|---|
 | Generar un prototipo rápido del caso sugerido, con las funcionalidades mínimas y sin cuidar el diseño, para tener problemas reales que diagnosticar | Prototipo en Spring Boot con 3 entidades, 6 operaciones y persistencia en JSON | Lo ejecutó y probó desde Swagger UI, y sacó las 7 capturas de la sección 1 |
 | Documentar las reglas de negocio que implementa el prototipo | Reglas RN-01 a RN-15 de la sección 1 | Verificó que las reglas coincidieran con el comportamiento observado |
-| Proponer una forma de verificar el comportamiento externo antes y después del refactoring | Script `scripts/linea_base.ps1` (12 pedidos HTTP con comparación caso por caso) | Decidió usarlo como evidencia de la Etapa 6 y descartar el registro manual de pedidos que había antes |
+| Proponer una forma de verificar el comportamiento externo antes y después del refactoring | Script `scripts/linea_base.ps1` (al principio 12 pedidos HTTP, después ampliados a 14, con comparación caso por caso) | Decidió usarlo como evidencia de la Etapa 6 y descartar el registro manual de pedidos que había antes |
 
 ## Ajustes hechos por el equipo
 

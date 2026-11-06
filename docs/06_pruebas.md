@@ -175,4 +175,4 @@ _Comportamientos raros de la versión inicial que aparecieron al escribir las pr
 | Una prioridad con espacios (`" alta"`) se rechaza y el mensaje muestra el espacio | CP-A18 | Se conserva |
 | Si el estudiante ya existe, el nombre y el email enviados se ignoran sin aviso | CP-A05 | Se conserva |
 | Los datos del estudiante nuevo se validan recién después de toda la solicitud | CP-A22 | Se conserva: el refactoring no puede cambiar el orden de las validaciones |
-| El legajo enviado como número produce un `500` con el formato de error de Spring | CP-A25, caso 13 de la línea base | A decidir en #8: si se corrige, es un cambio intencional |
+| El legajo enviado como número produce un `500` con el formato de error de Spring | CP-A25, caso 13 de la línea base | Se conserva: corregirlo sería un cambio de comportamiento, no un refactoring. RA-03 mantiene los casts a propósito. Queda como mejora pendiente |

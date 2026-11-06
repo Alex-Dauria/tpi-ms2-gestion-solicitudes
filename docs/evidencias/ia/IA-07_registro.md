@@ -1,4 +1,4 @@
-# Registro de uso de IA – IA-05
+# Registro de uso de IA – IA-07
 
 **Integrante:** Silvia Giardini · **Herramienta:** OpenCode y Gemini (asistentes de IA) · **Fecha:** 2026-10-23
 
