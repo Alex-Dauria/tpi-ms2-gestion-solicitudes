@@ -487,11 +487,11 @@ public class SolicitudController {
 
     @GetMapping("/estudiantes")
     public List<Estudiante> estudiantes() {
-        return BaseDeDatos.estudiantes;
+        return List.copyOf(BaseDeDatos.estudiantes);
     }
 
     @GetMapping("/responsables")
     public List<Responsable> responsables() {
-        return BaseDeDatos.responsables;
+        return List.copyOf(BaseDeDatos.responsables);
     }
 }
