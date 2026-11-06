@@ -22,7 +22,7 @@ _Cada zona carga sus fichas en su apartado, con ids provisorios (RA-01, RB-01, R
 
 ### 5.2.A Zona A – Registro (Alex)
 
-Ocho refactorings sobre `SolicitudController.registrarSolicitud` y el armado de las respuestas de error, aplicados en la rama `zona-a/refactoring`, **uno por commit**, con las pruebas en verde después de cada uno: las 31 de la zona A (CP-A01 a CP-A25) y, como red adicional, las 14 de la zona B, porque RA-01 también toca métodos de esa zona.
+Diez refactorings sobre `SolicitudController.registrarSolicitud` y el armado de las respuestas de error, **uno por commit**, con las pruebas en verde después de cada uno. RA-01 a RA-08 se aplicaron en la rama `zona-a/refactoring`, verificados con las 31 pruebas de la zona A (CP-A01 a CP-A25) y, como red adicional, las 14 de la zona B, porque RA-01 también toca métodos de esa zona. RA-09 y RA-10 se aplicaron después en `zona-a/reglas-registro`, con las 69 pruebas de las tres zonas.
 
 | ID | Técnica | Smell que resuelve | Principio / práctica | Commit |
 |---|---|---|---|---|
@@ -34,16 +34,21 @@ Ocho refactorings sobre `SolicitudController.registrarSolicitud` y el armado de 
 | RA-06 | Extract Method (`buscarSolicitudAbierta`, `construirSolicitud`) | SA-01 | SRP, separación consulta/comando | [`2bbda70`](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/2bbda70) |
 | RA-07 | Replace Magic Number with Symbolic Constant | SA-04 | Clean Code (sin valores mágicos) | [`df0dbd9`](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/df0dbd9) |
 | RA-08 | Remove Dead Code | Notas para #6 (comentarios y código muerto) | Clean Code (comentarios) | [`c69ad8f`](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/c69ad8f) |
+| RA-09 | Extract Class (`ReglasRegistro`, con las validaciones) | SA-01 | SRP, cohesión | [`c6ca13c`](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/c6ca13c) |
+| RA-10 | Move Method (prioridad y creación del estudiante) | SA-01, SA-05 | SRP, cohesión | [`d7996e3`](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/d7996e3) |
 
 **Resultado sobre el método principal:**
 
-| | Antes (`estado-inicial`) | Después |
-|---|---|---|
-| Líneas de `registrarSolicitud` | 105 | 39 |
-| Decisiones (`if`, `for`, `case`, `?`) en `registrarSolicitud` | 19 | 5 |
-| Respuestas de error armadas a mano en el controlador | 22 | 0 (un solo método) |
+| | Antes (`estado-inicial`) | Después de RA-08 | Después de RA-10 |
+|---|---|---|---|
+| Líneas de `registrarSolicitud` | 105 | 39 | 33 |
+| Decisiones (`if`, `for`, `case`, `?`) en `registrarSolicitud` | 19 | 5 | 4 |
+| Respuestas de error armadas a mano en el controlador | 22 | 0 (un solo método) | 0 |
+| Líneas de `SolicitudController` | 441 | 492 | 399 |
 
 La complejidad no desaparece: se reparte en métodos chicos con nombre propio. Lo que baja es la del método principal, que ahora se lee como un índice: validar, dar de alta al estudiante si hace falta, controlar duplicados, construir, persistir y responder.
+
+Después de RA-08 el controlador tenía **más** líneas que al principio: extraer métodos ordena el código, pero lo deja en la misma clase. RA-09 y RA-10 resuelven eso sacando las reglas del registro a una clase propia. Las 399 líneas todavía incluyen el código de las zonas B y C.
 
 #### RA-01 – Extract Method: una sola forma de armar las respuestas de error
 
@@ -270,7 +275,76 @@ if (descripcion.length() > LARGO_MAXIMO_DESCRIPCION) {
 - **Verificación:** 45 de 45.
 - **Comportamiento externo:** sin cambios.
 
-**Verificación de la zona completa:** integrado con las pruebas finales de las otras zonas, el código refactorizado pasa **69 de 69 pruebas** (31 de la zona A, 17 de la zona B y 21 de la zona C). De caja negra, la línea base da **14 de 14 casos iguales** a la de `estado-inicial` ([evidencias/pruebas/zona-a/linea_base_refactoring_zona_a.md](evidencias/pruebas/zona-a/linea_base_refactoring_zona_a.md)). Informes de las pruebas después del refactoring: [evidencias/pruebas/zona-a/despues-refactoring/](evidencias/pruebas/zona-a/despues-refactoring/).
+#### RA-09 – Extract Class: las validaciones salen del controlador
+
+- **Smell que resuelve:** SA-01 (responsabilidades mezcladas en el controlador).
+- **Zona / autor:** A – Alex.
+- **Commit:** [`c6ca13c`](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/c6ca13c).
+- **Motivación:** RA-04 separó una validación por método, pero siguieron en `SolicitudController`, que además atiende los pedidos HTTP. Una regla de negocio cambia por motivos distintos que un endpoint.
+
+**Antes:**
+
+```java
+// En SolicitudController
+Optional<String> error = validarLegajo(datos.legajo())
+        .or(() -> validarTipo(datos.tipo()))
+        .or(() -> validarDescripcion(datos.descripcion()))
+        .or(() -> validarPrioridad(datos.prioridad()));
+```
+
+**Después:**
+
+```java
+// En SolicitudController
+Optional<String> error = ReglasRegistro.validarSolicitud(datos);
+
+// En servicio/ReglasRegistro
+public static Optional<String> validarSolicitud(DatosSolicitud datos) {
+    return validarLegajo(datos.legajo())
+            .or(() -> validarTipo(datos.tipo()))
+            .or(() -> validarDescripcion(datos.descripcion()))
+            .or(() -> validarPrioridad(datos.prioridad()));
+}
+```
+
+- **Pasos seguidos:** se creó `ReglasRegistro` en el paquete nuevo `servicio`, y se movieron las validaciones de RN-01 a RN-05 con sus constantes. `DatosSolicitud` pasó al mismo paquete y se hizo público, para que la clase nueva no dependa del controlador.
+- **Verificación:** CP-A08 a CP-A23, en especial CP-A22 (el orden de los errores); 69 de 69.
+- **Comportamiento externo:** sin cambios: el orden de las validaciones y los mensajes son los mismos.
+- **Beneficio:** las reglas se pueden leer y cambiar sin mirar nada de HTTP. `ReglasRegistro` no conoce `ResponseEntity` ni `BaseDeDatos`.
+
+#### RA-10 – Move Method: prioridad y creación del estudiante
+
+- **Smell que resuelve:** SA-01 y SA-05.
+- **Zona / autor:** A – Alex.
+- **Commit:** [`d7996e3`](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/d7996e3).
+- **Motivación:** el cálculo de la prioridad (RN-04) y las reglas para crear un estudiante (RN-05) también son del registro, y no usan nada del controlador.
+
+**Antes:**
+
+```java
+String prioridad = ReglasRegistro.estaVacio(datos.prioridad())
+        ? prioridadPorDefecto(tipo)
+        : datos.prioridad().toUpperCase();
+// ...
+BaseDeDatos.estudiantes.add(crearEstudiante(datos));
+```
+
+**Después:**
+
+```java
+String prioridad = ReglasRegistro.prioridadDe(datos);
+// ...
+BaseDeDatos.estudiantes.add(ReglasRegistro.crearEstudiante(datos));
+```
+
+- **Pasos seguidos:** se movieron `prioridadPorDefecto` y `crearEstudiante`, con la constante de la carrera por defecto, y `estaVacio` volvió a ser privado.
+- **Verificación:** CP-A02, CP-A03 y CP-A04; 69 de 69.
+- **Comportamiento externo:** sin cambios.
+- **Beneficio:** `registrarSolicitud` solo coordina. Las escrituras en `BaseDeDatos` siguen a la vista en ese método, listas para la zona C.
+
+**Qué queda en el controlador de esta zona:** `crear` y `registrarSolicitud`, que coordinan el pedido, y `buscarEstudiantePorLegajo`, `buscarSolicitudAbierta` y `construirSolicitud`, que dependen del acceso a datos (zona C) y de las reglas de estado (zona B).
+
+**Verificación de la zona completa:** integrado con las pruebas finales de las otras zonas, el código refactorizado pasa **69 de 69 pruebas** (31 de la zona A, 17 de la zona B y 21 de la zona C). De caja negra, la línea base da **14 de 14 casos iguales** a la de `estado-inicial`, tanto después de RA-08 ([evidencias/pruebas/zona-a/linea_base_refactoring_zona_a.md](evidencias/pruebas/zona-a/linea_base_refactoring_zona_a.md)) como después de RA-10 ([evidencias/pruebas/zona-a/linea_base_reglas_registro.md](evidencias/pruebas/zona-a/linea_base_reglas_registro.md)). Informes de las pruebas después del refactoring: [evidencias/pruebas/zona-a/despues-refactoring/](evidencias/pruebas/zona-a/despues-refactoring/).
 
 ### Modelo de ficha
 
