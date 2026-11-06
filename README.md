@@ -90,7 +90,7 @@ Ejecutar las pruebas:
 
 ```text
 src/main/java/...        Código del sistema
-src/test/java/...        Pruebas automatizadas (se agregan en el hito 3)
+src/test/java/...        Pruebas automatizadas (JUnit 5 y MockMvc)
 scripts/linea_base.ps1   Verificación del comportamiento externo antes/después
 docs/                    Informe del TPI en Markdown (una sección por etapa)
 docs/evidencias/         Capturas y salidas de ejecución
