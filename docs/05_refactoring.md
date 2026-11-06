@@ -13,8 +13,8 @@
 | R-02 | | | | A – Alex | |
 | R-03 | Move Method | | | B – Marina | |
 | R-04 | | | | B – Marina | |
-| R-05 | Introduce Parameter Object | | | C – Silvia | |
-| R-06 | | | | C – Silvia | |
+| R-05 | Introduce Parameter Object (`FiltroSolicitudes`) | S-12 (SC-01 – lista de parámetros larga en `filtrar`) | Clean Code (pocos argumentos) | C – Silvia | [`0624db5`](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/0624db5) |
+| R-06 | Encapsulate Collection (catálogos) | S-14 (SC-05 – catálogos devuelven las listas internas) | Encapsulamiento, bajo acoplamiento | C – Silvia | [`faf4849`](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/faf4849) |
 
 ## 5.2 Detalle
 
@@ -297,3 +297,64 @@ _Copiar este bloque en el apartado de la zona._
 - **Verificación:** _qué pruebas cubren este cambio (CP-xx de la sección 6) y su resultado antes y después_
 - **Comportamiento externo:** _sin cambios / cambio intencional (explicar cuál y por qué)_
 - **Beneficio:** _qué es más fácil ahora que antes_
+
+### 5.2.C Zona C – Consultas y persistencia (Silvia)
+
+Dos refactorings sobre `SolicitudController`, aplicados en la rama `zona-c/refactoring`, uno por commit, con las 69 pruebas en verde después de cada uno (31 de zona A, 17 de zona B y 21 de zona C).
+
+| ID | Técnica | Smell que resuelve | Principio / práctica | Commit |
+|---|---|---|---|---|
+| RC-01 | Introduce Parameter Object (`FiltroSolicitudes`) | S-12 (SC-01) | Clean Code (pocos argumentos), Long Parameter List | [`0624db5`](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/0624db5) |
+| RC-02 | Encapsulate Collection (catálogos) | S-14 (SC-05) | Encapsulamiento, bajo acoplamiento | [`faf4849`](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/faf4849) |
+
+#### RC-01 – Introduce Parameter Object: `FiltroSolicitudes`
+
+- **Smell que resuelve:** S-12 (SC-01 – lista de parámetros larga en `filtrar`).
+- **Zona / autora:** C – Silvia.
+- **Commit:** [`0624db5`](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/0624db5).
+- **Motivación:** `filtrar` recibía seis parámetros sueltos (cuatro `String`), lo que dificultaba leer la llamada y agregar filtros. Se agrupan en un objeto con nombre.
+
+**Antes:**
+
+```java
+private List<Solicitud> filtrar(String estado, String tipo, String prioridad, String legajo,
+                                Integer responsableId, Boolean vencidas) { ... }
+```
+
+**Después:**
+
+```java
+private List<Solicitud> filtrar(FiltroSolicitudes filtro) {
+    String estado = filtro.estado();
+    // ...
+}
+```
+
+- **Pasos seguidos:** crear el record `FiltroSolicitudes`; cambiar la firma de `filtrar`; construir el objeto en `listar`. Un commit.
+- **Verificación:** 69 pruebas en verde antes y después; CP-C01 a CP-C21 de la zona C.
+- **Comportamiento externo:** sin cambios (mismos códigos, mensajes y resultados).
+- **Beneficio:** la llamada se lee como un solo objeto; agregar un filtro toca un solo lugar.
+
+#### RC-02 – Encapsulate Collection: catálogos inmutables
+
+- **Smell que resuelve:** S-14 (SC-05 – los catálogos devuelven las listas internas).
+- **Zona / autora:** C – Silvia.
+- **Commit:** [`faf4849`](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/faf4849).
+- **Motivación:** `estudiantes()` y `responsables()` devolvían la lista interna de `BaseDeDatos`, permitiendo mutar el estado global.
+
+**Antes:**
+
+```java
+return BaseDeDatos.estudiantes;
+```
+
+**Después:**
+
+```java
+return List.copyOf(BaseDeDatos.estudiantes);
+```
+
+- **Pasos seguidos:** reemplazar el retorno por `List.copyOf` en ambos endpoints. Un commit.
+- **Verificación:** 69 pruebas en verde antes y después; CP-C11 y CP-C12 verifican tamaño y contenido.
+- **Comportamiento externo:** sin cambios para lectura; un intento de mutación ahora lanza `UnsupportedOperationException`.
+- **Beneficio:** se protege el estado global de mutaciones externas.
