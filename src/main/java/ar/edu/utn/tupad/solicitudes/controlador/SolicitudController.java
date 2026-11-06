@@ -212,11 +212,16 @@ public class SolicitudController {
                                   @RequestParam(required = false) String legajo,
                                   @RequestParam(required = false) Integer responsableId,
                                   @RequestParam(required = false) Boolean vencidas) {
-        return filtrar(estado, tipo, prioridad, legajo, responsableId, vencidas);
+        return filtrar(new FiltroSolicitudes(estado, tipo, prioridad, legajo, responsableId, vencidas));
     }
 
-    private List<Solicitud> filtrar(String estado, String tipo, String prioridad, String legajo,
-                                    Integer responsableId, Boolean vencidas) {
+    private List<Solicitud> filtrar(FiltroSolicitudes filtro) {
+        String estado = filtro.estado();
+        String tipo = filtro.tipo();
+        String prioridad = filtro.prioridad();
+        String legajo = filtro.legajo();
+        Integer responsableId = filtro.responsableId();
+        Boolean vencidas = filtro.vencidas();
         List<Solicitud> lst = new ArrayList<>();
         for (Solicitud s : BaseDeDatos.solicitudes) {
             boolean ok = true;
