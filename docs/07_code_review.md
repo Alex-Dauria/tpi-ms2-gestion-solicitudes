@@ -168,4 +168,51 @@ Hallazgos que no estaban registrados en las secciones anteriores. Se documentan 
 
 ## 7.6 Feedback y aprendizajes
 
-_Qué se aprendió de revisar y ser revisada: ejemplos de feedback objetivo y cómo cambió el código._
+### Feedback objetivo que cambió el trabajo
+
+Las observaciones con más efecto se apoyaron en evidencia verificable y propusieron una acción concreta:
+
+- **Medir la calidad de las pruebas (PR #31, CR-08).** El revisor introdujo errores a propósito para comprobar si las pruebas los detectaban, en lugar de limitarse a verificar que pasaran. Con los casos agregados por la autora, la zona C se refactorizó con una red de seguridad que antes no tenía. Aprendizaje: una prueba en verde no demuestra que proteja el comportamiento.
+- **Anticipar lo que el propio refactoring podía romper (PR #24, CR-03).** El revisor pidió fijar, antes del refactoring de la zona B, comportamientos fáciles de alterar sin querer. Esos casos quedaron en la suite durante R-12 y R-13. Aprendizaje: la caracterización se diseña pensando en el cambio que viene.
+- **Revisar la prioridad, no solo la corrección (PR #38, CR-10 y CR-11).** El código funcionaba, pero dejaba sin tratar un smell de prioridad alta según 3.4. El pedido de cambios llevó a resolverlo (R-18) y a justificar por escrito lo que quedaba fuera del alcance. Aprendizaje: el diagnóstico priorizado también es un criterio de revisión.
+- **Ampliar la referencia de comparación (PR #20, CR-01).** Dos revisoras detectaron, por separado, casos que la línea base no cubría. Aprendizaje: la referencia contra la que se compara también se revisa.
+
+### Sugerencias no aplicadas, con justificación
+
+No todas las observaciones terminaron en un cambio. En CR-15 la autora explicó por qué conservaba su versión y el revisor aceptó el argumento. En CR-17 la sugerencia no se aplicó porque la documentación ya reconocía la limitación. Una sugerencia es una propuesta, no una obligación: corresponde responderla con una razón verificable.
+
+### Desvíos del proceso de revisión
+
+Según 7.1, la autora sube los ajustes y mergea con la aprobación de la revisora, y los documentos que consolidan aportes de las tres los revisan las otras dos. En cinco PR la integración se apartó de ese proceso:
+
+| PR | Desvío verificado | Motivo registrado en el PR |
+|---|---|---|
+| [#27](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/pull/27) | La issue #7 pedía dos aprobaciones y hubo una, emitida sobre un commit anterior a los ajustes; los ajustes se verificaron después en un comentario. El PR lo integró el revisor | "estamos con los tiempos justos" ([comentario](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/pull/27#issuecomment-6692083823)) |
+| [#28](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/pull/28) | La revisión de la revisora asignada fue de compatibilidad y sin aprobación. El autor integró el PR y dejó registrada como pendiente la aprobación integral | "las zonas B y C dependen de esto y estamos con los tiempos justos" ([comentario](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/pull/28#issuecomment-6692407996)) |
+| [#38](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/pull/38) | Después de aprobar, el revisor agregó dos commits en la rama de la autora (`f7a6053` y `4645a83`) e integró el PR. Esos commits no tuvieron revisión de otra integrante | "Para ganar tiempo" ([comentario](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/pull/38#issuecomment-6712327441)) |
+| [#40](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/pull/40) | El revisor agregó `fb2181d` en la rama de la autora, aprobó ese mismo commit e integró el PR | "Para ganar tiempo" ([comentario](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/pull/40#issuecomment-6713274997)) |
+| [#41](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/pull/41) | La aprobación quedó como comentario, sin revisión formal de GitHub (la revisora sigue figurando como revisión solicitada), y el PR lo integró la revisora | No hay un motivo registrado |
+
+Las pruebas funcionales y la línea base posteriores (84 de 84 y 14 de 14 sobre `45f9510`) no mostraron regresiones. Esos resultados aportan evidencia de que se conservó el comportamiento externo en los casos verificados, pero no garantizan la ausencia de otros defectos ni reemplazan las revisiones independientes del código. También en los PR #39 y #40 se pidió una nueva revisión antes de que los cambios estuvieran en la rama remota, y el revisor lo detectó al no encontrarlos ([PR #39](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/pull/39#issuecomment-6712286753), [PR #40](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/pull/40#pullrequestreview-5814665729)).
+
+### Aprendizajes
+
+- **Pruebas.** Las pruebas de caracterización tienen que fijar valores exactos (códigos, mensajes, orden y límites), y conviene medir su capacidad de detección antes de refactorizar.
+- **Refactoring seguro.** Un commit por refactoring, con pruebas y línea base después de cada uno y merge sin squash, permitió revisar cada cambio por separado. Conservar los defectos encontrados, como el `500` del legajo numérico, fue una decisión explícita: corregirlos habría sido cambiar el comportamiento.
+- **Trazabilidad.** Los identificadores (S, RA/RB/RC, R-xx, CP-xx, CR-xx) vincularon hallazgos, cambios, pruebas y revisiones. Cada renumeración (CP-01 a CP-70 y R-01 a R-18) necesitó una tabla de correspondencia para conservar las referencias anteriores.
+- **Colaboración.** El feedback fue más útil cuando incluyó evidencia y una propuesta concreta, y cuando la autora pudo discutirlo con argumentos. Cuando quien revisa también escribe el cambio, ese cambio queda sin una revisión independiente.
+
+### Prácticas para próximos proyectos
+
+**Mantener:**
+- Aplicar el checklist como comentario en cada PR de código, indicando las verificaciones y el commit sobre el que se hicieron.
+- Medir las pruebas con errores introducidos antes de refactorizar.
+- Usar `Refs #N` en los PR parciales y `Closes #N` solo en el que completa la issue.
+- Registrar la justificación cuando una sugerencia no se aplica.
+
+**Mejorar:**
+- Aprobar con una revisión formal de GitHub sobre el último commit del PR, no con un comentario.
+- Que la revisora proponga los cambios (por ejemplo, con sugerencias en el PR) en lugar de subirlos a la rama de la autora, y que la autora integre el PR.
+- Configurar la protección de `main` para exigir una aprobación y descartar las aprobaciones anteriores a un commit nuevo.
+- Comprobar que los cambios estén en la rama remota antes de pedir una nueva revisión.
+- Reservar tiempo de revisión en el cronograma.
