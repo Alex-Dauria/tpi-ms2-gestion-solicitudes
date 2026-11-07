@@ -34,6 +34,8 @@ public class SolicitudController {
     private static final List<String> PRIORIDADES_VALIDAS = List.of("ALTA", "MEDIA", "BAJA");
     private static final String CARRERA_POR_DEFECTO = "Sin especificar";
 
+    private static final int MAX_SOLICITUDES_POR_RESPONSABLE = 5;
+
     // ===================== SOLICITUDES =====================
 
     @PostMapping("/solicitudes")
@@ -365,8 +367,8 @@ public class SolicitudController {
                 cant++;
             }
         }
-        if (cant >= 5) {
-            return respuestaError(HttpStatus.CONFLICT, "El responsable ya tiene 5 solicitudes abiertas");
+        if (cant >= MAX_SOLICITUDES_POR_RESPONSABLE) {
+            return respuestaError(HttpStatus.CONFLICT, "El responsable ya tiene " + MAX_SOLICITUDES_POR_RESPONSABLE + " solicitudes abiertas");
         }
 
         String hoy = LocalDate.now().toString();
