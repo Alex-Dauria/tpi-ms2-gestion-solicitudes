@@ -51,7 +51,7 @@ Revisiones documentales realizadas antes de autorizar el cambio:
 - Ejemplos antes/después conservados.
 - Enlaces y formato Markdown.
 
-**Commit de la consolidación:** `5f5a5e7` – `docs: consolidar 18 refactorings y numeracion definitiva (#12)`, publicado en el PR #44 y pendiente de revisión por Silvia.
+**Commit de la consolidación:** `5f5a5e7` – `docs: consolidar 18 refactorings y numeracion definitiva (#12)`, aprobado por Alex y Silvia e integrado en `main` mediante el PR #44.
 
 ## Resultado y documentación relacionada
 
