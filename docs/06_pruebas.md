@@ -32,7 +32,7 @@ La fecha del día se reemplaza por `<HOY>` para que se puedan comparar corridas 
 | Corrida | Archivo | Resultado |
 |---|---|---|
 | Versión inicial (`estado-inicial`) | `docs/evidencias/pruebas/linea_base_estado_inicial.md` | Referencia |
-| Después del refactoring (`etapa-refactoring`) | `docs/evidencias/pruebas/linea_base_etapa_refactoring.md` | _completar_ |
+| Después del refactoring (`etapa-refactoring`) | `docs/evidencias/pruebas/linea_base_etapa_refactoring.md` | 14 de 14 iguales |
 | Versión final (`estado-refactorizado`) | `docs/evidencias/pruebas/linea_base_estado_refactorizado.md` | _completar_ |
 
 ### Qué significa "antes" y "después"
@@ -159,7 +159,7 @@ _Los identificadores CP-43 a CP-63 corresponden a los casos de la zona C – Con
 | Momento | Commit / tag | Pruebas ejecutadas | OK | Fallidas | Línea base | Evidencia |
 |---|---|---|---|---|---|---|
 | Antes (código inicial + pruebas) | `8d97555` (pruebas de las 3 zonas mergeadas, antes del primer refactoring) | 69 | 69 | 0 | Referencia (`linea_base_estado_inicial.md`) | `docs/evidencias/pruebas/etapa-6/` |
-| Después del refactoring | `etapa-refactoring` | 84 (69 + 15 nuevas del refactoring de la zona B) | | | _x de 14 iguales_ | |
+| Después del refactoring | `5c1e517` (main con las 3 zonas refactorizadas) | 84 | 84 | 0 | 14 de 14 iguales | `docs/evidencias/pruebas/etapa-6-despues/` |
 | Versión final | `estado-refactorizado` | | | | _x de 14 iguales_ | |
 
 ## 6.4 Cómo se verificó que el refactoring no alteró el comportamiento
