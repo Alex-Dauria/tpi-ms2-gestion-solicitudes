@@ -40,8 +40,8 @@ La fecha del día se reemplaza por `<HOY>` para que se puedan comparar corridas 
 Las pruebas se escriben **después** de crear el tag `estado-inicial`, así que en ese tag no existen. Por eso:
 
 - **Antes** = `main` con los PR de pruebas de las tres zonas ya mergeados y **antes del primer PR de refactoring**. El código del sistema (`src/main`) es idéntico al de `estado-inicial`; solo se agregaron las pruebas. Hay que anotar el commit en el que se corrieron.
-- **Después del refactoring** = el tag `etapa-refactoring` (las tres zonas mergeadas). Ahí se corren las pruebas y la línea base para la sección 6 (#13).
-- **Versión final** = el tag `estado-refactorizado`, que se crea después del code review final (#14). Como el code review puede generar correcciones, en #14 se vuelven a correr las pruebas y la línea base sobre ese tag.
+- **Después del refactoring** = el tag `etapa-refactoring` (las tres zonas mergeadas). Ahí se corren las pruebas y la línea base para la sección 6.
+- **Versión final** = el tag `estado-refactorizado`, que se crea después del code review final. Como el code review puede generar correcciones, se vuelven a correr las pruebas y la línea base sobre ese tag.
 
 ## 6.2 Casos de prueba
 
@@ -155,8 +155,6 @@ _Los identificadores CP-43 a CP-63 corresponden a los casos de la zona C – Con
 | CP-63 | Límites de vencimiento | Solicitudes abiertas con 3/7/15 y 4/8/16 días; una RESUELTA vieja | `vencidas=true` devuelve 3; el reporte cuenta 3 vencidas. | SC-02, RN-14 | OK | Pendiente |
 
 ## 6.3 Evidencia antes / después
-
-_Salida de `.\mvnw.cmd test` en cada momento (texto o captura), guardada en `docs/evidencias/pruebas/`. Junto con cada corrida se guarda también la carpeta `target/surefire-reports`, el informe que genera Maven automáticamente al correr las pruebas._
 
 | Momento | Commit / tag | Pruebas ejecutadas | OK | Fallidas | Línea base | Evidencia |
 |---|---|---|---|---|---|---|
