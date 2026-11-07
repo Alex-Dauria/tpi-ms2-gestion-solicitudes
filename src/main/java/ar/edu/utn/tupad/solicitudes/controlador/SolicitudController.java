@@ -27,6 +27,8 @@ import java.util.Optional;
 @RestController
 public class SolicitudController {
 
+    private static final int MAX_SOLICITUDES_POR_RESPONSABLE = 5;
+
     // ===================== SOLICITUDES =====================
 
     @PostMapping("/solicitudes")
@@ -187,25 +189,27 @@ public class SolicitudController {
         return lst;
     }
 
-    @GetMapping("/solicitudes/{id}")
-    public ResponseEntity<Object> obtener(@PathVariable int id) {
-        for (Solicitud s : BaseDeDatos.solicitudes) {
-            if (s.getId() == id) {
-                return ResponseEntity.ok(s);
+    private Solicitud buscarSolicitudPorId(int id) {
+        for (Solicitud solicitud : BaseDeDatos.solicitudes) {
+            if (solicitud.getId() == id) {
+                return solicitud;
             }
         }
-        return respuestaError(HttpStatus.NOT_FOUND, "No existe la solicitud " + id);
+        return null;
+    }
+
+    @GetMapping("/solicitudes/{id}")
+    public ResponseEntity<Object> obtener(@PathVariable int id) {
+        Solicitud sol = buscarSolicitudPorId(id);
+        if (sol == null) {
+            return respuestaError(HttpStatus.NOT_FOUND, "No existe la solicitud " + id);
+        }
+        return ResponseEntity.ok(sol);
     }
 
     @PutMapping("/solicitudes/{id}/estado")
     public ResponseEntity<Object> cambiarEstado(@PathVariable int id, @RequestBody Map<String, String> body) {
-        Solicitud sol = null;
-        for (Solicitud s : BaseDeDatos.solicitudes) {
-            if (s.getId() == id) {
-                sol = s;
-                break;
-            }
-        }
+        Solicitud sol = buscarSolicitudPorId(id);
         if (sol == null) {
             return respuestaError(HttpStatus.NOT_FOUND, "No existe la solicitud " + id);
         }
@@ -218,23 +222,7 @@ public class SolicitudController {
         nuevo = nuevo.toUpperCase();
         String actual = sol.getEstado();
 
-        boolean valido = false;
-        if (actual.equals("PENDIENTE")) {
-            if (nuevo.equals("EN_REVISION") || nuevo.equals("RECHAZADA")) {
-                valido = true;
-            }
-        } else if (actual.equals("EN_REVISION")) {
-            if (nuevo.equals("RESUELTA") || nuevo.equals("RECHAZADA") || nuevo.equals("PENDIENTE")) {
-                valido = true;
-            }
-        } else if (actual.equals("RESUELTA")) {
-            if (nuevo.equals("CERRADA") || nuevo.equals("EN_REVISION")) {
-                valido = true;
-            }
-        } else if (actual.equals("CERRADA") || actual.equals("RECHAZADA")) {
-            // estados finales, no se pueden cambiar
-            valido = false;
-        }
+        boolean valido = sol.permiteTransicionA(nuevo);
         if (!valido) {
             return respuestaError(HttpStatus.CONFLICT, "Transición no permitida: " + actual + " -> " + nuevo);
         }
@@ -246,26 +234,14 @@ public class SolicitudController {
         }
 
         String hoy = LocalDate.now().toString();
-        String linea = hoy + ": " + actual + " -> " + nuevo;
-        if (comentario != null && !comentario.trim().isEmpty()) {
-            linea += " (" + comentario.trim() + ")";
-        }
-        sol.getHistorial().add(linea);
-        sol.setEstado(nuevo);
-        sol.setFechaUltimoCambio(hoy);
+        sol.cambiarEstado(nuevo, comentario, hoy);
         BaseDeDatos.guardar();
         return ResponseEntity.ok(sol);
     }
 
     @PutMapping("/solicitudes/{id}/responsable")
     public ResponseEntity<Object> asignarResponsable(@PathVariable int id, @RequestBody Map<String, Integer> body) {
-        Solicitud sol = null;
-        for (Solicitud s : BaseDeDatos.solicitudes) {
-            if (s.getId() == id) {
-                sol = s;
-                break;
-            }
-        }
+        Solicitud sol = buscarSolicitudPorId(id);
         if (sol == null) {
             return respuestaError(HttpStatus.NOT_FOUND, "No existe la solicitud " + id);
         }
@@ -298,8 +274,8 @@ public class SolicitudController {
                 cant++;
             }
         }
-        if (cant >= 5) {
-            return respuestaError(HttpStatus.CONFLICT, "El responsable ya tiene 5 solicitudes abiertas");
+        if (cant >= MAX_SOLICITUDES_POR_RESPONSABLE) {
+            return respuestaError(HttpStatus.CONFLICT, "El responsable ya tiene " + MAX_SOLICITUDES_POR_RESPONSABLE + " solicitudes abiertas");
         }
 
         String hoy = LocalDate.now().toString();
@@ -307,10 +283,10 @@ public class SolicitudController {
         sol.getHistorial().add(hoy + ": responsable asignado " + r.getNombre() + " (" + r.getArea() + ")");
         // si estaba pendiente pasa automaticamente a revision
         if (sol.getEstado().equals("PENDIENTE")) {
-            sol.getHistorial().add(hoy + ": PENDIENTE -> EN_REVISION");
-            sol.setEstado("EN_REVISION");
+            sol.cambiarEstado("EN_REVISION", null, hoy);
+        } else {
+            sol.setFechaUltimoCambio(hoy);
         }
-        sol.setFechaUltimoCambio(hoy);
         BaseDeDatos.guardar();
         return ResponseEntity.ok(sol);
     }
