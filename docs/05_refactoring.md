@@ -603,12 +603,13 @@ if (cant >= MAX_SOLICITUDES_POR_RESPONSABLE) {
 
 ### 5.2.C Zona C – Consultas y persistencia (Silvia)
 
-Dos refactorings sobre `SolicitudController`, aplicados en la rama `zona-c/refactoring`, uno por commit, con las 69 pruebas en verde después de cada uno (31 de zona A, 17 de zona B y 21 de zona C).
+Tres refactorings sobre `SolicitudController`, aplicados en la rama `zona-c/refactoring`, uno por commit, con las 69 pruebas en verde después de cada uno (31 de zona A, 17 de zona B y 21 de zona C).
 
 | ID | Técnica | Smell que resuelve | Principio / práctica | Commit |
 |---|---|---|---|---|
 | RC-01 | Introduce Parameter Object (`FiltroSolicitudes`) | S-12 (SC-01) | Clean Code (pocos argumentos), Long Parameter List | [`0624db5`](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/0624db5) |
 | RC-02 | Encapsulate Collection (catálogos) | S-14 (SC-05) | Encapsulamiento, bajo acoplamiento | [`faf4849`](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/faf4849) |
+| RC-03 | Extract Class (`PoliticaVencimiento`) | S-05 (SC-02) | SRP, DRY, sin valores mágicos | [`63d7b64`](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/63d7b64) |
 
 #### RC-01 – Introduce Parameter Object: `FiltroSolicitudes`
 
@@ -662,6 +663,52 @@ return List.copyOf(BaseDeDatos.estudiantes);
 - **Comportamiento externo:** sin cambios para lectura; un intento de mutación ahora lanza `UnsupportedOperationException`.
 - **Beneficio:** se protege el estado global de mutaciones externas.
 
+#### RC-03 – Extract Class: `PoliticaVencimiento`
+
+- **Smell que resuelve:** S-05 (SC-02, regla de vencimiento duplicada en `filtrar` y `resumen`).
+- **Zona / autora:** C – Silvia.
+- **Commit:** [`63d7b64`](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/63d7b64).
+- **Motivación:** la regla de vencimiento (RN-14) estaba duplicada en `filtrar` y en `resumen`, con plazos distintos por prioridad. Se extrae a una sola clase.
+
+**Antes:**
+
+```java
+// filtrar
+if (s.getPrioridad().equals("ALTA") && dias > 3) { flag = true; }
+if (s.getPrioridad().equals("MEDIA") && dias > 7) { flag = true; }
+if (s.getPrioridad().equals("BAJA") && dias > 15) { flag = true; }
+
+// resumen
+int limite = 15;
+if (s.getPrioridad().equals("ALTA")) { limite = 3; }
+else if (s.getPrioridad().equals("MEDIA")) { limite = 7; }
+if (dias > limite) { venc++; }
+```
+
+**Después:**
+
+```java
+// filtrar
+if (vencidas != null && vencidas && !PoliticaVencimiento.estaVencida(s, LocalDate.now())) {
+    ok = false;
+}
+
+// resumen
+if (PoliticaVencimiento.estaVencida(s, LocalDate.now())) {
+    venc++;
+}
+```
+
+- **Pasos seguidos:** crear `PoliticaVencimiento` en `servicio`; reemplazar el cálculo en `filtrar` y `resumen`; quitar `ChronoUnit` del controlador. Un commit.
+- **Verificación:** 69 pruebas en verde antes y después; CP-C07 y CP-C21 cubren los límites. Si se cambia el plazo de ALTA a 4 días, CP-C21 falla.
+- **Comportamiento externo:** sin cambios (mismos resultados y conteos).
+- **Beneficio:** la regla de vencimiento vive en un solo lugar; el controlador deja de calcularla.
+
+#### Lo que no se aborda en esta zona
+
+- **S-06 (estado global y persistencia en `BaseDeDatos`):** atraviesa todos los endpoints y las pruebas de las tres zonas. A un día de la entrega, refactorizarlo requeriría coordinar con las zonas A y B; se deja como mejora pendiente.
+- **S-13 (`resumen` con mapas de `String` y `get(...) + 1`):** el `NullPointerException` es latente con los datos actuales; se mantiene la estructura actual para no tocar el contrato del reporte.
+
 ### Modelo de ficha
 
 _Copiar este bloque en el apartado de la zona._
@@ -687,35 +734,3 @@ _Copiar este bloque en el apartado de la zona._
 - **Verificación:** _qué pruebas cubren este cambio (CP-xx de la sección 6) y su resultado antes y después_
 - **Comportamiento externo:** _sin cambios / cambio intencional (explicar cuál y por qué)_
 - **Beneficio:** _qué es más fácil ahora que antes_
-
-
-#### RC-03 – Extract Method: `PoliticaVencimiento`
-
-- **Smell que resuelve:** S-05 (SC-02, regla de vencimiento duplicada en `filtrar` y `resumen`).
-- **Zona / autora:** C – Silvia.
-- **Commit:** (pendiente).
-- **Motivación:** la regla de vencimiento (RN-14) estaba duplicada en `filtrar` y en `resumen`, con plazos distintos por prioridad. Se extrae a una sola clase.
-
-**Antes:**
-
-```java
-// cálculo de vencimiento duplicado en filtrar y en resumen
-```
-
-**Después:**
-
-```java
-if (PoliticaVencimiento.estaVencida(s, LocalDate.now())) {
-    venc++;
-}
-```
-
-- **Pasos seguidos:** crear `PoliticaVencimiento` en `servicio`; reemplazar el cálculo en `filtrar` y `resumen`; quitar `ChronoUnit` del controlador. Un commit.
-- **Verificación:** 69 pruebas en verde antes y después; CP-C07 y CP-C21 cubren los límites. Si se cambia el plazo de ALTA a 4 días, CP-C21 falla.
-- **Comportamiento externo:** sin cambios (mismos resultados y conteos).
-- **Beneficio:** la regla de vencimiento vive en un solo lugar; el controlador deja de calcularla.
-
-#### Lo que no se aborda en esta zona
-
-- **S-06 (estado global y persistencia en `BaseDeDatos`):** atraviesa todos los endpoints y las pruebas de las tres zonas. A un día de la entrega, refactorizarlo requeriría coordinar con las zonas A y B; se deja como mejora pendiente.
-- **S-13 (`resumen` con mapas de `String` y `get(...) + 1`):** el `NullPointerException` es latente con los datos actuales; se mantiene la estructura actual para no tocar el contrato del reporte.
