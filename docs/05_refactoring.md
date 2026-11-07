@@ -272,31 +272,6 @@ if (descripcion.length() > LARGO_MAXIMO_DESCRIPCION) {
 
 **Verificación de la zona completa:** integrado con las pruebas finales de las otras zonas, el código refactorizado pasa **69 de 69 pruebas** (31 de la zona A, 17 de la zona B y 21 de la zona C). De caja negra, la línea base da **14 de 14 casos iguales** a la de `estado-inicial` ([evidencias/pruebas/zona-a/linea_base_refactoring_zona_a.md](evidencias/pruebas/zona-a/linea_base_refactoring_zona_a.md)). Informes de las pruebas después del refactoring: [evidencias/pruebas/zona-a/despues-refactoring/](evidencias/pruebas/zona-a/despues-refactoring/).
 
-### Modelo de ficha
-
-_Copiar este bloque en el apartado de la zona._
-
-### R-01 – _Técnica: descripción corta_
-
-- **Smell que resuelve:** S-xx
-- **Zona / autora:** _
-- **Commit:** _enlace al commit_
-- **Motivación:** _por qué este cambio, conectado con el diagnóstico_
-
-**Antes** (`estado-inicial`):
-
-```java
-```
-
-**Después:**
-
-```java
-```
-
-- **Pasos seguidos:** _la secuencia de pasos chicos, con las pruebas en verde después de cada uno_
-- **Verificación:** _qué pruebas cubren este cambio (CP-xx de la sección 6) y su resultado antes y después_
-- **Comportamiento externo:** _sin cambios / cambio intencional (explicar cuál y por qué)_
-- **Beneficio:** _qué es más fácil ahora que antes_
 
 ### 5.2.C Zona C – Consultas y persistencia (Silvia)
 
@@ -333,7 +308,7 @@ private List<Solicitud> filtrar(FiltroSolicitudes filtro) {
 - **Pasos seguidos:** crear el record `FiltroSolicitudes`; cambiar la firma de `filtrar`; construir el objeto en `listar`. Un commit.
 - **Verificación:** 69 pruebas en verde antes y después; CP-C01 a CP-C21 de la zona C.
 - **Comportamiento externo:** sin cambios (mismos códigos, mensajes y resultados).
-- **Beneficio:** la llamada se lee como un solo objeto; agregar un filtro toca un solo lugar.
+- **Beneficio:** la llamada se lee como un solo objeto; los criterios viajan juntos en un objeto con nombre y `filtrar` tiene un solo parámetro.
 
 #### RC-02 – Encapsulate Collection: catálogos inmutables
 
@@ -358,3 +333,62 @@ return List.copyOf(BaseDeDatos.estudiantes);
 - **Verificación:** 69 pruebas en verde antes y después; CP-C11 y CP-C12 verifican tamaño y contenido.
 - **Comportamiento externo:** sin cambios para lectura; un intento de mutación ahora lanza `UnsupportedOperationException`.
 - **Beneficio:** se protege el estado global de mutaciones externas.
+
+
+### Modelo de ficha
+
+_Copiar este bloque en el apartado de la zona._
+
+### R-01 – _Técnica: descripción corta_
+
+- **Smell que resuelve:** S-xx
+- **Zona / autora:** _
+- **Commit:** _enlace al commit_
+- **Motivación:** _por qué este cambio, conectado con el diagnóstico_
+
+**Antes** (`estado-inicial`):
+
+```java
+```
+
+**Después:**
+
+```java
+```
+
+- **Pasos seguidos:** _la secuencia de pasos chicos, con las pruebas en verde después de cada uno_
+- **Verificación:** _qué pruebas cubren este cambio (CP-xx de la sección 6) y su resultado antes y después_
+- **Comportamiento externo:** _sin cambios / cambio intencional (explicar cuál y por qué)_
+- **Beneficio:** _qué es más fácil ahora que antes_
+
+
+#### RC-03 – Extract Method: `PoliticaVencimiento`
+
+- **Smell que resuelve:** S-05 (SC-02, regla de vencimiento duplicada en `filtrar` y `resumen`).
+- **Zona / autora:** C – Silvia.
+- **Commit:** (pendiente).
+- **Motivación:** la regla de vencimiento (RN-14) estaba duplicada en `filtrar` y en `resumen`, con plazos distintos por prioridad. Se extrae a una sola clase.
+
+**Antes:**
+
+```java
+// cálculo de vencimiento duplicado en filtrar y en resumen
+```
+
+**Después:**
+
+```java
+if (PoliticaVencimiento.estaVencida(s, LocalDate.now())) {
+    venc++;
+}
+```
+
+- **Pasos seguidos:** crear `PoliticaVencimiento` en `servicio`; reemplazar el cálculo en `filtrar` y `resumen`; quitar `ChronoUnit` del controlador. Un commit.
+- **Verificación:** 69 pruebas en verde antes y después; CP-C07 y CP-C21 cubren los límites. Si se cambia el plazo de ALTA a 4 días, CP-C21 falla.
+- **Comportamiento externo:** sin cambios (mismos resultados y conteos).
+- **Beneficio:** la regla de vencimiento vive en un solo lugar; el controlador deja de calcularla.
+
+#### Lo que no se aborda en esta zona
+
+- **S-06 (estado global y persistencia en `BaseDeDatos`):** atraviesa todos los endpoints y las pruebas de las tres zonas. A un día de la entrega, refactorizarlo requeriría coordinar con las zonas A y B; se deja como mejora pendiente.
+- **S-13 (`resumen` con mapas de `String` y `get(...) + 1`):** el `NullPointerException` es latente con los datos actuales; se mantiene la estructura actual para no tocar el contrato del reporte.

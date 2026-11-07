@@ -26,11 +26,13 @@ _Cada una escribe acá, al terminar su refactoring (fase 3 de #8, #9 y #10), un 
 
 ### Zona C – Consultas y persistencia (Silvia)
 
-- **SRP:** `filtrar` recibía seis parámetros sueltos y hacía todo el filtrado en un método; ahora coordina: recibe un `FiltroSolicitudes` y aplica cada criterio. Los catálogos dejan de exponer la lista interna.
+- **SRP:** `filtrar` recibía seis parámetros sueltos y hacía todo el filtrado en un método; con RC-01 coordina los criterios a través de `FiltroSolicitudes` y con RC-03 la regla de vencimiento sale del controlador y queda en `PoliticaVencimiento`.
 - **Clean Code:**
   - **Funciones/argumentos:** de seis parámetros sueltos a un objeto con nombre (`FiltroSolicitudes`, RC-01).
   - **Encapsulamiento:** `estudiantes()` y `responsables()` devuelven `List.copyOf` (RC-02), protegiendo el estado global.
-- **OCP/LSP/ISP/DIP:** no aplican a esta zona; no hay jerarquías ni interfaces en las consultas, y la dependencia con `BaseDeDatos` se mantiene.
+- **OCP/LSP/ISP:** no aplican a esta zona; no hay jerarquías ni interfaces en las consultas.
+- **DIP:** el problema existe: el controlador depende directamente de la clase estática `BaseDeDatos`. Queda como mejora pendiente (S-06).
+
 ## 4.1 Principios SOLID
 
 | Principio | Problema en la versión inicial (smell S-xx) | Mejora aplicada | Refactoring (R-xx) | Zona |
