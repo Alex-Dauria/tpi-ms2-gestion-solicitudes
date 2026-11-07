@@ -5,7 +5,7 @@
 
 ## 6.1 Estrategia
 
-**Pruebas de caracterización**. Antes de refactorizar se escriben pruebas automatizadas que registran cómo se comporta hoy la versión inicial (respuesta, código HTTP y mensaje para cada caso). Esas mismas pruebas se ejecutan después de cada refactoring: si siguen en verde, el comportamiento externo se conservó.
+_Explicar el enfoque. Propuesta:_ **pruebas de caracterización**. Antes de refactorizar se escriben pruebas automatizadas que registran cómo se comporta hoy la versión inicial (respuesta, código HTTP y mensaje para cada caso). Esas mismas pruebas se ejecutan después de cada refactoring: si siguen en verde, el comportamiento externo se conservó.
 
 - Herramientas: JUnit 5 + MockMvc (`@SpringBootTest` + `@AutoConfigureMockMvc`).
 - Aislamiento: `@BeforeEach` restablece los datos en memoria mediante `BaseDeDatos.cargarDatosDePrueba()`. Además, se conserva una copia del JSON original y se restaura antes y después de las pruebas. Las ejecuciones deben realizarse sin otros procesos utilizando el mismo archivo de datos.
@@ -45,7 +45,8 @@ Las pruebas se escriben **después** de crear el tag `estado-inicial`, así que 
 
 ## 6.2 Casos de prueba
 
-_Un caso por regla o flujo. Tomar como base F1–F7 y RN-01 a RN-15 de la sección 1. Cada zona carga sus casos en su tabla, así se pueden escribir en paralelo sin pisarse. Silvia unifica la numeración en #13._
+Numeración unificada: CP-01 a CP-25 corresponden a CP-A01 a CP-A25; CP-26 a CP-42, a CP-B01 a CP-B17; y CP-43 a CP-63, a CP-C01 a CP-C21. Los comentarios de las pruebas, las fichas de la sección 5 y los registros de IA conservan el identificador original.
+
 
 ### 6.2.A Zona A – Registro (Alex)
 
@@ -87,9 +88,12 @@ Todas las pruebas son sobre `POST /solicitudes`. En los errores se verifica el c
 - **Resultado:** 31 ejecuciones (25 casos; CP-02 y CP-10 se repiten con varios valores): 31 correctas, 0 fallidas, 0 errores.
 - **Aislamiento:** los datos en memoria se reinician antes de cada prueba y el archivo `datos/solicitudes.json` se restaura antes y después. Se comprobó con su huella que queda idéntico.
 - **Evidencia:** `docs/evidencias/pruebas/zona-a/` (informes de Maven Surefire).
-- **CP-25 (antes CP-A25)** fija un defecto. Si el refactoring lo corrige (por ejemplo, a `400`), es un cambio intencional: se documenta en 6.5 y se actualiza la prueba en un commit aparte.
+- **CP-25** documenta un defecto (el legajo numérico produce un `500`). Si el refactoring lo corrige (por ejemplo, a `400`), es un cambio intencional: se documenta en la sección 6.5 (Hallazgos) y se actualiza la prueba en un commit aparte.
 
 ### 6.2.B Zona B – Ciclo de vida (Marina)
+
+_Los 15 casos adicionales del refactoring de la zona B (5 en `SolicitudZonaBTest` y 10 en `SolicitudZonaBTransicionTest`) se numeran CP-64 a CP-78 y se agregan aquí con 'No aplica' en 'Antes', porque prueban código que todavía no existía._
+
 
 | ID | Operación | Entrada / situación | Resultado esperado | Regla | Antes | Después |
 |---|---|---|---|---|---|---|
@@ -124,7 +128,7 @@ Todas las pruebas son sobre `POST /solicitudes`. En los errores se verifica el c
 
 ### 6.2.C Zona C – Consultas y persistencia (Silvia)
 
-_Los identificadores CP-43 a CP-63 corresponden a los casos de la zona C._
+_Los identificadores CP-43 a CP-63 corresponden a los casos de la zona C – Consultas y persistencia, originalmente CP-C01 a CP-C21._
 
 | ID | Operación | Entrada / situación | Resultado esperado | Regla | Antes | Después |
 |---|---|---|---|---|---|---|
@@ -157,23 +161,22 @@ _Salida de `.\mvnw.cmd test` en cada momento (texto o captura), guardada en `doc
 | Momento | Commit / tag | Pruebas ejecutadas | OK | Fallidas | Línea base | Evidencia |
 |---|---|---|---|---|---|---|
 | Antes (código inicial + pruebas) | `8d97555` (pruebas de las 3 zonas mergeadas, antes del primer refactoring) | 69 | 69 | 0 | Referencia (`linea_base_estado_inicial.md`) | `docs/evidencias/pruebas/etapa-6/` |
-| Después del refactoring | `etapa-refactoring` | | | | _x de 14 iguales_ | |
+| Después del refactoring | `etapa-refactoring` | 84 (69 + 15 nuevas del refactoring de la zona B) | | | _x de 14 iguales_ | |
 | Versión final | `estado-refactorizado` | | | | _x de 14 iguales_ | |
 
 ## 6.4 Cómo se verificó que el refactoring no alteró el comportamiento
 
 Procedimiento aplicado:
 
-1. **Red de seguridad:** antes de refactorizar se escribieron las pruebas de caracterización de las tres zonas (Fase 1 de #8, #9 y #10), todas en verde sobre el código original.
-2. **Un commit por refactoring:** cada refactoring se aplicó en un commit separado, con id `R-xx` (o `RA-xx`, `RC-xx` provisorio), y las pruebas se corrieron después de cada commit.
-3. **Pruebas antes y después:** se ejecutó `.\mvnw.cmd test` antes de empezar y después de cada refactoring; todas las zonas debían quedar en verde.
+1. **Red de seguridad:** antes de refactorizar se escribieron las pruebas de caracterización de las tres zonas (Fase 1 de las zonas A, B y C), todas en verde sobre el código original.
+2. **Un commit por refactoring:** cada refactoring se aplicó en un commit separado, con id `R-xx` (o `RA-xx`, `RB-xx`, `RC-xx` provisorio), y las pruebas se corrieron después de cada commit.
+3. **Pruebas antes y después:** se ejecutó `./mvnw test` antes de empezar y después de cada refactoring; todas las zonas debían quedar en verde.
 4. **Línea base:** se ejecutó `scripts/linea_base.ps1` comparando la salida con `linea_base_estado_inicial.md`; el resultado esperado es "14 de 14 casos iguales".
-5. **Revisión del PR:** el PR de refactoring se revisó con el checklist de #7. Si una prueba falla, se revisa si es una regresión (se corrige el refactoring) o un cambio intencional (se documenta y se actualiza la prueba en un commit aparte).
+5. **Revisión del PR:** el PR de refactoring se revisó con el checklist de code review (`docs/07_code_review.md`). Si una prueba falla, se revisa si es una regresión (se corrige el refactoring) o un cambio intencional (se documenta y se actualiza la prueba en un commit aparte).
 6. **Merge sin squash:** para conservar un commit por refactoring en el historial.
 
 ## 6.5 Hallazgos
 
-_Comportamientos raros de la versión inicial que aparecieron al escribir las pruebas, y qué se decidió con cada uno (conservarlo o cambiarlo como cambio intencional documentado)._
 
 **Zona A (registro):**
 
@@ -183,6 +186,6 @@ _Comportamientos raros de la versión inicial que aparecieron al escribir las pr
 | Una prioridad con espacios (`" alta"`) se rechaza y el mensaje muestra el espacio | CP-18 | Se conserva |
 | Si el estudiante ya existe, el nombre y el email enviados se ignoran sin aviso | CP-05 | Se conserva |
 | Los datos del estudiante nuevo se validan recién después de toda la solicitud | CP-22 | Se conserva: el refactoring no puede cambiar el orden de las validaciones |
-| El legajo enviado como número produce un `500` con el formato de error de Spring | CP-25 (antes CP-A25), caso 13 de la línea base | Se conserva: corregirlo sería un cambio de comportamiento, no un refactoring. RA-03 mantiene los casts a propósito. Queda como mejora pendiente |
+| El legajo enviado como número produce un `500` con el formato de error de Spring | CP-25, caso 13 de la línea base | Se conserva: corregirlo sería un cambio de comportamiento, no un refactoring. El refactoring RA-03 (zona A) mantiene los casts a propósito. Queda como mejora pendiente |
 
 Los hallazgos de las zonas B y C se registran en sus PR de pruebas y en sus diagnósticos. Las decisiones tomadas (conservar comportamiento, documentar cambios intencionales) se reflejan en las tablas 6.2.B y 6.2.C (columna "Antes/Después").

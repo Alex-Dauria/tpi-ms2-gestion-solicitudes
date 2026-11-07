@@ -359,7 +359,7 @@ if (dias > limite) { venc++; }
 - **Impacto:** F2 (`vencidas=true`) y F6 (conteo de `vencidas`); un cambio en RN-14 obliga a editar dos métodos.
 - **Riesgo de mantenimiento:** si se cambia una sola copia, el filtro y el reporte muestran números distintos sin avisar.
 - **Prioridad:** Alta, según 3.1: afecta dos funcionalidades y hace riesgoso cualquier cambio de plazos.
-- **Refactoring propuesto:** **Extract Class** `PoliticaVencimiento`, con `estaVencida(Solicitud, LocalDate)`, llamada desde `filtrar` y `resumen`. Si se decide ubicarla en `Solicitud`, coordinarlo con la zona B (#9).
+- **Refactoring propuesto:** **Extract Class** `PoliticaVencimiento`, con `estaVencida(Solicitud, LocalDate)`, llamada desde `filtrar` y `resumen`. Si se decide ubicarla en `Solicitud`, coordinarlo con la zona B (refactoring de ciclo de vida).
 
 #### S-06 (original: SC-03) – Estado global y persistencia en la misma clase
 
