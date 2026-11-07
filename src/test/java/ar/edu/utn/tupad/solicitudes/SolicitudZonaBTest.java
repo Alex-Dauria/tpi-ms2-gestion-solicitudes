@@ -112,6 +112,26 @@ class SolicitudZonaBTest {
                         .value("No existe la solicitud 99"));
     }
 
+    // RB-04: la solicitud inexistente prevalece sobre la falta del nuevo estado.
+    @Test
+    void cambiarEstadoDeSolicitudInexistenteDevuelve404AntesDeValidarCuerpo() throws Exception {
+        mockMvc.perform(put("/solicitudes/99/estado")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{}"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.error").value("No existe la solicitud 99"));
+    }
+
+    // RB-04: la solicitud inexistente prevalece sobre la falta del responsableId.
+    @Test
+    void asignarResponsableDeSolicitudInexistenteDevuelve404AntesDeValidarCuerpo() throws Exception {
+        mockMvc.perform(put("/solicitudes/99/responsable")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{}"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.error").value("No existe la solicitud 99"));
+    }
+
     // CP-B03: transición válida de EN_REVISION a RESUELTA.
     @Test
     void resolverSolicitudEnRevision() throws Exception {
@@ -327,6 +347,62 @@ class SolicitudZonaBTest {
                             """))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.estado").value("RESUELTA"));
+    }
+
+    // RB-03: conserva las dos entradas y una misma fecha en la asignación automática.
+    @Test
+    void asignacionAutomaticaConservaHistorialYFecha() throws Exception {
+        String hoy = java.time.LocalDate.now().toString();
+        mockMvc.perform(put("/solicitudes/1/responsable")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"responsableId\":1}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.fechaCreacion").value("2026-09-01"))
+                .andExpect(jsonPath("$.fechaUltimoCambio").value(hoy))
+                .andExpect(jsonPath("$.historial", hasSize(3)))
+                .andExpect(jsonPath("$.historial[0]").value("2026-09-01: solicitud registrada (PENDIENTE)"))
+                .andExpect(jsonPath("$.historial[1]").value(hoy + ": responsable asignado Laura Medina (Bedelía)"))
+                .andExpect(jsonPath("$.historial[2]").value(hoy + ": PENDIENTE -> EN_REVISION"));
+    }
+
+    // RB-03: asignar sobre RESUELTA o EN_REVISION no genera una transición adicional.
+    @Test
+    void asignacionSinTransicionConservaEstadoYActualizaFecha() throws Exception {
+        for (int id : new int[]{2, 3}) {
+            Solicitud sol = BaseDeDatos.solicitudes.stream()
+                    .filter(s -> s.getId() == id).findFirst().orElseThrow();
+            String estado = sol.getEstado();
+            int entradas = sol.getHistorial().size();
+            mockMvc.perform(put("/solicitudes/" + id + "/responsable")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content("{\"responsableId\":1}"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.estado").value(estado))
+                    .andExpect(jsonPath("$.fechaUltimoCambio").value(java.time.LocalDate.now().toString()))
+                    .andExpect(jsonPath("$.historial", hasSize(entradas + 1)));
+        }
+    }
+
+    // RB-03: round-trip real con el ObjectMapper utilizado por BaseDeDatos.
+    @Test
+    void persistenciaConservaEstadoFechaEHistorialDeLaTransicion() throws Exception {
+        mockMvc.perform(put("/solicitudes/2/estado")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"estado\":\"RESUELTA\",\"comentario\":\"  Trámite completado  \"}"))
+                .andExpect(status().isOk());
+        Solicitud antes = BaseDeDatos.solicitudes.stream()
+                .filter(s -> s.getId() == 2).findFirst().orElseThrow();
+        java.util.List<String> historial = java.util.List.copyOf(antes.getHistorial());
+        BaseDeDatos.guardar();
+        BaseDeDatos.solicitudes = new java.util.ArrayList<>();
+        BaseDeDatos.cargar();
+        Solicitud despues = BaseDeDatos.solicitudes.stream()
+                .filter(s -> s.getId() == 2).findFirst().orElseThrow();
+        org.junit.jupiter.api.Assertions.assertNotSame(antes, despues);
+        org.junit.jupiter.api.Assertions.assertEquals("RESUELTA", despues.getEstado());
+        org.junit.jupiter.api.Assertions.assertEquals(antes.getFechaCreacion(), despues.getFechaCreacion());
+        org.junit.jupiter.api.Assertions.assertEquals(antes.getFechaUltimoCambio(), despues.getFechaUltimoCambio());
+        org.junit.jupiter.api.Assertions.assertEquals(historial, despues.getHistorial());
     }
 
     // CP-B17: Rechaza una asignación sin responsableId.
