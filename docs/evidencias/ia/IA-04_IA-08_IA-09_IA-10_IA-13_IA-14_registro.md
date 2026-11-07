@@ -1,4 +1,4 @@
-# Registro de uso de IA – IA-04, IA-08, IA-09, IA-10, IA-13, IA-14 e IA-17
+# Registro de uso de IA – IA-04, IA-08, IA-09, IA-10, IA-13, IA-14, IA-17 e IA-18
 
 **Integrante:** Alex Pedro Dauria · **Herramienta:** Claude Code
 
@@ -53,3 +53,10 @@ Registro resumido de los pedidos principales, lo que devolvió la herramienta y 
 | Pedido | Qué devolvió la herramienta | Cómo se verificó |
 |---|---|---|
 | Redactar las tablas 4.1 y 4.2, la sección 4.3 y los diagramas de clases a partir del código final y de los aportes de las tres zonas | Tablas, explicación por principio y diagramas antes y después, indicando las mejoras parciales y lo que quedó pendiente | Tamaños de métodos, clases y dependencias contrastados con `estado-inicial` y con `main` (`35e29c4`: 84 de 84 pruebas y línea base 14 de 14). La revisión cruzada de Marina se hace en el PR #42 |
+
+## IA-18 – Conclusiones
+
+| Pedido | Qué devolvió la herramienta | Qué se hizo |
+|---|---|---|
+| Armar un borrador de las conclusiones grupales y de la tabla de participación | Texto de 8.1 y tabla de 8.3, con datos del repositorio | Se publicó como borrador para que las tres lo revisen y ajusten en el PR de la Etapa 8 |
+| Armar un borrador de mi conclusión individual | Texto breve | La reescribí con mis palabras, con dos ajustes de precisión sugeridos después |
