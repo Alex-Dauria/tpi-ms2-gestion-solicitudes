@@ -5,7 +5,7 @@
 
 ## 6.1 Estrategia
 
-_Explicar el enfoque. Propuesta:_ **pruebas de caracterización**. Antes de refactorizar se escriben pruebas automatizadas que registran cómo se comporta hoy la versión inicial (respuesta, código HTTP y mensaje para cada caso). Esas mismas pruebas se ejecutan después de cada refactoring: si siguen en verde, el comportamiento externo se conservó.
+**Pruebas de caracterización**. Antes de refactorizar se escriben pruebas automatizadas que registran cómo se comporta hoy la versión inicial (respuesta, código HTTP y mensaje para cada caso). Esas mismas pruebas se ejecutan después de cada refactoring: si siguen en verde, el comportamiento externo se conservó.
 
 - Herramientas: JUnit 5 + MockMvc (`@SpringBootTest` + `@AutoConfigureMockMvc`).
 - Aislamiento: `@BeforeEach` restablece los datos en memoria mediante `BaseDeDatos.cargarDatosDePrueba()`. Además, se conserva una copia del JSON original y se restaura antes y después de las pruebas. Las ejecuciones deben realizarse sin otros procesos utilizando el mismo archivo de datos.
@@ -186,4 +186,12 @@ Procedimiento aplicado:
 | Los datos del estudiante nuevo se validan recién después de toda la solicitud | CP-22 | Se conserva: el refactoring no puede cambiar el orden de las validaciones |
 | El legajo enviado como número produce un `500` con el formato de error de Spring | CP-25, caso 13 de la línea base | Se conserva: corregirlo sería un cambio de comportamiento, no un refactoring. El refactoring RA-03 (zona A) mantiene los casts a propósito. Queda como mejora pendiente |
 
-Los hallazgos de las zonas B y C se registran en sus PR de pruebas y en sus diagnósticos. Las decisiones tomadas (conservar comportamiento, documentar cambios intencionales) se reflejan en las tablas 6.2.B y 6.2.C (columna "Antes/Después").
+**Zona C (consultas y persistencia):**
+
+| Hallazgo | Prueba | Decisión |
+|---|---|---|
+| `vencidas=false` no filtra por vencimiento y devuelve todas | CP-56 | Se conserva |
+| `estado=` (vacío) no filtra | CP-57 | Se conserva |
+| Con archivo corrupto, el sistema arranca con los datos de prueba | CP-62 | Se conserva |
+| Un estado inexistente da 409 en lugar de 400 | CP-40 | Se conserva |
+| La reapertura no aplica el límite de asignaciones | CP-39 | Se conserva |
