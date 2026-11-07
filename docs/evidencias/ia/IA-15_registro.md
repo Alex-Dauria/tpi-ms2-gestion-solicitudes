@@ -9,7 +9,7 @@
 **Rama:** `zona-c/refactoring`  **Issue:** #10 – Zona C: pruebas de caracterización y refactoring
 **Enlace:** Sin enlace público (sesión local)
 
-> **Grado de intervención: Alto.** La herramienta generó la guía de orientación y la revisión de los refactorings propuestos, que se evaluó, verificó contra el código y adoptó. La implementación siguió el patrón estándar del proyecto y el código final fue revisado y ajustado.
+> **Grado de intervención: Alto.** La herramienta generó la guía de orientación y la revisión de los refactorings propuestos, que la integrante evaluó, verificó contra el código y adoptó. La implementación siguió el patrón estándar del proyecto y el código final fue revisado y ajustado por la integrante.
 
 ## 1. Qué se pidió
 

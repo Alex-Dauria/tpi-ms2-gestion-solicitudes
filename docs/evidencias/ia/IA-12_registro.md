@@ -2,7 +2,7 @@
 
 **Integrante:** Silvia Giardini · **Herramienta:** Gemini (Google) · **Fecha:** 2026-11-05
 **Rama:** `zona-c/pruebas` · **Issue:** #10 – Zona C: pruebas de caracterización y refactoring
-**Enlace:** https://gemini.google.com/app/7afc99f59ca3e1af
+**Enlace:** https://share.gemini.google/vsEiNBYxAM61
 
 > **Grado de intervención: Medio.** La herramienta aportó el marco conceptual y una revisión de los casos propuestos. La integrante evaluó cada observación, la verificó contra el código del tag `estado-inicial` y decidió qué se mantiene, qué se ajusta y qué se descarta. La implementación siguió el patrón estándar del proyecto (JUnit 5 + MockMvc + restauración de `datos/solicitudes.json`), tomado de las pruebas de las zonas A y B; no se generó código completo por la IA.
 
@@ -15,7 +15,7 @@
 
 ## 2. Resultado de la revisión
 
-Los identificadores CP-C01 a CP-C21 corresponden a los casos de la tabla 6.2.C de `docs/06_pruebas.md` (un ID por prueba). Todos los casos propuestos (CP-C01 a CP-C12, persistencia, límites de vencimiento, filtros y orden) fueron considerados válidos. Se identificaron tres posibles faltantes (CP-C13 a CP-C15), que se evaluaron contra el código y no se incorporaron por no aplicar a la versión inicial.
+Los identificadores CP-C01 a CP-C21 corresponden a los casos de la tabla 6.2.C de `docs/06_pruebas.md` (un ID por prueba). Todos los casos propuestos (CP-C01 a CP-C12, persistencia, límites de vencimiento, filtros y orden) fueron considerados válidos. Se identificaron tres posibles faltantes sugeridos en la revisión (vencidas con valor inválido, responsableId=null y borde de "hoy"), que se evaluaron contra el código y no se incorporaron por no aplicar a la versión inicial. Los identificadores CP-C13 a CP-C15 de esa revisión no corresponden a los casos actuales de la tabla 6.2.C.
 
 ## 3. Qué no aportó la herramienta
 
