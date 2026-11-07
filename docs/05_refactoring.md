@@ -13,8 +13,8 @@
 | R-02 | | | | A – Alex | |
 | R-03 | Move Method | | | B – Marina | |
 | R-04 | | | | B – Marina | |
-| R-05 | Introduce Parameter Object | | | C – Silvia | |
-| R-06 | | | | C – Silvia | |
+| R-05 | Introduce Parameter Object (`FiltroSolicitudes`) | S-12 (SC-01 – lista de parámetros larga en `filtrar`) | Clean Code (pocos argumentos) | C – Silvia | [`0624db5`](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/0624db5) |
+| R-06 | Encapsulate Collection (catálogos) | S-14 (SC-05 – catálogos devuelven las listas internas) | Encapsulamiento, bajo acoplamiento | C – Silvia | [`faf4849`](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/faf4849) |
 
 ## 5.2 Detalle
 
@@ -22,7 +22,7 @@ _Cada zona carga sus fichas en su apartado, con ids provisorios (RA-01, RB-01, R
 
 ### 5.2.A Zona A – Registro (Alex)
 
-Ocho refactorings sobre `SolicitudController.registrarSolicitud` y el armado de las respuestas de error, aplicados en la rama `zona-a/refactoring`, **uno por commit**, con las pruebas en verde después de cada uno: las 31 de la zona A (CP-A01 a CP-A25) y, como red adicional, las 14 de la zona B, porque RA-01 también toca métodos de esa zona.
+Diez refactorings sobre `SolicitudController.registrarSolicitud` y el armado de las respuestas de error, **uno por commit**, con las pruebas en verde después de cada uno. RA-01 a RA-08 se aplicaron en la rama `zona-a/refactoring`, verificados con las 31 pruebas de la zona A (CP-A01 a CP-A25) y, como red adicional, las 14 de la zona B, porque RA-01 también toca métodos de esa zona. RA-09 y RA-10 se aplicaron después en `zona-a/reglas-registro`, con las 69 pruebas de las tres zonas.
 
 | ID | Técnica | Smell que resuelve | Principio / práctica | Commit |
 |---|---|---|---|---|
@@ -34,16 +34,21 @@ Ocho refactorings sobre `SolicitudController.registrarSolicitud` y el armado de 
 | RA-06 | Extract Method (`buscarSolicitudAbierta`, `construirSolicitud`) | SA-01 | SRP, separación consulta/comando | [`2bbda70`](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/2bbda70) |
 | RA-07 | Replace Magic Number with Symbolic Constant | SA-04 | Clean Code (sin valores mágicos) | [`df0dbd9`](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/df0dbd9) |
 | RA-08 | Remove Dead Code | Notas para #6 (comentarios y código muerto) | Clean Code (comentarios) | [`c69ad8f`](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/c69ad8f) |
+| RA-09 | Extract Class (`ReglasRegistro`, con las validaciones) | SA-01 | SRP, cohesión | [`c6ca13c`](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/c6ca13c) |
+| RA-10 | Move Method (prioridad y creación del estudiante) | SA-01, SA-05 | SRP, cohesión | [`d7996e3`](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/d7996e3) |
 
 **Resultado sobre el método principal:**
 
-| | Antes (`estado-inicial`) | Después |
-|---|---|---|
-| Líneas de `registrarSolicitud` | 105 | 39 |
-| Decisiones (`if`, `for`, `case`, `?`) en `registrarSolicitud` | 19 | 5 |
-| Respuestas de error armadas a mano en el controlador | 22 | 0 (un solo método) |
+| | Antes (`estado-inicial`) | Después de RA-08 | Después de RA-10 |
+|---|---|---|---|
+| Líneas de `registrarSolicitud` | 105 | 39 | 33 |
+| Decisiones (`if`, `for`, `case`, `?`) en `registrarSolicitud` | 19 | 5 | 4 |
+| Respuestas de error armadas a mano en el controlador | 22 | 0 (un solo método) | 0 |
+| Líneas de `SolicitudController` | 441 | 492 | 399 |
 
 La complejidad no desaparece: se reparte en métodos chicos con nombre propio. Lo que baja es la del método principal, que ahora se lee como un índice: validar, dar de alta al estudiante si hace falta, controlar duplicados, construir, persistir y responder.
+
+Después de RA-08 el controlador tenía **más** líneas que al principio: extraer métodos ordena el código, pero lo deja en la misma clase. RA-09 y RA-10 resuelven eso sacando las reglas del registro a una clase propia. Las 399 líneas todavía incluyen el código de las zonas B y C.
 
 #### RA-01 – Extract Method: una sola forma de armar las respuestas de error
 
@@ -270,7 +275,439 @@ if (descripcion.length() > LARGO_MAXIMO_DESCRIPCION) {
 - **Verificación:** 45 de 45.
 - **Comportamiento externo:** sin cambios.
 
-**Verificación de la zona completa:** integrado con las pruebas finales de las otras zonas, el código refactorizado pasa **69 de 69 pruebas** (31 de la zona A, 17 de la zona B y 21 de la zona C). De caja negra, la línea base da **14 de 14 casos iguales** a la de `estado-inicial` ([evidencias/pruebas/zona-a/linea_base_refactoring_zona_a.md](evidencias/pruebas/zona-a/linea_base_refactoring_zona_a.md)). Informes de las pruebas después del refactoring: [evidencias/pruebas/zona-a/despues-refactoring/](evidencias/pruebas/zona-a/despues-refactoring/).
+#### RA-09 – Extract Class: las validaciones salen del controlador
+
+- **Smell que resuelve:** SA-01 (responsabilidades mezcladas en el controlador).
+- **Zona / autor:** A – Alex.
+- **Commit:** [`c6ca13c`](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/c6ca13c).
+- **Motivación:** RA-04 separó una validación por método, pero siguieron en `SolicitudController`, que además atiende los pedidos HTTP. Una regla de negocio cambia por motivos distintos que un endpoint.
+
+**Antes:**
+
+```java
+// En SolicitudController
+Optional<String> error = validarLegajo(datos.legajo())
+        .or(() -> validarTipo(datos.tipo()))
+        .or(() -> validarDescripcion(datos.descripcion()))
+        .or(() -> validarPrioridad(datos.prioridad()));
+```
+
+**Después:**
+
+```java
+// En SolicitudController
+Optional<String> error = ReglasRegistro.validarSolicitud(datos);
+
+// En servicio/ReglasRegistro
+public static Optional<String> validarSolicitud(DatosSolicitud datos) {
+    return validarLegajo(datos.legajo())
+            .or(() -> validarTipo(datos.tipo()))
+            .or(() -> validarDescripcion(datos.descripcion()))
+            .or(() -> validarPrioridad(datos.prioridad()));
+}
+```
+
+- **Pasos seguidos:** se creó `ReglasRegistro` en el paquete nuevo `servicio`, y se movieron las validaciones de RN-01 a RN-05 con sus constantes. `DatosSolicitud` pasó al mismo paquete y se hizo público, para que la clase nueva no dependa del controlador.
+- **Verificación:** CP-A08 a CP-A23, en especial CP-A22 (el orden de los errores); 69 de 69.
+- **Comportamiento externo:** sin cambios: el orden de las validaciones y los mensajes son los mismos.
+- **Beneficio:** las reglas se pueden leer y cambiar sin mirar nada de HTTP. `ReglasRegistro` no conoce `ResponseEntity` ni `BaseDeDatos`.
+
+#### RA-10 – Move Method: prioridad y creación del estudiante
+
+- **Smell que resuelve:** SA-01 y SA-05.
+- **Zona / autor:** A – Alex.
+- **Commit:** [`d7996e3`](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/d7996e3).
+- **Motivación:** el cálculo de la prioridad (RN-04) y las reglas para crear un estudiante (RN-05) también son del registro, y no usan nada del controlador.
+
+**Antes:**
+
+```java
+String prioridad = ReglasRegistro.estaVacio(datos.prioridad())
+        ? prioridadPorDefecto(tipo)
+        : datos.prioridad().toUpperCase();
+// ...
+BaseDeDatos.estudiantes.add(crearEstudiante(datos));
+```
+
+**Después:**
+
+```java
+String prioridad = ReglasRegistro.prioridadDe(datos);
+// ...
+BaseDeDatos.estudiantes.add(ReglasRegistro.crearEstudiante(datos));
+```
+
+- **Pasos seguidos:** se movieron `prioridadPorDefecto` y `crearEstudiante`, con la constante de la carrera por defecto, y `estaVacio` volvió a ser privado.
+- **Verificación:** CP-A02, CP-A03 y CP-A04; 69 de 69.
+- **Comportamiento externo:** sin cambios.
+- **Beneficio:** `registrarSolicitud` solo coordina. Las escrituras en `BaseDeDatos` siguen a la vista en ese método, listas para la zona C.
+
+**Qué queda en el controlador de esta zona:** `crear` y `registrarSolicitud`, que coordinan el pedido, y `buscarEstudiantePorLegajo`, `buscarSolicitudAbierta` y `construirSolicitud`, que dependen del acceso a datos (zona C) y de las reglas de estado (zona B).
+
+**Verificación de la zona completa:** integrado con las pruebas finales de las otras zonas, el código refactorizado pasa **69 de 69 pruebas** (31 de la zona A, 17 de la zona B y 21 de la zona C). De caja negra, la línea base da **14 de 14 casos iguales** a la de `estado-inicial`, tanto después de RA-08 ([evidencias/pruebas/zona-a/linea_base_refactoring_zona_a.md](evidencias/pruebas/zona-a/linea_base_refactoring_zona_a.md)) como después de RA-10 ([evidencias/pruebas/zona-a/linea_base_reglas_registro.md](evidencias/pruebas/zona-a/linea_base_reglas_registro.md)). Informes de las pruebas después del refactoring: [evidencias/pruebas/zona-a/despues-refactoring/](evidencias/pruebas/zona-a/despues-refactoring/).
+
+### 5.2.B Zona B – Ciclo de vida (Marina)
+
+Cinco refactorings aplicados en `zona-b/refactoring`, uno por commit, sobre la base `8e81f7c`. Las fichas usan el identificador original SB y su equivalente final S del catálogo de la sección 3. Los ejemplos **Antes** corresponden al padre de cada commit, para mostrar pasos sucesivos y no atribuir al tag `estado-inicial` código incorporado por refactorings anteriores. Los hashes identifican commits locales; no se enlazan evidencias temporales.
+
+| ID | Técnica | Hallazgo relacionado | Principio / práctica | Commit |
+|---|---|---|---|---|
+| RB-01 | Move Method / reubicación de responsabilidad (`permiteTransicionA`) | SB-01 / S-03 | SRP parcial, cohesión | `f0e9de8` |
+| RB-02 | Replace Conditional with Lookup Table | Complementa SB-01 / S-03 | Reglas explícitas, OCP limitado | `daedb7b` |
+| RB-03 | Encapsulación de cambios de estado e historial (`cambiarEstado`) | SB-04 / S-04, parcialmente | Encapsulación, cohesión | `c9dc80a` |
+| RB-04 | Extract Method (`buscarSolicitudPorId`) | SB-02 / S-09 | DRY, nombres y funciones | `8e02326` |
+| RB-05 | Replace Magic Number with Named Constant | SB-05 / S-11 | Clean Code, constante descriptiva | `4d39d0d` |
+
+#### RB-01 – Move Method: validación de transiciones en `Solicitud`
+
+- **Smell que resuelve:** SB-01 / S-03, lógica de transiciones ubicada en el controlador. Se reubica la decisión sobre transiciones; el controlador conserva las validaciones necesarias para las respuestas HTTP.
+- **Zona / autora:** B – Marina.
+- **Commit:** `f0e9de8` (padre: `8e81f7c`).
+- **Motivación:** la entidad debe consultar las transiciones usando su propio estado, sin que el controlador concentre esa decisión de negocio.
+
+**Antes** (`f0e9de8^`, extracto de `SolicitudController.cambiarEstado`):
+
+```java
+boolean valido = false;
+if (actual.equals("PENDIENTE")) {
+    if (nuevo.equals("EN_REVISION") || nuevo.equals("RECHAZADA")) {
+        valido = true;
+    }
+} else if (actual.equals("EN_REVISION")) {
+    if (nuevo.equals("RESUELTA") || nuevo.equals("RECHAZADA") || nuevo.equals("PENDIENTE")) {
+        valido = true;
+    }
+}
+// ... resto de la cadena condicional
+```
+
+**Después** (`f0e9de8`):
+
+```java
+// SolicitudController.cambiarEstado
+boolean valido = sol.permiteTransicionA(nuevo);
+
+// Solicitud: extracto; la cadena completa se conserva en este paso
+public boolean permiteTransicionA(String nuevoEstado) {
+    boolean valido = false;
+    if (estado.equals("PENDIENTE")) {
+        if (nuevoEstado.equals("EN_REVISION") || nuevoEstado.equals("RECHAZADA")) {
+            valido = true;
+        }
+    }
+    // ... mismas ramas para los demás estados
+    return valido;
+}
+```
+
+- **Pasos seguidos:** se agregó `permiteTransicionA(String nuevoEstado)` y se trasladó la cadena condicional sustituyendo el estado leído por el atributo de la entidad. El controlador delega la consulta y conserva la obligatoriedad del estado, la conversión a mayúsculas, el `409`, el responsable y el comentario, en el mismo orden.
+- **Verificación:** 69 de 69 pruebas: A 31, B 17 y C 21; sin fallos, errores ni omisiones. CP-B03 a CP-B06, CP-B11 y CP-B14 a CP-B16 cubren transiciones, restricciones, estados finales y normalización.
+- **Comportamiento externo:** sin cambios en transiciones, códigos HTTP, mensajes, historial, fechas ni persistencia.
+- **Beneficio y limitación:** la decisión queda junto a los datos que utiliza. En este paso solo se consulta si la transición está permitida; todavía no se encapsulan sus efectos ni se elimina el setter público.
+
+#### RB-02 – Replace Conditional with Lookup Table: tabla de transiciones
+
+- **Smell que aborda:** complementa SB-01 / S-03, simplificando la decisión trasladada en RB-01. No resuelve SB-03 / S-10: los estados siguen siendo `String`.
+- **Zona / autora:** B – Marina.
+- **Commit:** `daedb7b` (padre: `f0e9de8`).
+- **Motivación:** expresar las transiciones como datos inmutables y separar su definición de la consulta.
+
+**Antes** (`daedb7b^`, extracto de `Solicitud.permiteTransicionA`):
+
+```java
+boolean valido = false;
+if (estado.equals("PENDIENTE")) {
+    if (nuevoEstado.equals("EN_REVISION") || nuevoEstado.equals("RECHAZADA")) {
+        valido = true;
+    }
+}
+// ... mismas ramas para los demás estados
+return valido;
+```
+
+**Después** (`daedb7b`, en `Solicitud`):
+
+```java
+private static final Map<String, Set<String>> TRANSICIONES_PERMITIDAS = Map.of(
+        "PENDIENTE", Set.of("EN_REVISION", "RECHAZADA"),
+        "EN_REVISION", Set.of("RESUELTA", "RECHAZADA", "PENDIENTE"),
+        "RESUELTA", Set.of("CERRADA", "EN_REVISION"),
+        "CERRADA", Collections.emptySet(),
+        "RECHAZADA", Collections.emptySet());
+
+public boolean permiteTransicionA(String nuevoEstado) {
+    return TRANSICIONES_PERMITIDAS.getOrDefault(estado, Collections.emptySet()).contains(nuevoEstado);
+}
+```
+
+- **Pasos seguidos:** se creó el mapa estático con conjuntos inmutables, se incluyeron los estados finales sin destinos y se reemplazó la cadena por una consulta. No se modificaron el controlador ni `setEstado()`.
+- **Verificación:** 69 de 69 pruebas: A 31, B 17 y C 21; sin fallos, errores ni omisiones. Además se compararon RB-01 y RB-02 en 81 combinaciones: las 25 entre estados válidos y combinaciones con valores desconocidos, vacíos, minúsculas y `null`; coincidieron resultados o tipos de excepción.
+- **Comportamiento externo:** sin cambios; se conservan las siete transiciones permitidas y la ausencia de salidas desde `CERRADA` y `RECHAZADA`.
+- **Beneficio y limitación:** las reglas se leen en una tabla y la consulta queda estable. Cambiar las reglas exige editar esa tabla; no se afirma cumplimiento completo de OCP ni seguridad de tipos mediante un `enum`.
+
+#### RB-03 – Encapsulación: estado, historial y fecha en una operación
+
+- **Smell que aborda:** SB-04 / S-04, modificación del estado sin protección en la entidad; resolución **parcial**.
+- **Zona / autora:** B – Marina.
+- **Commit:** `c9dc80a` (padre: `daedb7b`).
+- **Motivación:** reunir las comprobaciones de una transición operativa y sus efectos para evitar cambios de estado sin el historial o la fecha correspondientes.
+
+**Antes** (`c9dc80a^`, actualización final de `SolicitudController.cambiarEstado`):
+
+```java
+String hoy = LocalDate.now().toString();
+String linea = hoy + ": " + actual + " -> " + nuevo;
+if (comentario != null && !comentario.trim().isEmpty()) {
+    linea += " (" + comentario.trim() + ")";
+}
+sol.getHistorial().add(linea);
+sol.setEstado(nuevo);
+sol.setFechaUltimoCambio(hoy);
+```
+
+**Después** (`c9dc80a`, delegación desde el mismo punto del controlador):
+
+```java
+String hoy = LocalDate.now().toString();
+sol.cambiarEstado(nuevo, comentario, hoy);
+```
+
+La nueva operación en `Solicitud` valida antes de modificar:
+
+```java
+public void cambiarEstado(String nuevoEstado, String comentario, String fecha) {
+    if (!permiteTransicionA(nuevoEstado)) {
+        throw new IllegalStateException("Transición no permitida: " + estado + " -> " + nuevoEstado);
+    }
+    if (nuevoEstado.equals("EN_REVISION") && responsableId == null) {
+        throw new IllegalStateException("Para pasar a EN_REVISION la solicitud debe tener un responsable asignado");
+    }
+    if (nuevoEstado.equals("RECHAZADA") && (comentario == null || comentario.trim().isEmpty())) {
+        throw new IllegalArgumentException("Para rechazar una solicitud hay que indicar un comentario");
+    }
+
+    String linea = fecha + ": " + estado + " -> " + nuevoEstado;
+    if (comentario != null && !comentario.trim().isEmpty()) {
+        linea += " (" + comentario.trim() + ")";
+    }
+    historial.add(linea);
+    estado = nuevoEstado;
+    fechaUltimoCambio = fecha;
+}
+```
+
+En `asignarResponsable`, después de establecer el responsable y agregar su entrada al historial, el bloque anterior era:
+
+```java
+if (sol.getEstado().equals("PENDIENTE")) {
+    sol.getHistorial().add(hoy + ": PENDIENTE -> EN_REVISION");
+    sol.setEstado("EN_REVISION");
+}
+sol.setFechaUltimoCambio(hoy);
+```
+
+El bloque queda así, sin repetir la actualización de fecha cuando hay transición:
+
+```java
+if (sol.getEstado().equals("PENDIENTE")) {
+    sol.cambiarEstado("EN_REVISION", null, hoy);
+} else {
+    sol.setFechaUltimoCambio(hoy);
+}
+```
+
+- **Pasos seguidos:** se agregó la operación con comprobación de transición, responsable para `EN_REVISION` y comentario para `RECHAZADA`, antes de cualquier modificación. Se delegaron las actualizaciones desde ambos endpoints. El controlador mantiene sus comprobaciones y su orden para conservar códigos y mensajes HTTP; la entidad también se protege ante llamadas directas. La fecha se recibe para compartir el mismo `hoy`, sin leer nuevamente el reloj.
+- **Verificación:** 82 de 82 pruebas: A 31, B 30 y C 21; sin fallos, errores ni omisiones. Se conservan las 69 anteriores y se agregan 13 verificaciones de B: seis rechazos sin cambios parciales, cuatro transiciones con comprobación de formato y fecha, asignación automática, asignación sin transición y guardar/cargar con Jackson conservando estado, fechas e historial. Línea base HTTP: **14 de 14 casos iguales** a la referencia original.
+- **Comportamiento externo:** sin cambios. En la asignación automática se conservan primero el evento de asignación y después el de transición, con la misma fecha. Creación inicial, datos sintéticos, formato JSON y persistencia permanecen intactos.
+- **Beneficio y limitación:** los cambios operativos agrupan sus efectos y rechazan condiciones inválidas sin modificaciones parciales. `setEstado()` sigue público para inicialización y compatibilidad de persistencia; permite eludir esta operación, por lo que SB-04 / S-04 no se considera completamente resuelto. Tampoco se afirma protección completa de todas las invariantes de la entidad.
+
+#### RB-04 – Extract Method: búsqueda de solicitudes por ID
+
+- **Smell que resuelve:** SB-02 / S-09, búsqueda repetida en `obtener`, `cambiarEstado` y `asignarResponsable`.
+- **Zona / autora:** B – Marina.
+- **Commit:** `8e02326` (padre: `c9dc80a`).
+- **Motivación:** centralizar el recorrido y conservar una única forma de encontrar la primera solicitud cuyo ID coincide.
+
+**Antes** (`8e02326^`, bloque repetido en los dos endpoints de modificación):
+
+```java
+Solicitud sol = null;
+for (Solicitud s : BaseDeDatos.solicitudes) {
+    if (s.getId() == id) {
+        sol = s;
+        break;
+    }
+}
+```
+
+**Después** (`8e02326`, helper privado y llamada desde los tres endpoints):
+
+```java
+private Solicitud buscarSolicitudPorId(int id) {
+    for (Solicitud solicitud : BaseDeDatos.solicitudes) {
+        if (solicitud.getId() == id) {
+            return solicitud;
+        }
+    }
+    return null;
+}
+
+// En cada endpoint, antes de las demás validaciones
+Solicitud sol = buscarSolicitudPorId(id);
+if (sol == null) {
+    return respuestaError(HttpStatus.NOT_FOUND, "No existe la solicitud " + id);
+}
+```
+
+- **Pasos seguidos:** se extrajo el recorrido a `buscarSolicitudPorId(int id)` y se sustituyeron las tres búsquedas. `obtener` conserva el `200` con la solicitud y el mismo `404` cuando no existe; los endpoints de modificación mantienen todas las comprobaciones posteriores en su orden original.
+- **Verificación:** 84 de 84 pruebas: A 31, B 32 y C 21; sin fallos, errores ni omisiones. Dos pruebas nuevas envían `{}` a cambio de estado y asignación de una solicitud inexistente y comprueban que prevalezca el `404` con el mensaje exacto. CP-B03 ya verifica modificar la solicitud 2, fuera de la primera posición. Línea base HTTP: **14 de 14 casos iguales**.
+- **Comportamiento externo:** sin cambios en respuestas, precedencia de errores, reglas ni operaciones de RB-03. Se devuelve la instancia original, sin copiarla ni modificarla durante la búsqueda.
+- **Beneficio y limitación:** se elimina el recorrido duplicado. La búsqueda sigue siendo lineal y el controlador continúa dependiendo de `BaseDeDatos`; no se introduce un repositorio ni se alteran otras búsquedas.
+
+#### RB-05 – Replace Magic Number with Named Constant: límite de asignaciones
+
+- **Smell que resuelve:** SB-05 / S-11, número mágico para el límite de asignaciones.
+- **Zona / autora:** B – Marina.
+- **Commit:** `4d39d0d` (padre: `8e02326`).
+- **Motivación:** nombrar el límite de la RN-12 y evitar que la condición y el mensaje utilicen valores independientes.
+
+**Antes** (`4d39d0d^`, en `SolicitudController.asignarResponsable`):
+
+```java
+if (cant >= 5) {
+    return respuestaError(HttpStatus.CONFLICT, "El responsable ya tiene 5 solicitudes abiertas");
+}
+```
+
+**Después** (`4d39d0d`, constante de clase y uso):
+
+```java
+private static final int MAX_SOLICITUDES_POR_RESPONSABLE = 5;
+
+// En asignarResponsable
+if (cant >= MAX_SOLICITUDES_POR_RESPONSABLE) {
+    return respuestaError(HttpStatus.CONFLICT, "El responsable ya tiene " + MAX_SOLICITUDES_POR_RESPONSABLE + " solicitudes abiertas");
+}
+```
+
+- **Pasos seguidos:** se agregó la constante privada en el controlador, donde permanece la regla, y se sustituyó el literal en la comparación y el mensaje. No se modificaron otras constantes ni pruebas.
+- **Verificación:** 84 de 84 pruebas: A 31, B 32 y C 21; sin fallos, errores ni omisiones. CP-B10 verifica el rechazo al alcanzar cinco solicitudes abiertas; CP-B14 conserva la reapertura mediante cambio de estado aunque el responsable tenga cinco solicitudes abiertas adicionales. Línea base HTTP: **14 de 14 casos iguales**.
+- **Comportamiento externo:** sin cambios: límite de cinco, mismas validaciones, HTTP `409` y mensaje exacto `El responsable ya tiene 5 solicitudes abiertas`.
+- **Beneficio y limitación:** el valor tiene un nombre y se comparte entre condición y mensaje. El conteo y la regla permanecen en el controlador; este paso no reubica responsabilidades adicionales.
+
+#### Decisiones pendientes y alcance de la zona B
+
+- **SB-03 / S-10 permanece pendiente:** se conserva `String` para los estados. Un `enum EstadoSolicitud` requiere revisar consultas, reportes, datos sintéticos y persistencia, además de mantener los valores JSON, el tratamiento de estados inválidos y la normalización de entradas. La compatibilidad con Jackson puede conservarse, pero necesita una intervención específica y coordinación entre zonas. Se posterga para no ampliar estos cinco cambios; RB-02 solo reemplaza la estructura de decisión.
+- **SB-04 / S-04 queda parcialmente resuelto:** RB-03 protege las transiciones operativas utilizadas por los endpoints, pero el setter público sigue permitiendo cambios directos. Separar completamente inicialización, rehidratación y modificación del dominio queda fuera de este alcance.
+- **Resultados históricos:** RB-01 y RB-02 se verificaron con 69 pruebas; RB-03 agregó 13 verificaciones de B y alcanzó 82; RB-04 agregó otras dos y alcanzó 84; RB-05 conserva ese total. La distribución final es A 31, B 32 y C 21. Las comparaciones HTTP de RB-03, RB-04 y RB-05 dieron 14/14 contra `estado-inicial`; no se atribuye una corrida HTTP independiente a RB-01 o RB-02.
+
+### 5.2.C Zona C – Consultas y persistencia (Silvia)
+
+Tres refactorings sobre `SolicitudController`, aplicados en la rama `zona-c/refactoring`, uno por commit, con las 69 pruebas en verde después de cada uno (31 de zona A, 17 de zona B y 21 de zona C).
+
+| ID | Técnica | Smell que resuelve | Principio / práctica | Commit |
+|---|---|---|---|---|
+| RC-01 | Introduce Parameter Object (`FiltroSolicitudes`) | S-12 (SC-01) | Clean Code (pocos argumentos), Long Parameter List | [`0624db5`](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/0624db5) |
+| RC-02 | Encapsulate Collection (catálogos) | S-14 (SC-05) | Encapsulamiento, bajo acoplamiento | [`faf4849`](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/faf4849) |
+| RC-03 | Extract Class (`PoliticaVencimiento`) | S-05 (SC-02) | SRP, DRY, sin valores mágicos | [`63d7b64`](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/63d7b64) |
+
+#### RC-01 – Introduce Parameter Object: `FiltroSolicitudes`
+
+- **Smell que resuelve:** S-12 (SC-01 – lista de parámetros larga en `filtrar`).
+- **Zona / autora:** C – Silvia.
+- **Commit:** [`0624db5`](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/0624db5).
+- **Motivación:** `filtrar` recibía seis parámetros sueltos (cuatro `String`), lo que dificultaba leer la llamada y agregar filtros. Se agrupan en un objeto con nombre.
+
+**Antes:**
+
+```java
+private List<Solicitud> filtrar(String estado, String tipo, String prioridad, String legajo,
+                                Integer responsableId, Boolean vencidas) { ... }
+```
+
+**Después:**
+
+```java
+private List<Solicitud> filtrar(FiltroSolicitudes filtro) {
+    String estado = filtro.estado();
+    // ...
+}
+```
+
+- **Pasos seguidos:** crear el record `FiltroSolicitudes`; cambiar la firma de `filtrar`; construir el objeto en `listar`. Un commit.
+- **Verificación:** 69 pruebas en verde antes y después; CP-C01 a CP-C21 de la zona C.
+- **Comportamiento externo:** sin cambios (mismos códigos, mensajes y resultados).
+- **Beneficio:** la llamada se lee como un solo objeto; los criterios viajan juntos en un objeto con nombre y `filtrar` tiene un solo parámetro.
+
+#### RC-02 – Encapsulate Collection: catálogos inmutables
+
+- **Smell que resuelve:** S-14 (SC-05 – los catálogos devuelven las listas internas).
+- **Zona / autora:** C – Silvia.
+- **Commit:** [`faf4849`](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/faf4849).
+- **Motivación:** `estudiantes()` y `responsables()` devolvían la lista interna de `BaseDeDatos`, permitiendo mutar el estado global.
+
+**Antes:**
+
+```java
+return BaseDeDatos.estudiantes;
+```
+
+**Después:**
+
+```java
+return List.copyOf(BaseDeDatos.estudiantes);
+```
+
+- **Pasos seguidos:** reemplazar el retorno por `List.copyOf` en ambos endpoints. Un commit.
+- **Verificación:** 69 pruebas en verde antes y después; CP-C11 y CP-C12 verifican tamaño y contenido.
+- **Comportamiento externo:** sin cambios para lectura; un intento de mutación ahora lanza `UnsupportedOperationException`.
+- **Beneficio:** se protege el estado global de mutaciones externas.
+
+#### RC-03 – Extract Class: `PoliticaVencimiento`
+
+- **Smell que resuelve:** S-05 (SC-02, regla de vencimiento duplicada en `filtrar` y `resumen`).
+- **Zona / autora:** C – Silvia.
+- **Commit:** [`63d7b64`](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/63d7b64).
+- **Motivación:** la regla de vencimiento (RN-14) estaba duplicada en `filtrar` y en `resumen`, con plazos distintos por prioridad. Se extrae a una sola clase.
+
+**Antes:**
+
+```java
+// filtrar
+if (s.getPrioridad().equals("ALTA") && dias > 3) { flag = true; }
+if (s.getPrioridad().equals("MEDIA") && dias > 7) { flag = true; }
+if (s.getPrioridad().equals("BAJA") && dias > 15) { flag = true; }
+
+// resumen
+int limite = 15;
+if (s.getPrioridad().equals("ALTA")) { limite = 3; }
+else if (s.getPrioridad().equals("MEDIA")) { limite = 7; }
+if (dias > limite) { venc++; }
+```
+
+**Después:**
+
+```java
+// filtrar
+if (vencidas != null && vencidas && !PoliticaVencimiento.estaVencida(s, LocalDate.now())) {
+    ok = false;
+}
+
+// resumen
+if (PoliticaVencimiento.estaVencida(s, LocalDate.now())) {
+    venc++;
+}
+```
+
+- **Pasos seguidos:** crear `PoliticaVencimiento` en `servicio`; reemplazar el cálculo en `filtrar` y `resumen`; quitar `ChronoUnit` del controlador. Un commit.
+- **Verificación:** 69 pruebas en verde antes y después; CP-C07 y CP-C21 cubren los límites. Si se cambia el plazo de ALTA a 4 días, CP-C21 falla.
+- **Comportamiento externo:** sin cambios (mismos resultados y conteos).
+- **Beneficio:** la regla de vencimiento vive en un solo lugar; el controlador deja de calcularla.
+
+#### Lo que no se aborda en esta zona
+
+- **S-06 (estado global y persistencia en `BaseDeDatos`):** atraviesa todos los endpoints y las pruebas de las tres zonas. A un día de la entrega, refactorizarlo requeriría coordinar con las zonas A y B; se deja como mejora pendiente.
+- **S-13 (`resumen` con mapas de `String` y `get(...) + 1`):** el `NullPointerException` es latente con los datos actuales; se mantiene la estructura actual para no tocar el contrato del reporte.
 
 ### Modelo de ficha
 
