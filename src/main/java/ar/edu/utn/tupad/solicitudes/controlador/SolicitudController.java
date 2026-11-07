@@ -311,23 +311,7 @@ public class SolicitudController {
         nuevo = nuevo.toUpperCase();
         String actual = sol.getEstado();
 
-        boolean valido = false;
-        if (actual.equals("PENDIENTE")) {
-            if (nuevo.equals("EN_REVISION") || nuevo.equals("RECHAZADA")) {
-                valido = true;
-            }
-        } else if (actual.equals("EN_REVISION")) {
-            if (nuevo.equals("RESUELTA") || nuevo.equals("RECHAZADA") || nuevo.equals("PENDIENTE")) {
-                valido = true;
-            }
-        } else if (actual.equals("RESUELTA")) {
-            if (nuevo.equals("CERRADA") || nuevo.equals("EN_REVISION")) {
-                valido = true;
-            }
-        } else if (actual.equals("CERRADA") || actual.equals("RECHAZADA")) {
-            // estados finales, no se pueden cambiar
-            valido = false;
-        }
+        boolean valido = sol.permiteTransicionA(nuevo);
         if (!valido) {
             return respuestaError(HttpStatus.CONFLICT, "Transición no permitida: " + actual + " -> " + nuevo);
         }

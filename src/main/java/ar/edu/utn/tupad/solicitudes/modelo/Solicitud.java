@@ -64,6 +64,27 @@ public class Solicitud {
         this.estado = estado;
     }
 
+    public boolean permiteTransicionA(String nuevoEstado) {
+        boolean valido = false;
+        if (estado.equals("PENDIENTE")) {
+            if (nuevoEstado.equals("EN_REVISION") || nuevoEstado.equals("RECHAZADA")) {
+                valido = true;
+            }
+        } else if (estado.equals("EN_REVISION")) {
+            if (nuevoEstado.equals("RESUELTA") || nuevoEstado.equals("RECHAZADA") || nuevoEstado.equals("PENDIENTE")) {
+                valido = true;
+            }
+        } else if (estado.equals("RESUELTA")) {
+            if (nuevoEstado.equals("CERRADA") || nuevoEstado.equals("EN_REVISION")) {
+                valido = true;
+            }
+        } else if (estado.equals("CERRADA") || estado.equals("RECHAZADA")) {
+            // estados finales, no se pueden cambiar
+            valido = false;
+        }
+        return valido;
+    }
+
     public Integer getResponsableId() {
         return responsableId;
     }
