@@ -13,8 +13,8 @@
 | R-02 | | | | A – Alex | |
 | R-03 | Move Method | | | B – Marina | |
 | R-04 | | | | B – Marina | |
-| R-05 | Introduce Parameter Object | | | C – Silvia | |
-| R-06 | | | | C – Silvia | |
+| R-05 | Introduce Parameter Object (`FiltroSolicitudes`) | S-12 (SC-01 – lista de parámetros larga en `filtrar`) | Clean Code (pocos argumentos) | C – Silvia | [`0624db5`](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/0624db5) |
+| R-06 | Encapsulate Collection (catálogos) | S-14 (SC-05 – catálogos devuelven las listas internas) | Encapsulamiento, bajo acoplamiento | C – Silvia | [`faf4849`](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/faf4849) |
 
 ## 5.2 Detalle
 
@@ -600,6 +600,114 @@ if (cant >= MAX_SOLICITUDES_POR_RESPONSABLE) {
 - **SB-03 / S-10 permanece pendiente:** se conserva `String` para los estados. Un `enum EstadoSolicitud` requiere revisar consultas, reportes, datos sintéticos y persistencia, además de mantener los valores JSON, el tratamiento de estados inválidos y la normalización de entradas. La compatibilidad con Jackson puede conservarse, pero necesita una intervención específica y coordinación entre zonas. Se posterga para no ampliar estos cinco cambios; RB-02 solo reemplaza la estructura de decisión.
 - **SB-04 / S-04 queda parcialmente resuelto:** RB-03 protege las transiciones operativas utilizadas por los endpoints, pero el setter público sigue permitiendo cambios directos. Separar completamente inicialización, rehidratación y modificación del dominio queda fuera de este alcance.
 - **Resultados históricos:** RB-01 y RB-02 se verificaron con 69 pruebas; RB-03 agregó 13 verificaciones de B y alcanzó 82; RB-04 agregó otras dos y alcanzó 84; RB-05 conserva ese total. La distribución final es A 31, B 32 y C 21. Las comparaciones HTTP de RB-03, RB-04 y RB-05 dieron 14/14 contra `estado-inicial`; no se atribuye una corrida HTTP independiente a RB-01 o RB-02.
+
+### 5.2.C Zona C – Consultas y persistencia (Silvia)
+
+Tres refactorings sobre `SolicitudController`, aplicados en la rama `zona-c/refactoring`, uno por commit, con las 69 pruebas en verde después de cada uno (31 de zona A, 17 de zona B y 21 de zona C).
+
+| ID | Técnica | Smell que resuelve | Principio / práctica | Commit |
+|---|---|---|---|---|
+| RC-01 | Introduce Parameter Object (`FiltroSolicitudes`) | S-12 (SC-01) | Clean Code (pocos argumentos), Long Parameter List | [`0624db5`](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/0624db5) |
+| RC-02 | Encapsulate Collection (catálogos) | S-14 (SC-05) | Encapsulamiento, bajo acoplamiento | [`faf4849`](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/faf4849) |
+| RC-03 | Extract Class (`PoliticaVencimiento`) | S-05 (SC-02) | SRP, DRY, sin valores mágicos | [`63d7b64`](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/63d7b64) |
+
+#### RC-01 – Introduce Parameter Object: `FiltroSolicitudes`
+
+- **Smell que resuelve:** S-12 (SC-01 – lista de parámetros larga en `filtrar`).
+- **Zona / autora:** C – Silvia.
+- **Commit:** [`0624db5`](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/0624db5).
+- **Motivación:** `filtrar` recibía seis parámetros sueltos (cuatro `String`), lo que dificultaba leer la llamada y agregar filtros. Se agrupan en un objeto con nombre.
+
+**Antes:**
+
+```java
+private List<Solicitud> filtrar(String estado, String tipo, String prioridad, String legajo,
+                                Integer responsableId, Boolean vencidas) { ... }
+```
+
+**Después:**
+
+```java
+private List<Solicitud> filtrar(FiltroSolicitudes filtro) {
+    String estado = filtro.estado();
+    // ...
+}
+```
+
+- **Pasos seguidos:** crear el record `FiltroSolicitudes`; cambiar la firma de `filtrar`; construir el objeto en `listar`. Un commit.
+- **Verificación:** 69 pruebas en verde antes y después; CP-C01 a CP-C21 de la zona C.
+- **Comportamiento externo:** sin cambios (mismos códigos, mensajes y resultados).
+- **Beneficio:** la llamada se lee como un solo objeto; los criterios viajan juntos en un objeto con nombre y `filtrar` tiene un solo parámetro.
+
+#### RC-02 – Encapsulate Collection: catálogos inmutables
+
+- **Smell que resuelve:** S-14 (SC-05 – los catálogos devuelven las listas internas).
+- **Zona / autora:** C – Silvia.
+- **Commit:** [`faf4849`](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/faf4849).
+- **Motivación:** `estudiantes()` y `responsables()` devolvían la lista interna de `BaseDeDatos`, permitiendo mutar el estado global.
+
+**Antes:**
+
+```java
+return BaseDeDatos.estudiantes;
+```
+
+**Después:**
+
+```java
+return List.copyOf(BaseDeDatos.estudiantes);
+```
+
+- **Pasos seguidos:** reemplazar el retorno por `List.copyOf` en ambos endpoints. Un commit.
+- **Verificación:** 69 pruebas en verde antes y después; CP-C11 y CP-C12 verifican tamaño y contenido.
+- **Comportamiento externo:** sin cambios para lectura; un intento de mutación ahora lanza `UnsupportedOperationException`.
+- **Beneficio:** se protege el estado global de mutaciones externas.
+
+#### RC-03 – Extract Class: `PoliticaVencimiento`
+
+- **Smell que resuelve:** S-05 (SC-02, regla de vencimiento duplicada en `filtrar` y `resumen`).
+- **Zona / autora:** C – Silvia.
+- **Commit:** [`63d7b64`](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/63d7b64).
+- **Motivación:** la regla de vencimiento (RN-14) estaba duplicada en `filtrar` y en `resumen`, con plazos distintos por prioridad. Se extrae a una sola clase.
+
+**Antes:**
+
+```java
+// filtrar
+if (s.getPrioridad().equals("ALTA") && dias > 3) { flag = true; }
+if (s.getPrioridad().equals("MEDIA") && dias > 7) { flag = true; }
+if (s.getPrioridad().equals("BAJA") && dias > 15) { flag = true; }
+
+// resumen
+int limite = 15;
+if (s.getPrioridad().equals("ALTA")) { limite = 3; }
+else if (s.getPrioridad().equals("MEDIA")) { limite = 7; }
+if (dias > limite) { venc++; }
+```
+
+**Después:**
+
+```java
+// filtrar
+if (vencidas != null && vencidas && !PoliticaVencimiento.estaVencida(s, LocalDate.now())) {
+    ok = false;
+}
+
+// resumen
+if (PoliticaVencimiento.estaVencida(s, LocalDate.now())) {
+    venc++;
+}
+```
+
+- **Pasos seguidos:** crear `PoliticaVencimiento` en `servicio`; reemplazar el cálculo en `filtrar` y `resumen`; quitar `ChronoUnit` del controlador. Un commit.
+- **Verificación:** 69 pruebas en verde antes y después; CP-C07 y CP-C21 cubren los límites. Si se cambia el plazo de ALTA a 4 días, CP-C21 falla.
+- **Comportamiento externo:** sin cambios (mismos resultados y conteos).
+- **Beneficio:** la regla de vencimiento vive en un solo lugar; el controlador deja de calcularla.
+
+#### Lo que no se aborda en esta zona
+
+- **S-06 (estado global y persistencia en `BaseDeDatos`):** atraviesa todos los endpoints y las pruebas de las tres zonas. A un día de la entrega, refactorizarlo requeriría coordinar con las zonas A y B; se deja como mejora pendiente.
+- **S-13 (`resumen` con mapas de `String` y `get(...) + 1`):** el `NullPointerException` es latente con los datos actuales; se mantiene la estructura actual para no tocar el contrato del reporte.
 
 ### Modelo de ficha
 
