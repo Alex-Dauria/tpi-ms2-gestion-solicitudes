@@ -37,21 +37,7 @@
 
 Las fichas conservan su organización por zona y usan la numeración final del catálogo 3.2. En cada título se indica el identificador original (SA, SB o SC), que mantiene la trazabilidad con documentos y evidencias anteriores. Las referencias originales dentro de los diagnósticos se conservan.
 
-_Si un smell toca dos zonas (por ejemplo, los estados como texto o el chequeo de solicitud duplicada), lo documenta quien lo ve desde su parte y menciona la otra zona en la ficha._
-
 ### 3.3.A Zona A – Registro de solicitudes (Alex)
-
-#### Resumen de la zona
-
-| ID | Smell / debilidad | Ubicación | Impacto | Riesgo de mantenimiento | Prioridad | Zona | Detectado por |
-|---|---|---|---|---|---|---|---|
-| S-01 (SA-01) | Método largo con responsabilidades mezcladas | `registrarSolicitud` | F1 y cualquier cambio en las reglas del registro | Un cambio en una regla obliga a leer y tocar 105 líneas que hacen siete cosas distintas | Alta | A | Alex |
-| S-02 (SA-02) | Código duplicado en el armado de las respuestas de error | `registrarSolicitud` (10 veces) y el resto del controlador (22 en total) | F1, F3, F4 y F5 | Un cambio en el formato de error hay que repetirlo en 22 lugares | Alta | A | Alex |
-| S-07 (SA-03) | Entrada sin tipos y lista larga de parámetros | `crear` y la firma de `registrarSolicitud` | F1 | Un dato con otro tipo produce un `500`; un argumento en el orden equivocado compila | Media | A | Alex |
-| S-08 (SA-04) | Tipos, prioridades y límites escritos como valores sueltos | Validaciones y cálculo de prioridad de `registrarSolicitud` | F1 y, por duplicación, F6 | Agregar un tipo obliga a tocar varios lugares sin ayuda del compilador | Media | A | Alex |
-| S-15 (SA-05) | Alta implícita del estudiante dentro del registro | Bloque de búsqueda y alta del estudiante | F1 | Una regla nueva sobre estudiantes queda escondida dentro del registro de solicitudes | Baja | A | Alex |
-
-_El refactoring propuesto para cada smell está en su ficha._
 
 #### S-01 (original: SA-01) – Método largo con responsabilidades mezcladas
 
@@ -297,18 +283,6 @@ if (cant >= 5) {
 **Nota de alcance:** estas fichas se refieren a la zona B. Las observaciones de `registrarSolicitud()` pertenecen a la zona A de Alex. Los identificadores originales `SB-*` se conservan como referencia junto a la numeración final del catálogo global de la issue #6.
 
 ### 3.3.C Zona C – Consultas y persistencia (Silvia)
-
-#### Resumen de la zona
-
-| ID | Smell / debilidad | Ubicación | Impacto | Riesgo de mantenimiento | Prioridad | Zona | Detectado por |
-|---|---|---|---|---|---|---|---|
-| S-12 (SC-01) | Lista de parámetros larga en `filtrar` | `SolicitudController.listar` / `filtrar` | F2 y cualquier filtro nuevo | Un argumento en el orden equivocado compila y cambia el resultado | Media | C | Silvia |
-| S-05 (SC-02) | Regla de vencimiento duplicada | `filtrar` y `resumen` | F2 y F6 | El filtro y el reporte pueden mostrar números distintos | Alta | C | Silvia |
-| S-06 (SC-03) | Estado global y persistencia en `BaseDeDatos` | `BaseDeDatos` | Todos los endpoints, las pruebas y la migración | Las pruebas comparten estado; cambiar la persistencia atraviesa todo | Alta | C | Silvia |
-| S-13 (SC-04) | `resumen` con mapas de `String` y `get(...) + 1` | `resumen` | F6 y el alta de un tipo o estado | `NullPointerException` latente | Media | C | Silvia |
-| S-14 (SC-05) | Catálogos que devuelven las listas internas | `estudiantes` / `responsables` | F7 | Un consumidor puede mutar el estado global | Media | C | Silvia |
-
-_El refactoring propuesto para cada smell está en su ficha._
 
 #### S-12 (original: SC-01) – Lista de parámetros larga en `filtrar`
 

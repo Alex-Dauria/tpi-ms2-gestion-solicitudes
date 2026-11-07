@@ -10,7 +10,7 @@ Este documento organiza el trabajo: quién hace qué, en qué orden y cómo nos 
 | **2. Diagnóstico** | Smells de la zona A (#3) | Calidad externa/interna (#2) · smells de la zona C (#5) · checklist de code review (#7) | Smells de la zona B (#4) · une los smells de las tres en el catálogo (#6) |
 | **3. Refactoring y pruebas** | Pruebas y refactoring de la zona A (#8) · sección SOLID (#11) | Pruebas y refactoring de la zona C (#10) · sección de pruebas (#13) | Pruebas y refactoring de la zona B (#9) · sección de refactorings (#12) |
 | **4. Code review y documentación** | Uso de IA y ZIP (#16) | Conclusiones (#15) | Code review final (#14) |
-| **5. Entrega** | Video (#18) | Participa en el PDF y el video | Revisión integral y PDF (#17) |
+| **5. Entrega** | Video (#18) · Revisión integral y PDF (#17) | Participa en el PDF y el video | Participa en el PDF y el video |
 
 En todos los hitos, además, cada una revisa el trabajo de otra (sección 3).
 
@@ -41,9 +41,9 @@ Los demás refactorings de cada zona se eligen **a partir del diagnóstico**, no
 
 | Integrante | Responsable de | Revisa a |
 |---|---|---|
-| **Alex** | #1 Sistema base · #3 Diagnóstico zona A · #8 Refactoring zona A · #11 SOLID y Clean Code · #16 IA y ZIP · #18 Video | Silvia |
+| **Alex** | #1 Sistema base · #3 Diagnóstico zona A · #8 Refactoring zona A · #11 SOLID y Clean Code · #16 IA y ZIP · #17 Revisión integral y PDF · #18 Video | Silvia |
 | **Silvia** | #2 Calidad externa/interna · #5 Diagnóstico zona C · #7 Checklist de code review · #10 Refactoring zona C · #13 Pruebas · #15 Conclusiones | Marina |
-| **Marina** | #4 Diagnóstico zona B · #6 Catálogo de deuda técnica · #9 Refactoring zona B · #12 Documento de refactorings · #14 Code review final · #17 Revisión integral y PDF | Alex |
+| **Marina** | #4 Diagnóstico zona B · #6 Catálogo de deuda técnica · #9 Refactoring zona B · #12 Documento de refactorings · #14 Code review final | Alex |
 
 **Revisión cruzada rotativa:** Marina revisa lo de Alex, Silvia revisa lo de Marina y Alex revisa lo de Silvia. Los documentos que consolidan aportes de las tres (#6, #7, #15, #16, #17) los revisan las otras dos.
 
