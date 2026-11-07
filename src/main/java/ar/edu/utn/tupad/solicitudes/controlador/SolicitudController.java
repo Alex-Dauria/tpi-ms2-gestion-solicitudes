@@ -4,6 +4,8 @@ import ar.edu.utn.tupad.solicitudes.datos.BaseDeDatos;
 import ar.edu.utn.tupad.solicitudes.modelo.Estudiante;
 import ar.edu.utn.tupad.solicitudes.modelo.Responsable;
 import ar.edu.utn.tupad.solicitudes.modelo.Solicitud;
+import ar.edu.utn.tupad.solicitudes.servicio.DatosSolicitud;
+import ar.edu.utn.tupad.solicitudes.servicio.ReglasRegistro;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,15 +27,6 @@ import java.util.Optional;
 @RestController
 public class SolicitudController {
 
-    // Reglas del registro (RN-01 a RN-05)
-    private static final int DIGITOS_LEGAJO = 5;
-    private static final int LARGO_MINIMO_DESCRIPCION = 10;
-    private static final int LARGO_MAXIMO_DESCRIPCION = 500;
-    private static final List<String> TIPOS_VALIDOS =
-            List.of("CERTIFICADO", "EQUIVALENCIA", "REVISION_NOTA", "CAMBIO_COMISION", "OTRO");
-    private static final List<String> PRIORIDADES_VALIDAS = List.of("ALTA", "MEDIA", "BAJA");
-    private static final String CARRERA_POR_DEFECTO = "Sin especificar";
-
     private static final int MAX_SOLICITUDES_POR_RESPONSABLE = 5;
 
     // ===================== SOLICITUDES =====================
@@ -52,29 +45,23 @@ public class SolicitudController {
     }
 
     private ResponseEntity<Object> registrarSolicitud(DatosSolicitud datos) {
-        // Se valida campo por campo, en este orden, y se corta en el primer error
-        Optional<String> error = validarLegajo(datos.legajo())
-                .or(() -> validarTipo(datos.tipo()))
-                .or(() -> validarDescripcion(datos.descripcion()))
-                .or(() -> validarPrioridad(datos.prioridad()));
+        Optional<String> error = ReglasRegistro.validarSolicitud(datos);
         if (error.isPresent()) {
             return respuestaError(HttpStatus.BAD_REQUEST, error.get());
         }
 
         String legajo = datos.legajo();
         String tipo = datos.tipo().toUpperCase();
-        String prioridad = estaVacio(datos.prioridad())
-                ? prioridadPorDefecto(tipo)
-                : datos.prioridad().toUpperCase();
+        String prioridad = ReglasRegistro.prioridadDe(datos);
         String descripcion = datos.descripcion();
 
         // Si el estudiante no existe, se lo da de alta con los datos del pedido (RN-05)
         if (buscarEstudiantePorLegajo(legajo).isEmpty()) {
-            Optional<String> errorAlta = validarDatosDeAlta(datos.nombre(), datos.email());
+            Optional<String> errorAlta = ReglasRegistro.validarDatosDeAlta(datos);
             if (errorAlta.isPresent()) {
                 return respuestaError(HttpStatus.BAD_REQUEST, errorAlta.get());
             }
-            BaseDeDatos.estudiantes.add(crearEstudiante(datos));
+            BaseDeDatos.estudiantes.add(ReglasRegistro.crearEstudiante(datos));
         }
 
         // RN-06: no puede tener otra solicitud abierta del mismo tipo
@@ -118,52 +105,6 @@ public class SolicitudController {
         return solicitud;
     }
 
-    // RN-01
-    private Optional<String> validarLegajo(String legajo) {
-        if (estaVacio(legajo)) {
-            return Optional.of("El legajo es obligatorio");
-        }
-        if (!legajo.matches("\\d{" + DIGITOS_LEGAJO + "}")) {
-            return Optional.of("El legajo debe tener " + DIGITOS_LEGAJO + " dígitos");
-        }
-        return Optional.empty();
-    }
-
-    // RN-02: el tipo no distingue mayúsculas y el mensaje muestra el valor ya pasado a mayúsculas
-    private Optional<String> validarTipo(String tipo) {
-        if (estaVacio(tipo)) {
-            return Optional.of("El tipo es obligatorio");
-        }
-        String tipoNormalizado = tipo.toUpperCase();
-        if (!TIPOS_VALIDOS.contains(tipoNormalizado)) {
-            return Optional.of("Tipo de solicitud inválido: " + tipoNormalizado);
-        }
-        return Optional.empty();
-    }
-
-    // RN-03: el mínimo se mide sin los espacios de los extremos y el máximo con ellos
-    private Optional<String> validarDescripcion(String descripcion) {
-        if (descripcion == null || descripcion.trim().length() < LARGO_MINIMO_DESCRIPCION) {
-            return Optional.of("La descripción debe tener al menos " + LARGO_MINIMO_DESCRIPCION + " caracteres");
-        }
-        if (descripcion.length() > LARGO_MAXIMO_DESCRIPCION) {
-            return Optional.of("La descripción no puede superar los " + LARGO_MAXIMO_DESCRIPCION + " caracteres");
-        }
-        return Optional.empty();
-    }
-
-    // RN-04: la prioridad es opcional; si viene, tiene que ser válida
-    private Optional<String> validarPrioridad(String prioridad) {
-        if (estaVacio(prioridad)) {
-            return Optional.empty();
-        }
-        String prioridadNormalizada = prioridad.toUpperCase();
-        if (!PRIORIDADES_VALIDAS.contains(prioridadNormalizada)) {
-            return Optional.of("Prioridad inválida: " + prioridadNormalizada);
-        }
-        return Optional.empty();
-    }
-
     private Optional<Estudiante> buscarEstudiantePorLegajo(String legajo) {
         for (Estudiante estudiante : BaseDeDatos.estudiantes) {
             if (estudiante.getLegajo().equals(legajo)) {
@@ -171,40 +112,6 @@ public class SolicitudController {
             }
         }
         return Optional.empty();
-    }
-
-    // RN-05: para dar de alta a un estudiante nuevo hacen falta nombre y un email válido
-    private Optional<String> validarDatosDeAlta(String nombre, String email) {
-        if (estaVacio(nombre) || estaVacio(email)) {
-            return Optional.of("El estudiante no existe: se requieren nombre y email para darlo de alta");
-        }
-        if (!email.contains("@") || !email.contains(".")) {
-            return Optional.of("El email no es válido");
-        }
-        return Optional.empty();
-    }
-
-    // RN-05: el email se guarda en minúsculas y, sin carrera, se registra "Sin especificar"
-    private Estudiante crearEstudiante(DatosSolicitud datos) {
-        String carrera = datos.carrera() == null ? CARRERA_POR_DEFECTO : datos.carrera();
-        return new Estudiante(datos.legajo(), datos.nombre().trim(), datos.email().trim().toLowerCase(), carrera);
-    }
-
-    private boolean estaVacio(String valor) {
-        return valor == null || valor.trim().isEmpty();
-    }
-
-    // Prioridad que corresponde a cada tipo cuando la solicitud no indica una (RN-04)
-    private String prioridadPorDefecto(String tipo) {
-        switch (tipo) {
-            case "REVISION_NOTA":
-                return "ALTA";
-            case "EQUIVALENCIA":
-            case "CAMBIO_COMISION":
-                return "MEDIA";
-            default:
-                return "BAJA";
-        }
     }
 
     @GetMapping("/solicitudes")
