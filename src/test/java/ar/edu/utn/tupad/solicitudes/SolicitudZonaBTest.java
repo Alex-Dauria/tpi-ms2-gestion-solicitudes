@@ -112,6 +112,26 @@ class SolicitudZonaBTest {
                         .value("No existe la solicitud 99"));
     }
 
+    // RB-04: la solicitud inexistente prevalece sobre la falta del nuevo estado.
+    @Test
+    void cambiarEstadoDeSolicitudInexistenteDevuelve404AntesDeValidarCuerpo() throws Exception {
+        mockMvc.perform(put("/solicitudes/99/estado")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{}"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.error").value("No existe la solicitud 99"));
+    }
+
+    // RB-04: la solicitud inexistente prevalece sobre la falta del responsableId.
+    @Test
+    void asignarResponsableDeSolicitudInexistenteDevuelve404AntesDeValidarCuerpo() throws Exception {
+        mockMvc.perform(put("/solicitudes/99/responsable")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{}"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.error").value("No existe la solicitud 99"));
+    }
+
     // CP-B03: transición válida de EN_REVISION a RESUELTA.
     @Test
     void resolverSolicitudEnRevision() throws Exception {

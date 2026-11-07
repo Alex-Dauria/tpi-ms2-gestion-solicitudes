@@ -280,25 +280,27 @@ public class SolicitudController {
         return lst;
     }
 
-    @GetMapping("/solicitudes/{id}")
-    public ResponseEntity<Object> obtener(@PathVariable int id) {
-        for (Solicitud s : BaseDeDatos.solicitudes) {
-            if (s.getId() == id) {
-                return ResponseEntity.ok(s);
+    private Solicitud buscarSolicitudPorId(int id) {
+        for (Solicitud solicitud : BaseDeDatos.solicitudes) {
+            if (solicitud.getId() == id) {
+                return solicitud;
             }
         }
-        return respuestaError(HttpStatus.NOT_FOUND, "No existe la solicitud " + id);
+        return null;
+    }
+
+    @GetMapping("/solicitudes/{id}")
+    public ResponseEntity<Object> obtener(@PathVariable int id) {
+        Solicitud sol = buscarSolicitudPorId(id);
+        if (sol == null) {
+            return respuestaError(HttpStatus.NOT_FOUND, "No existe la solicitud " + id);
+        }
+        return ResponseEntity.ok(sol);
     }
 
     @PutMapping("/solicitudes/{id}/estado")
     public ResponseEntity<Object> cambiarEstado(@PathVariable int id, @RequestBody Map<String, String> body) {
-        Solicitud sol = null;
-        for (Solicitud s : BaseDeDatos.solicitudes) {
-            if (s.getId() == id) {
-                sol = s;
-                break;
-            }
-        }
+        Solicitud sol = buscarSolicitudPorId(id);
         if (sol == null) {
             return respuestaError(HttpStatus.NOT_FOUND, "No existe la solicitud " + id);
         }
@@ -330,13 +332,7 @@ public class SolicitudController {
 
     @PutMapping("/solicitudes/{id}/responsable")
     public ResponseEntity<Object> asignarResponsable(@PathVariable int id, @RequestBody Map<String, Integer> body) {
-        Solicitud sol = null;
-        for (Solicitud s : BaseDeDatos.solicitudes) {
-            if (s.getId() == id) {
-                sol = s;
-                break;
-            }
-        }
+        Solicitud sol = buscarSolicitudPorId(id);
         if (sol == null) {
             return respuestaError(HttpStatus.NOT_FOUND, "No existe la solicitud " + id);
         }
