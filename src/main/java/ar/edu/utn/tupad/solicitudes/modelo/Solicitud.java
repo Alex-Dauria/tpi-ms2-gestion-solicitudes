@@ -1,9 +1,19 @@
 package ar.edu.utn.tupad.solicitudes.modelo;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class Solicitud {
+
+    private static final Map<String, Set<String>> TRANSICIONES_PERMITIDAS = Map.of(
+            "PENDIENTE", Set.of("EN_REVISION", "RECHAZADA"),
+            "EN_REVISION", Set.of("RESUELTA", "RECHAZADA", "PENDIENTE"),
+            "RESUELTA", Set.of("CERRADA", "EN_REVISION"),
+            "CERRADA", Collections.emptySet(),
+            "RECHAZADA", Collections.emptySet());
 
     private int id;
     private String legajo;
@@ -65,24 +75,7 @@ public class Solicitud {
     }
 
     public boolean permiteTransicionA(String nuevoEstado) {
-        boolean valido = false;
-        if (estado.equals("PENDIENTE")) {
-            if (nuevoEstado.equals("EN_REVISION") || nuevoEstado.equals("RECHAZADA")) {
-                valido = true;
-            }
-        } else if (estado.equals("EN_REVISION")) {
-            if (nuevoEstado.equals("RESUELTA") || nuevoEstado.equals("RECHAZADA") || nuevoEstado.equals("PENDIENTE")) {
-                valido = true;
-            }
-        } else if (estado.equals("RESUELTA")) {
-            if (nuevoEstado.equals("CERRADA") || nuevoEstado.equals("EN_REVISION")) {
-                valido = true;
-            }
-        } else if (estado.equals("CERRADA") || estado.equals("RECHAZADA")) {
-            // estados finales, no se pueden cambiar
-            valido = false;
-        }
-        return valido;
+        return TRANSICIONES_PERMITIDAS.getOrDefault(estado, Collections.emptySet()).contains(nuevoEstado);
     }
 
     public Integer getResponsableId() {
