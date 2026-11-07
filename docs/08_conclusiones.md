@@ -52,7 +52,7 @@ _Pendiente: la escribe Silvia._
 
 ### Marina Giselle Cordero
 
-_Pendiente: la escribe Marina._
+En este trabajo me ocupé del diagnóstico, las pruebas y los refactorings de la zona B, además de participar en la documentación y las revisiones del equipo. Aprendí que mejorar el código no significa solamente hacerlo más legible, sino también asegurar que siga funcionando de la misma manera. Las pruebas de caracterización me permitieron realizar cambios pequeños y comprobar sus resultados. También comprendí que no todos los code smells detectados deben refactorizarse: es necesario evaluar su impacto, prioridad, riesgos y costo antes de decidir qué mejorar y qué dejar documentado como deuda técnica pendiente. El trabajo colaborativo me enseñó la importancia de las ramas, los commits y las revisiones cruzadas, así como la necesidad de coordinar los cambios y los tiempos. Por último, la IA me ayudó a analizar alternativas y desarrollar soluciones, pero aprendí que sus propuestas deben verificarse y que las decisiones finales son responsabilidad nuestra.
 
 ## 8.3 Participación de cada integrante
 
