@@ -323,13 +323,7 @@ public class SolicitudController {
         }
 
         String hoy = LocalDate.now().toString();
-        String linea = hoy + ": " + actual + " -> " + nuevo;
-        if (comentario != null && !comentario.trim().isEmpty()) {
-            linea += " (" + comentario.trim() + ")";
-        }
-        sol.getHistorial().add(linea);
-        sol.setEstado(nuevo);
-        sol.setFechaUltimoCambio(hoy);
+        sol.cambiarEstado(nuevo, comentario, hoy);
         BaseDeDatos.guardar();
         return ResponseEntity.ok(sol);
     }
@@ -384,10 +378,10 @@ public class SolicitudController {
         sol.getHistorial().add(hoy + ": responsable asignado " + r.getNombre() + " (" + r.getArea() + ")");
         // si estaba pendiente pasa automaticamente a revision
         if (sol.getEstado().equals("PENDIENTE")) {
-            sol.getHistorial().add(hoy + ": PENDIENTE -> EN_REVISION");
-            sol.setEstado("EN_REVISION");
+            sol.cambiarEstado("EN_REVISION", null, hoy);
+        } else {
+            sol.setFechaUltimoCambio(hoy);
         }
-        sol.setFechaUltimoCambio(hoy);
         BaseDeDatos.guardar();
         return ResponseEntity.ok(sol);
     }
