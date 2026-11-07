@@ -31,7 +31,7 @@ Partimos de un prototipo que funcionaba, pero con casi todas las reglas concentr
 ### Mejoras pendientes
 
 - Separar el estado y la persistencia de `BaseDeDatos` detrás de un repositorio con interfaz (S-06), la deuda más importante y la que permitiría mejorar DIP.
-- Representar estados, tipos y prioridades con `enum` en lugar de texto (S-08, S-10 y S-13).
+- Representar estados, tipos y prioridades con `enum` en lugar de texto (S-08 y S-10).
 - Terminar de proteger el estado de `Solicitud`, que todavía tiene `setEstado()` público (S-04), y dejar RN-08 y RN-09 en un solo lugar.
 - Dividir los métodos que siguen siendo largos: `filtrar`, `resumen` y `asignarResponsable`.
 - Corregir el `500` del legajo numérico como cambio intencional de comportamiento.
