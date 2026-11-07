@@ -102,7 +102,69 @@ Severidad: **Bloqueante** (impide aprobar) · **Mayor** (corregir en este PR) ·
 
 ## 7.5 Aplicación del checklist sobre el repositorio final
 
-_Resultado del checklist sobre `estado-refactorizado`._
+El checklist de 7.2 se aplicó sobre el código integrado en `main` (`26b943e`). El código de producción (`src/` y `pom.xml`) es idéntico al del commit `45f9510`, sobre el que se registró la evidencia "después" de la Etapa 6. Las líneas citadas corresponden a `26b943e`. La sección 4 se cita según el PR #42 y la sección 5 según el PR #44, ambos pendientes de integración. Esta revisión no modificó código ni agregó refactorings.
+
+**Estado:** los criterios bloqueantes 21 y 22 dan Sí. Los criterios bloqueantes 1 y 2 quedan **pendientes de verificación final** sobre `estado-refactorizado`, así que el checklist final todavía no se considera aprobado.
+
+| # | Criterio | Bloqueante | Resultado | Evidencia | Observación y tratamiento |
+|---|---|---|---|---|---|
+| 1 | Pruebas automatizadas en verde | Sí | **Pendiente de verificación final** | Evidencia histórica: 84 de 84 sobre `45f9510` (tabla 6.3, `docs/evidencias/pruebas/etapa-6-despues/`, PR #40). El código de producción no cambió desde ese commit | No es una ejecución nueva. Se confirma con `.\mvnw.cmd test` sobre `estado-refactorizado` |
+| 2 | Comportamiento externo sin cambios no documentados | Sí | **Pendiente de verificación final** | Evidencia histórica: 14 de 14 casos iguales sobre `45f9510` (`docs/evidencias/pruebas/linea_base_etapa_refactoring.md`). El `500` del legajo numérico (CP-25) se conserva a propósito y está documentado en 6.5 | No es una ejecución nueva. Se confirma con `scripts/linea_base.ps1 -CompararCon` sobre `estado-refactorizado` (salida: `linea_base_estado_refactorizado.md`) |
+| 3 | Casos límite y de error cubiertos | No | Sí | CP-01 a CP-70 (6.2): límites de RN-03 y de RN-14 (3/4, 7/8 y 15/16 días), límite de asignaciones, recursos inexistentes, entradas inválidas y persistencia (CP-60 a CP-62 y CP-68). Mutación de la zona C: 7 de 7 detectadas (CR-08) | Sin prueba para una falla de escritura en `guardar()`: ver HF-01 |
+| 4 | Una única razón de cambio por clase o método | No | No (mejora parcial) | Salieron del controlador las reglas del registro (`ReglasRegistro`, R-09 y R-10), las transiciones (`Solicitud`, R-11 a R-13) y el vencimiento (`PoliticaVencimiento`, R-18). `SolicitudController` todavía filtra, ordena, arma el reporte, asigna y persiste; `BaseDeDatos` mezcla estado y persistencia | Deuda documentada: SRP y OCP como mejora parcial en 4.1 (PR #42), "Lo que no se aborda" en 5.2.C (PR #44) y S-06 |
+| 5 | La lógica de negocio no está en el controlador | No | No (mejora parcial) | `SolicitudController.cambiarEstado` repite RN-08 y RN-09 (líneas 220–225), que también valida `Solicitud.cambiarEstado` (líneas 87–91). Las reglas de asignación siguen en `asignarResponsable` (líneas 239–270) | La repetición de RN-08 y RN-09 está documentada en 4.1 y 4.3 (PR #42). Reglas de asignación: ver HF-04 |
+| 6 | Las entidades protegen sus invariantes | No | No | `Solicitud.setEstado()` es público. `getHistorial()` devuelve la lista interna y el controlador le agrega entradas (líneas 104 y 274); también usa `setResponsableId` y `setFechaUltimoCambio` (líneas 273 y 279) | `setEstado()`: S-04 parcial, documentado en R-13 (PR #44) y 4.3 (PR #42). Historial y setters: ver HF-02 |
+| 7 | Nombres descriptivos, sin abreviaturas | No | No (menor) | Quedan `lst`, `ok`, `venc`, `porResp`, `x` y `k` en `filtrar` y `resumen`, y `sol`, `rid`, `cant` y `r` en `asignarResponsable`. Las clases nuevas usan nombres descriptivos | Deuda documentada en 4.2 (PR #42), que registra los de `filtrar` y `resumen` |
+| 8 | Funciones con verbo, variables con sustantivo | No | Sí | `validarSolicitud`, `buscarSolicitudAbierta`, `construirSolicitud`, `permiteTransicionA`, `estaVencida`, `prioridadDe` | — |
+| 9 | Sin números ni cadenas mágicas | No | No | Constantes en el registro (R-07), el límite de asignaciones (R-15) y los plazos (R-18). Los estados siguen como texto en el controlador, la entidad y `PoliticaVencimiento`; el orden del listado usa 1, 2 y 3 según la prioridad (líneas 173–174), y `resumen` repite las claves de estados, tipos y prioridades (líneas 291–308) | Deuda documentada: estados como `String` (S-10; el `enum` se postergó en "Decisiones pendientes" de 5.2.B, PR #44) y `resumen` (S-13). Ver HF-03 |
+| 10 | Cada función hace una sola cosa | No | No (mejora parcial) | `registrarSolicitud` coordina pasos con nombre. `filtrar` filtra y ordena; `asignarResponsable` valida, busca, cuenta, asigna, registra el historial y persiste; `resumen` hace cuatro conteos | Deuda documentada en 4.2 (PR #42) |
+| 11 | Hasta 3 parámetros o Parameter Object | No | No (menor) | `filtrar` y `registrarSolicitud` reciben un objeto (R-16 y R-03). `construirSolicitud` recibe 5 parámetros (línea 93) | Ver HF-05 |
+| 12 | Funciones cortas | No | No | `filtrar` y `resumen`, 53 líneas cada una; `asignarResponsable`, 50. `registrarSolicitud` bajó de 105 a 33 | Deuda documentada en 4.2 (PR #42) |
+| 13 | Errores explícitos, sin `null` silencioso | No | No | `BaseDeDatos.guardar()` atrapa `Exception` y solo imprime la traza (líneas 55–57). `buscarSolicitudPorId` devuelve `null`, y los tres métodos que la usan lo convierten en 404. `cargar()` con un archivo corrupto arranca con los datos de prueba (CP-62, se conserva) | Ver HF-01. El `500` del legajo numérico (CP-25) y el `NullPointerException` latente de `resumen` (S-13) están documentados |
+| 14 | Mensajes de error claros y consistentes | No | Sí | Un único `respuestaError` con el formato `{"error": "..."}` (R-01); mensajes verificados por CP-01 a CP-70 | La excepción documentada es el `500` del legajo numérico (CP-25) |
+| 15 | Sin duplicación; reglas en un solo lugar | No | No (mejora parcial) | Se resolvieron S-02 (R-01), S-05 (R-18) y S-09 (R-14). Siguen repetidas RN-08 y RN-09, la regla de solicitud abierta, la búsqueda de responsable por id y la lista de tipos entre `ReglasRegistro` y `resumen` | RN-08 y RN-09: documentadas en 4.1 (PR #42). Ver HF-03 y HF-04 |
+| 16 | Búsquedas y acceso a datos centralizados | No | No (mejora parcial) | `buscarSolicitudPorId` centraliza la búsqueda de solicitudes (R-14). La búsqueda de responsables se hace en línea dos veces y el controlador accede directamente a las listas de `BaseDeDatos` | Deuda documentada: S-06. Ver HF-04 |
+| 17 | Acoplamiento mínimo y por interfaces | No | No | El controlador depende de las clases concretas y estáticas `BaseDeDatos`, `ReglasRegistro` y `PoliticaVencimiento`; el proyecto no define interfaces | Deuda documentada: DIP "no se mejoró" en 4.1 (PR #42) y S-06 |
+| 18 | Sin estado global injustificado | No | No (justificado) | `BaseDeDatos` expone listas `public static` y `ultimoId`, que el controlador incrementa (línea 74). R-17 solo copia las listas de los catálogos | Justificado en "Lo que no se aborda" de 5.2.C (PR #44, CR-11); S-06 |
+| 19 | Commits atómicos, en español y con prefijo | No | Sí, con observaciones | Los commits de `main` que no son merges usan prefijo, salvo `5de5ac7 Initial commit`, generado por GitHub al crear el repositorio. Los merges automáticos (`Merge remote-tracking branch…`) no llevan prefijo | Observaciones registradas; no se reescribe el historial |
+| 20 | PR con descripción, issue y evidencia | No | Sí | #28 y #35 cierran #8, #38 cierra #10 y #41 cierra #9; los PR de pruebas (#24, #26 y #31) usan `Refs`. Todos declaran resultados y evidencia | — |
+| 21 | El diff no incluye cambios no relacionados | Sí | Sí | Los PR de refactoring tocan su zona y su documentación | — |
+| 22 | Refactoring: un commit por R-xx, pruebas después de cada uno, sin squash | Sí (PR de refactoring) | Sí, con observaciones | 18 commits `refactor(…)`, uno por refactoring; la tabla 5.1 (PR #44) hace corresponder RA, RB y RC con R-01 a R-18. Los merges de #28 (`142f937`), #35 (`264aeb5`), #38 (`35e29c4`) y #41 (`4426062`) tienen dos padres. Pruebas por commit registradas en las fichas, en las revisiones de #35 y #38 y en IA-16 | Los commits usan el identificador original (RA, RB o RC); la correspondencia con R-xx está en 5.1. `63d7b64` incluye RC-03 y su documentación. Los desvíos de revisión de #28 y #41 se tratan en 7.6 |
+
+**Resumen:** de los 22 criterios, 9 se evaluaron positivamente y 13 dieron negativo o parcial.
+
+- **Positivos, definitivos (7):** 3, 8, 14, 20 y 21 (Sí), y 19 y 22 (Sí, con observaciones).
+- **Positivos, pendientes de verificación final (2):** 1 y 2, con evidencia histórica de 84 de 84 y 14 de 14.
+- **Negativos o parciales (13):** 4, 5, 6, 7, 9, 10, 11, 12, 13, 15, 16, 17 y 18. Ninguno es bloqueante y todos quedan documentados como deuda técnica.
+
+### Hallazgos de la revisión final
+
+Hallazgos que no estaban registrados en las secciones anteriores. Se documentan como deuda técnica, sin cambios de código: corregir HF-01 modificaría el comportamiento externo, y el resto requeriría nuevos refactorings con sus pruebas y revisión.
+
+| ID | Hallazgo | Ubicación | Criterios | Motivo para no corregirlo ahora |
+|---|---|---|---|---|
+| HF-01 | Si falla la escritura del archivo, el error se descarta: la API responde con éxito y el cambio se pierde al reiniciar | `BaseDeDatos.guardar()` (líneas 55–57) | 3, 13 | Informar el error al cliente cambiaría el comportamiento externo; no es un refactoring |
+| HF-02 | El historial se puede modificar desde fuera de la entidad, y el controlador usa setters públicos | `Solicitud.getHistorial()`; `SolicitudController` (líneas 104, 273, 274 y 279) | 6 | Encapsularlo afecta la persistencia con Jackson y la asignación; es el mismo frente que S-04 |
+| HF-03 | La regla de solicitud abierta (`PENDIENTE` o `EN_REVISION`) se repite en cuatro lugares | `SolicitudController` (líneas 85, 264 y 321) y `PoliticaVencimiento.estaVencida` (línea 24) | 9, 15 | Depende de la representación de los estados (S-10) |
+| HF-04 | La búsqueda de un responsable por id está duplicada, y las reglas de asignación siguen en el controlador | `asignarResponsable` (líneas 239–270) y `resumen` (líneas 323–328) | 5, 15, 16 | Mismo alcance que S-06 y que la mejora parcial de SRP |
+| HF-05 | `construirSolicitud` recibe cinco parámetros | `SolicitudController.construirSolicitud` (línea 93) | 11 | Bajo impacto: método privado de construcción |
+
+### Deuda técnica documentada que se mantiene
+
+- SRP y OCP como mejora parcial: 4.1 (PR #42).
+- `setEstado()` público, S-04 parcial: R-13 (PR #44) y 4.3 (PR #42).
+- Estados representados como `String` (S-10); el `enum` se postergó: "Decisiones pendientes" de 5.2.B (PR #44) y 4.2 (PR #42).
+- Estado global y persistencia en `BaseDeDatos` (S-06), sin mejora de DIP: 4.1 (PR #42) y "Lo que no se aborda" de 5.2.C (PR #44).
+- `resumen` con mapas de `String` y `NullPointerException` latente (S-13): 5.2.C (PR #44).
+- Métodos largos y nombres abreviados en `filtrar`, `resumen` y `asignarResponsable`: 4.2 (PR #42).
+- RN-08 y RN-09 repetidas en el controlador y en `Solicitud`: 4.1 y 4.3 (PR #42).
+- `500` del legajo numérico, conservado a propósito: CP-25 y 6.5.
+
+### Verificación final pendiente
+
+1. Con las correcciones integradas, crear el tag `estado-refactorizado` (y `estadorefactorizado` sobre el mismo commit).
+2. Sobre ese tag, ejecutar `.\mvnw.cmd test` y `scripts/linea_base.ps1 -CompararCon docs/evidencias/pruebas/linea_base_estado_inicial.md` (salida: `linea_base_estado_refactorizado.md`).
+3. Completar la fila "Versión final" de la tabla 6.3 y actualizar el resultado de los criterios 1 y 2 en esta sección.
 
 ## 7.6 Feedback y aprendizajes
 
