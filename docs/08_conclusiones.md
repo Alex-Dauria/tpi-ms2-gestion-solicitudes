@@ -48,7 +48,7 @@ Me ocupé de la zona de registro, de coordinar el repositorio, del sistema base 
 
 ### Silvia Giardini
 
-_Pendiente: la escribe Silvia._
+Me ocupé del diagnóstico, las pruebas y el refactoring de la zona C (consultas y persistencia), del checklist de code review y de consolidar la sección de pruebas. En este proceso aprendí que refactorizar no es solo ordenar el código, sino cambiarlo basándose en evidencia: usar pruebas de caracterización y una línea base me dio la seguridad para saber qué optimizar y qué dejar intacto sin romper nada. También entendí lo importante que es dejar registrada la deuda técnica que queda pendiente —como la de BaseDeDatos— para que el próximo que trabaje en el código sepa por dónde empezar. La IA me ayudó a orientarme, a revisar alternativas y a destrabar puntos en los que me encontraba bloqueada.
 
 ### Marina Giselle Cordero
 
