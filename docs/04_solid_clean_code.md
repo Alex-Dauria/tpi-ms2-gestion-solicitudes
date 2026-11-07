@@ -24,7 +24,21 @@ _Cada una escribe acá, al terminar su refactoring (fase 3 de #8, #9 y #10), un 
 
 ### Zona B – Ciclo de vida (Marina)
 
+- **SRP y cohesión:** RB-01 reubica la decisión sobre las transiciones permitidas desde `SolicitudController` hacia `Solicitud.permiteTransicionA` (SB-01 / S-03). RB-03 reúne en `Solicitud.cambiarEstado` las comprobaciones de la transición, el responsable y el comentario, y la actualización del estado, historial y fecha (SB-04 / S-04). La entidad usa su propio estado y el controlador delega la operación. La mejora de SRP es parcial: el controlador conserva validaciones para producir las respuestas HTTP y sigue coordinando el acceso a `BaseDeDatos` y la persistencia.
+- **Encapsulación:** RB-03 comprueba las condiciones antes de modificar la solicitud; una operación rechazada no cambia estado, historial ni fecha. La asignación automática conserva primero la entrada de asignación del responsable y después la de transición a `EN_REVISION`, con una misma fecha. SB-04 / S-04 queda **parcialmente resuelto**: `setEstado()` sigue siendo público para inicialización y compatibilidad con la persistencia JSON, por lo que todavía puede eludirse la operación de dominio. No se afirma que todas las invariantes estén protegidas.
+- **OCP:** mejora limitada. RB-02 reemplaza la cadena condicional por una tabla estática e inmutable de transiciones; la consulta no cambia al ajustar sus entradas, pero modificar las reglas todavía requiere editar la tabla. Los estados continúan como `String`: RB-02 no resuelve SB-03 / S-10 ni implica cumplimiento completo de OCP.
+- **LSP, ISP y DIP:** no fueron objeto de mejoras en esta zona. No se introdujeron jerarquías, interfaces ni inversión de dependencias; se conserva la dependencia del controlador con `BaseDeDatos`.
+- **Clean Code:** RB-04 extrae `buscarSolicitudPorId` para las tres operaciones que repetían el recorrido de solicitudes (SB-02 / S-09), conservando la primera instancia coincidente y la respuesta `404`. RB-05 introduce `MAX_SOLICITUDES_POR_RESPONSABLE = 5` y utiliza el mismo valor en la condición y el mensaje (SB-05 / S-11). Los nombres expresan la intención, la búsqueda queda en un solo lugar y la operación de cambio de estado concentra sus efectos. Se mantienen el orden de las validaciones, los códigos HTTP y los mensajes existentes.
+- **Decisión pendiente:** se posterga el `enum EstadoSolicitud` propuesto en SB-03 / S-10. El estado también interviene en consultas, reportes, datos sintéticos y JSON persistido; cambiar su tipo requiere coordinar esos consumidores y verificar la representación externa, las entradas inválidas y su orden de validación. No es una incompatibilidad inevitable con Jackson, sino un cambio de mayor alcance que se separa de RB-01 a RB-05.
+
 ### Zona C – Consultas y persistencia (Silvia)
+
+- **SRP:** `filtrar` recibía seis parámetros sueltos y hacía todo el filtrado en un método; con RC-01 coordina los criterios a través de `FiltroSolicitudes` y con RC-03 la regla de vencimiento sale del controlador y queda en `PoliticaVencimiento`.
+- **Clean Code:**
+  - **Funciones/argumentos:** de seis parámetros sueltos a un objeto con nombre (`FiltroSolicitudes`, RC-01).
+  - **Encapsulamiento:** `estudiantes()` y `responsables()` devuelven `List.copyOf` (RC-02), protegiendo el estado global.
+- **OCP/LSP/ISP:** no aplican a esta zona; no hay jerarquías ni interfaces en las consultas.
+- **DIP:** el problema existe: el controlador depende directamente de la clase estática `BaseDeDatos`. Queda como mejora pendiente (S-06).
 
 ## 4.1 Principios SOLID
 

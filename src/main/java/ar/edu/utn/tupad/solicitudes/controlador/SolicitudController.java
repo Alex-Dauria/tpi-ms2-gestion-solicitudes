@@ -5,6 +5,7 @@ import ar.edu.utn.tupad.solicitudes.modelo.Estudiante;
 import ar.edu.utn.tupad.solicitudes.modelo.Responsable;
 import ar.edu.utn.tupad.solicitudes.modelo.Solicitud;
 import ar.edu.utn.tupad.solicitudes.servicio.DatosSolicitud;
+import ar.edu.utn.tupad.solicitudes.servicio.PoliticaVencimiento;
 import ar.edu.utn.tupad.solicitudes.servicio.ReglasRegistro;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -26,6 +26,8 @@ import java.util.Optional;
 
 @RestController
 public class SolicitudController {
+
+    private static final int MAX_SOLICITUDES_POR_RESPONSABLE = 5;
 
     // ===================== SOLICITUDES =====================
 
@@ -119,11 +121,18 @@ public class SolicitudController {
                                   @RequestParam(required = false) String legajo,
                                   @RequestParam(required = false) Integer responsableId,
                                   @RequestParam(required = false) Boolean vencidas) {
-        return filtrar(estado, tipo, prioridad, legajo, responsableId, vencidas);
+        // Agrupa los seis criterios de filtrado en un solo objeto.
+        return filtrar(new FiltroSolicitudes(estado, tipo, prioridad, legajo, responsableId, vencidas));
     }
 
-    private List<Solicitud> filtrar(String estado, String tipo, String prioridad, String legajo,
-                                    Integer responsableId, Boolean vencidas) {
+    // Filtra las solicitudes según los criterios recibidos.
+    private List<Solicitud> filtrar(FiltroSolicitudes filtro) {
+        String estado = filtro.estado();
+        String tipo = filtro.tipo();
+        String prioridad = filtro.prioridad();
+        String legajo = filtro.legajo();
+        Integer responsableId = filtro.responsableId();
+        Boolean vencidas = filtro.vencidas();
         List<Solicitud> lst = new ArrayList<>();
         for (Solicitud s : BaseDeDatos.solicitudes) {
             boolean ok = true;
@@ -152,24 +161,8 @@ public class SolicitudController {
                     ok = false;
                 }
             }
-            if (vencidas != null && vencidas) {
-                // calcula si esta vencida
-                boolean flag = false;
-                if (s.getEstado().equals("PENDIENTE") || s.getEstado().equals("EN_REVISION")) {
-                    long dias = ChronoUnit.DAYS.between(LocalDate.parse(s.getFechaCreacion()), LocalDate.now());
-                    if (s.getPrioridad().equals("ALTA") && dias > 3) {
-                        flag = true;
-                    }
-                    if (s.getPrioridad().equals("MEDIA") && dias > 7) {
-                        flag = true;
-                    }
-                    if (s.getPrioridad().equals("BAJA") && dias > 15) {
-                        flag = true;
-                    }
-                }
-                if (!flag) {
-                    ok = false;
-                }
+            if (vencidas != null && vencidas && !PoliticaVencimiento.estaVencida(s, LocalDate.now())) {
+                ok = false;
             }
             if (ok) {
                 lst.add(s);
@@ -187,25 +180,27 @@ public class SolicitudController {
         return lst;
     }
 
-    @GetMapping("/solicitudes/{id}")
-    public ResponseEntity<Object> obtener(@PathVariable int id) {
-        for (Solicitud s : BaseDeDatos.solicitudes) {
-            if (s.getId() == id) {
-                return ResponseEntity.ok(s);
+    private Solicitud buscarSolicitudPorId(int id) {
+        for (Solicitud solicitud : BaseDeDatos.solicitudes) {
+            if (solicitud.getId() == id) {
+                return solicitud;
             }
         }
-        return respuestaError(HttpStatus.NOT_FOUND, "No existe la solicitud " + id);
+        return null;
+    }
+
+    @GetMapping("/solicitudes/{id}")
+    public ResponseEntity<Object> obtener(@PathVariable int id) {
+        Solicitud sol = buscarSolicitudPorId(id);
+        if (sol == null) {
+            return respuestaError(HttpStatus.NOT_FOUND, "No existe la solicitud " + id);
+        }
+        return ResponseEntity.ok(sol);
     }
 
     @PutMapping("/solicitudes/{id}/estado")
     public ResponseEntity<Object> cambiarEstado(@PathVariable int id, @RequestBody Map<String, String> body) {
-        Solicitud sol = null;
-        for (Solicitud s : BaseDeDatos.solicitudes) {
-            if (s.getId() == id) {
-                sol = s;
-                break;
-            }
-        }
+        Solicitud sol = buscarSolicitudPorId(id);
         if (sol == null) {
             return respuestaError(HttpStatus.NOT_FOUND, "No existe la solicitud " + id);
         }
@@ -218,23 +213,7 @@ public class SolicitudController {
         nuevo = nuevo.toUpperCase();
         String actual = sol.getEstado();
 
-        boolean valido = false;
-        if (actual.equals("PENDIENTE")) {
-            if (nuevo.equals("EN_REVISION") || nuevo.equals("RECHAZADA")) {
-                valido = true;
-            }
-        } else if (actual.equals("EN_REVISION")) {
-            if (nuevo.equals("RESUELTA") || nuevo.equals("RECHAZADA") || nuevo.equals("PENDIENTE")) {
-                valido = true;
-            }
-        } else if (actual.equals("RESUELTA")) {
-            if (nuevo.equals("CERRADA") || nuevo.equals("EN_REVISION")) {
-                valido = true;
-            }
-        } else if (actual.equals("CERRADA") || actual.equals("RECHAZADA")) {
-            // estados finales, no se pueden cambiar
-            valido = false;
-        }
+        boolean valido = sol.permiteTransicionA(nuevo);
         if (!valido) {
             return respuestaError(HttpStatus.CONFLICT, "Transición no permitida: " + actual + " -> " + nuevo);
         }
@@ -246,26 +225,14 @@ public class SolicitudController {
         }
 
         String hoy = LocalDate.now().toString();
-        String linea = hoy + ": " + actual + " -> " + nuevo;
-        if (comentario != null && !comentario.trim().isEmpty()) {
-            linea += " (" + comentario.trim() + ")";
-        }
-        sol.getHistorial().add(linea);
-        sol.setEstado(nuevo);
-        sol.setFechaUltimoCambio(hoy);
+        sol.cambiarEstado(nuevo, comentario, hoy);
         BaseDeDatos.guardar();
         return ResponseEntity.ok(sol);
     }
 
     @PutMapping("/solicitudes/{id}/responsable")
     public ResponseEntity<Object> asignarResponsable(@PathVariable int id, @RequestBody Map<String, Integer> body) {
-        Solicitud sol = null;
-        for (Solicitud s : BaseDeDatos.solicitudes) {
-            if (s.getId() == id) {
-                sol = s;
-                break;
-            }
-        }
+        Solicitud sol = buscarSolicitudPorId(id);
         if (sol == null) {
             return respuestaError(HttpStatus.NOT_FOUND, "No existe la solicitud " + id);
         }
@@ -298,8 +265,8 @@ public class SolicitudController {
                 cant++;
             }
         }
-        if (cant >= 5) {
-            return respuestaError(HttpStatus.CONFLICT, "El responsable ya tiene 5 solicitudes abiertas");
+        if (cant >= MAX_SOLICITUDES_POR_RESPONSABLE) {
+            return respuestaError(HttpStatus.CONFLICT, "El responsable ya tiene " + MAX_SOLICITUDES_POR_RESPONSABLE + " solicitudes abiertas");
         }
 
         String hoy = LocalDate.now().toString();
@@ -307,10 +274,10 @@ public class SolicitudController {
         sol.getHistorial().add(hoy + ": responsable asignado " + r.getNombre() + " (" + r.getArea() + ")");
         // si estaba pendiente pasa automaticamente a revision
         if (sol.getEstado().equals("PENDIENTE")) {
-            sol.getHistorial().add(hoy + ": PENDIENTE -> EN_REVISION");
-            sol.setEstado("EN_REVISION");
+            sol.cambiarEstado("EN_REVISION", null, hoy);
+        } else {
+            sol.setFechaUltimoCambio(hoy);
         }
-        sol.setFechaUltimoCambio(hoy);
         BaseDeDatos.guardar();
         return ResponseEntity.ok(sol);
     }
@@ -348,17 +315,10 @@ public class SolicitudController {
             porTipo.put(s.getTipo(), porTipo.get(s.getTipo()) + 1);
             porPrioridad.put(s.getPrioridad(), porPrioridad.get(s.getPrioridad()) + 1);
 
+            if (PoliticaVencimiento.estaVencida(s, LocalDate.now())) {
+                venc++;
+            }
             if (s.getEstado().equals("PENDIENTE") || s.getEstado().equals("EN_REVISION")) {
-                long dias = ChronoUnit.DAYS.between(LocalDate.parse(s.getFechaCreacion()), LocalDate.now());
-                int limite = 15;
-                if (s.getPrioridad().equals("ALTA")) {
-                    limite = 3;
-                } else if (s.getPrioridad().equals("MEDIA")) {
-                    limite = 7;
-                }
-                if (dias > limite) {
-                    venc++;
-                }
                 if (s.getResponsableId() != null) {
                     for (Responsable x : BaseDeDatos.responsables) {
                         if (x.getId() == s.getResponsableId()) {
@@ -389,11 +349,13 @@ public class SolicitudController {
 
     @GetMapping("/estudiantes")
     public List<Estudiante> estudiantes() {
-        return BaseDeDatos.estudiantes;
+        // Devuelve una copia para no exponer la lista interna.
+        return List.copyOf(BaseDeDatos.estudiantes);
     }
 
     @GetMapping("/responsables")
     public List<Responsable> responsables() {
-        return BaseDeDatos.responsables;
+        // Devuelve una copia para no exponer la lista interna.
+        return List.copyOf(BaseDeDatos.responsables);
     }
 }
