@@ -1,4 +1,4 @@
-# Registro de uso de IA – IA-04, IA-08, IA-09, IA-10, IA-13 e IA-14
+# Registro de uso de IA – IA-04, IA-08, IA-09, IA-10, IA-13, IA-14 e IA-18
 
 **Integrante:** Alex Pedro Dauria · **Herramienta:** Claude Code
 
@@ -45,3 +45,10 @@ Registro resumido de los pedidos principales, lo que devolvió la herramienta y 
 | Pedido | Qué devolvió la herramienta | Cómo se verificó |
 |---|---|---|
 | Sacar del controlador las reglas del registro, uno por commit | RA-09 (`c6ca13c`), RA-10 (`d7996e3`), sus fichas en la sección 5 y la actualización de la sección 4 | 69 de 69 pruebas después de cada commit y línea base 14 de 14 (PR #35) |
+
+## IA-18 – Conclusiones
+
+| Pedido | Qué devolvió la herramienta | Qué se hizo |
+|---|---|---|
+| Armar un borrador de las conclusiones grupales y de la tabla de participación | Texto de 8.1 y tabla de 8.3, con datos del repositorio | Se publicó como borrador para que las tres lo revisen y ajusten en el PR de la Etapa 8 |
+| Armar un borrador de mi conclusión individual | Texto breve | La reescribí con mis palabras, con dos ajustes de precisión sugeridos después |
