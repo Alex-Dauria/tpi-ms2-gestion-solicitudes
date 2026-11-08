@@ -104,12 +104,12 @@ Severidad: **Bloqueante** (impide aprobar) · **Mayor** (corregir en este PR) ·
 
 El checklist de 7.2 se aplicó sobre el código integrado en `main` (`26b943e`). El código de producción (`src/` y `pom.xml`) es idéntico al del commit `45f9510`, sobre el que se registró la evidencia "después" de la Etapa 6. Las líneas citadas corresponden a `26b943e`. Las secciones 4 y 5 se citan según su versión integrada en `main` (PR #42 y #44); esa integración no modificó el código de producción. Esta revisión no modificó código ni agregó refactorings.
 
-**Estado:** los cuatro criterios bloqueantes (1, 2, 21 y 22) dan Sí. Los criterios 1 y 2 se verificaron sobre el commit `50bac22`; el tag `estado-refactorizado` todavía está pendiente de creación y de verificación definitiva sobre `main`. La aprobación de esta sección corresponde a la revisión del PR.
+**Estado:** los cuatro criterios bloqueantes (1, 2, 21 y 22) dan Sí. Los criterios 1 y 2 se verificaron sobre el commit `50bac22` y se repitieron, con el mismo resultado, sobre el tag `estado-refactorizado` (`f8c4e30`). La aprobación de esta sección corresponde a la revisión del PR.
 
 | # | Criterio | Bloqueante | Resultado | Evidencia | Observación y tratamiento |
 |---|---|---|---|---|---|
-| 1 | Pruebas automatizadas en verde | Sí | Sí | 84 de 84 sobre `50bac22` (7/11): 31 de la zona A, 22 + 10 de la zona B y 21 de la zona C, sin fallas, errores ni omisiones (`docs/evidencias/pruebas/estado-refactorizado/`, tabla 6.3). Coincide con la evidencia histórica de 84 de 84 sobre `45f9510` (PR #40); el código de producción es el mismo | Verificado sobre `50bac22`, no sobre el tag `estado-refactorizado`, que todavía no existe |
-| 2 | Comportamiento externo sin cambios no documentados | Sí | Sí | 14 de 14 casos iguales a `linea_base_estado_inicial.md` sobre `50bac22` (`docs/evidencias/pruebas/linea_base_estado_refactorizado.md`), con las mismas respuestas que la corrida histórica sobre `45f9510`. El `500` del legajo numérico (CP-25) se conserva a propósito y está documentado en 6.5 | Verificado sobre `50bac22`. Al terminar, el script dejó el servidor en ejecución y hubo que detenerlo manualmente (nota de 6.3) |
+| 1 | Pruebas automatizadas en verde | Sí | Sí | 84 de 84 sobre `50bac22` (7/11): 31 de la zona A, 22 + 10 de la zona B y 21 de la zona C, sin fallas, errores ni omisiones (`docs/evidencias/pruebas/estado-refactorizado/`, tabla 6.3). Coincide con la evidencia histórica de 84 de 84 sobre `45f9510` (PR #40); el código de producción es el mismo | Verificado sobre `50bac22` y repetido sobre el tag `estado-refactorizado` (`f8c4e30`) el 8/11: 84 de 84 (`docs/evidencias/pruebas/estado-refactorizado-tag/`) |
+| 2 | Comportamiento externo sin cambios no documentados | Sí | Sí | 14 de 14 casos iguales a `linea_base_estado_inicial.md` sobre `50bac22` (`docs/evidencias/pruebas/linea_base_estado_refactorizado.md`), con las mismas respuestas que la corrida histórica sobre `45f9510`. El `500` del legajo numérico (CP-25) se conserva a propósito y está documentado en 6.5 | Verificado sobre `50bac22` y repetido sobre el tag `estado-refactorizado` (`f8c4e30`) el 8/11: 14 de 14 (`linea_base_tag_estado_refactorizado.md`). En ambas corridas, el script dejó el servidor en ejecución y hubo que detenerlo manualmente (nota de 6.3) |
 | 3 | Casos límite y de error cubiertos | No | Sí | CP-01 a CP-70 (6.2): límites de RN-03 y de RN-14 (3/4, 7/8 y 15/16 días), límite de asignaciones, recursos inexistentes, entradas inválidas y persistencia (CP-60 a CP-62 y CP-68). Mutación de la zona C: 7 de 7 detectadas (CR-08) | Sin prueba para una falla de escritura en `guardar()`: ver HF-01 |
 | 4 | Una única razón de cambio por clase o método | No | No (mejora parcial) | Salieron del controlador las reglas del registro (`ReglasRegistro`, R-09 y R-10), las transiciones (`Solicitud`, R-11 a R-13) y el vencimiento (`PoliticaVencimiento`, R-18). `SolicitudController` todavía filtra, ordena, arma el reporte, asigna y persiste; `BaseDeDatos` mezcla estado y persistencia | Deuda documentada: SRP y OCP como mejora parcial en 4.1, "Lo que no se aborda" en 5.2.C y S-06 |
 | 5 | La lógica de negocio no está en el controlador | No | No (mejora parcial) | `SolicitudController.cambiarEstado` repite RN-08 y RN-09 (líneas 220–225), que también valida `Solicitud.cambiarEstado` (líneas 87–91). Las reglas de asignación siguen en `asignarResponsable` (líneas 239–270) | La repetición de RN-08 y RN-09 está documentada en 4.1 y 4.3. Reglas de asignación: ver HF-04 |
@@ -159,10 +159,10 @@ Hallazgos que no estaban registrados en las secciones anteriores. Se documentan 
 - RN-08 y RN-09 repetidas en el controlador y en `Solicitud`: 4.1 y 4.3.
 - `500` del legajo numérico, conservado a propósito: CP-25 y 6.5.
 
-### Verificación pendiente
+### Verificación sobre el tag
 
-1. Con este PR integrado, crear el tag `estado-refactorizado` sobre `main` (y `estadorefactorizado` sobre el mismo commit).
-2. Verificar que el código de producción del tag coincida con el de `50bac22` (`git diff 50bac22 estado-refactorizado -- src pom.xml` sin diferencias). Si hubiera diferencias, repetir las pruebas y la línea base sobre el tag.
+1. Después del merge del PR #47 se crearon los tags `estado-refactorizado` y `estadorefactorizado` sobre el mismo commit de `main` (`f8c4e30`).
+2. `git diff 50bac22 estado-refactorizado -- src pom.xml` no muestra diferencias, y sobre el tag se repitieron las pruebas y la línea base con el mismo resultado (tabla 6.3).
 
 ## 7.6 Feedback y aprendizajes
 
