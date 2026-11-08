@@ -1,4 +1,4 @@
-# Registro de uso de IA – IA-04, IA-08, IA-09, IA-10, IA-13 e IA-14
+# Registro de uso de IA – IA-04, IA-08, IA-09, IA-10, IA-13, IA-14 e IA-17
 
 **Integrante:** Alex Pedro Dauria · **Herramienta:** Claude Code
 
@@ -34,8 +34,10 @@ Registro resumido de los pedidos principales, lo que devolvió la herramienta y 
 
 | Pedido | Qué devolvió la herramienta | Qué se hizo |
 |---|---|---|
-| Revisar los PR que me tocaban o que estaban pendientes (#21, #22, #24, #27, #31 y #33) | Observaciones sobre cada PR, con su verificación | Se publicaron como revisiones en cada PR. Las autoras aplicaron lo que correspondía |
+| Revisar los PR que me tocaban o que estaban pendientes (#21, #22, #24, #27, #31, #33, #38, #39 y #40) | Observaciones sobre cada PR, con su verificación | Se publicaron como revisiones en cada PR. Las autoras aplicaron lo que correspondía |
 | Comprobar si las pruebas de la zona C detectaban errores (PR #31) | Introdujo errores a propósito en una copia temporal del código: las primeras 12 pruebas no detectaron ninguno de 6 | Silvia reforzó las pruebas hasta 21, que detectan 7 de 7 |
+| Proponer cómo resolver S-05 en la revisión del PR #38 | Código de `PoliticaVencimiento`, probado con 69 de 69, línea base 14 de 14 y un error introducido a propósito | Silvia lo adoptó como RC-03. Integrado con las tres zonas: 84 de 84 y 14 de 14 |
+| Resolver el conflicto de documentación del PR #38 y completar la ficha RC-03 | Sección 5 ordenada y ficha completa | Alex autorizó el cambio a partir de un resumen y de las pruebas: 84 de 84 y 14 de 14 antes del merge |
 | Destrabar la integración del 6/11 | Resolvió los conflictos de merge, restauró la fila IA-08 que el PR #32 borraba y propuso B y C en paralelo (DT-08) | Se aceptó el cambio de plan y se mergearon #27, #28, #31, #32 y #33 |
 | Auditar el repositorio contra la consigna (6/11) | Lista de errores y pendientes | Se corrigieron los errores de documentación y se decidió hacer RA-09 y RA-10 |
 | Redactar la sección 1 y el README a partir del sistema base | Textos de esas secciones | Se revisaron en el PR #19, con las observaciones de Silvia y Marina aplicadas |
@@ -45,3 +47,9 @@ Registro resumido de los pedidos principales, lo que devolvió la herramienta y 
 | Pedido | Qué devolvió la herramienta | Cómo se verificó |
 |---|---|---|
 | Sacar del controlador las reglas del registro, uno por commit | RA-09 (`c6ca13c`), RA-10 (`d7996e3`), sus fichas en la sección 5 y la actualización de la sección 4 | 69 de 69 pruebas después de cada commit y línea base 14 de 14 (PR #35) |
+
+## IA-17 – Consolidación de SOLID y Clean Code
+
+| Pedido | Qué devolvió la herramienta | Cómo se verificó |
+|---|---|---|
+| Redactar las tablas 4.1 y 4.2, la sección 4.3 y los diagramas de clases a partir del código final y de los aportes de las tres zonas | Tablas, explicación por principio y diagramas antes y después, indicando las mejoras parciales y lo que quedó pendiente | Tamaños de métodos, clases y dependencias contrastados con `estado-inicial` y con `main` (`35e29c4`: 84 de 84 pruebas y línea base 14 de 14). La revisión cruzada de Marina se hace en el PR #42 |
