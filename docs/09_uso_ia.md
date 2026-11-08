@@ -51,5 +51,3 @@ Consultas puntuales hechas durante el trabajo, con el enlace a la conversación 
 **Aclaración sobre IA-05:** por privacidad, se adjunta evidencia seleccionada con extractos y síntesis identificados como tales, sin enlace público a la conversación. No se presenta como una transcripción literal completa. La consigna pide adjuntar evidencia del intercambio relevante, sin exigir la conversación completa, y el equipo acepta esta modalidad.
 
 **Aclaración sobre IA-11:** se presenta un registro de los pedidos principales, aportes de la IA y verificaciones realizadas, sin publicar la conversación completa, conforme a la modalidad de evidencia documentada aceptada por el equipo.
-
-_Para cada uso se adjunta un enlace público a la conversación o, si no lo hay, un registro de los pedidos y las decisiones en `docs/evidencias/ia/`. Los enlaces tienen que estar accesibles al momento de la corrección._

@@ -25,17 +25,19 @@ Comparación completa del código: <https://github.com/Alex-Dauria/tpi-ms2-gesti
 
 ## 11.3 Contenido del anexo ZIP
 
-Índice preliminar, armado con el contenido actual de `docs/evidencias/`. Se completa con el índice de `LEEME.txt` cuando se arme el ZIP (ver `entrega/README.md`).
+El ZIP se entrega en la plataforma junto con el informe. Se arma desde `docs/evidencias/` y suma los diagramas del informe exportados como imagen; su índice está en `LEEME.txt`, en la raíz del ZIP.
 
 | Carpeta | Contenido |
 |---|---|
+| `LEEME.txt` | Índice del contenido |
 | `etapa1/` | 7 capturas de Swagger UI del sistema base |
 | `etapa2/` | 9 capturas del análisis de calidad externa y el registro de pruebas de caja negra |
 | `pruebas/` | Líneas base de la versión inicial, del refactoring y de la versión final (sobre `50bac22` y sobre el tag `estado-refactorizado`), e informes de Surefire de cada corrida: `zona-a/`, `zona-b/`, `zona-c/`, `etapa-6/` (antes), `etapa-6-despues/` (después), `estado-refactorizado/` y `estado-refactorizado-tag/` (versión final) |
 | `code-review/` | 9 capturas de las revisiones de los PR #24, #28, #31, #38 y #41, con su índice |
-| `ia/` | Registros de los usos de IA declarados en la sección 9 |
+| `diagramas/` | 4 diagramas del informe exportados como imagen: los dos de la sección 1 y los de clases antes y después de la sección 4 |
+| `ia/` | La declaración completa de uso de IA (`09_uso_ia.md`) y los registros de los usos declarados en la sección 9 |
 
-**Pendiente:** `LEEME.txt` del ZIP; el detalle de lo que se agrega al ZIP fuera de `docs/evidencias/`, según `entrega/README.md`; y la revisión de datos personales en los informes de Surefire antes de armarlo.
+En los informes de pruebas, los nombres de usuario y las rutas de las computadoras se reemplazaron por `[USUARIO]`. Los resultados de las pruebas no se modificaron.
 
 ## 11.4 Decisiones técnicas
 
