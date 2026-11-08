@@ -166,7 +166,9 @@ _Los identificadores CP-43 a CP-63 corresponden a los casos de la zona C – Con
 |---|---|---|---|---|---|---|
 | Antes (código inicial + pruebas) | `8d97555` (pruebas de las 3 zonas mergeadas, antes del primer refactoring) | 69 | 69 | 0 | Referencia (`linea_base_estado_inicial.md`) | `docs/evidencias/pruebas/etapa-6/` |
 | Después del refactoring | `45f9510` (código igual a `main` con las 3 zonas refactorizadas) | 84 | 84 | 0 | 14 de 14 iguales | `docs/evidencias/pruebas/etapa-6-despues/` |
-| Versión final | `estado-refactorizado` | | | | _x de 14 iguales_ | |
+| Versión final | `50bac22` (rama del code review final, con `main` integrado; código de producción idéntico al de `45f9510` y al del tag `etapa-refactoring`) | 84 | 84 | 0 | 14 de 14 iguales | `docs/evidencias/pruebas/estado-refactorizado/` y `linea_base_estado_refactorizado.md` |
+
+La fila "Versión final" se verificó sobre el commit `50bac22` el 7/11. El tag `estado-refactorizado` todavía no existe: queda pendiente crearlo sobre `main` y verificar que su código de producción coincida con el de `50bac22`. Al terminar la corrida, después de registrar los 14 casos, `scripts/linea_base.ps1` dejó el servidor en ejecución en el puerto 8080 y hubo que detenerlo manualmente.
 
 ## 6.4 Cómo se verificó que el refactoring no alteró el comportamiento
 
