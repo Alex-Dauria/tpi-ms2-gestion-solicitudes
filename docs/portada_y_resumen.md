@@ -9,7 +9,7 @@ Tecnicatura Universitaria en Programación a Distancia – Universidad Tecnológ
 | Integrante | Comisión |
 |---|---|
 | Alex Pedro Dauria | 07 |
-| Silvia Giardini | 04 |
+| Silvia Giardini | 12 |
 | Marina Giselle Cordero | 07 |
 
 | | |
