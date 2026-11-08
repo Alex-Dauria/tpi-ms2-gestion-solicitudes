@@ -2,17 +2,17 @@
 
 Este documento organiza el trabajo: quién hace qué, en qué orden y cómo nos revisamos. No forma parte del informe final tal cual, pero de acá sale el apartado de participación de cada integrante.
 
-## Qué hace cada una en cada hito
+## Qué hace cada integrante en cada hito
 
 | Hito | Alex | Silvia | Marina |
 |---|---|---|---|
 | **1. Estado inicial** | Sistema base y sección 1 (#1) | Revisa el plan de trabajo | Revisa el sistema base, la sección 1 y el plan |
-| **2. Diagnóstico** | Smells de la zona A (#3) | Calidad externa/interna (#2) · smells de la zona C (#5) · checklist de code review (#7) | Smells de la zona B (#4) · une los smells de las tres en el catálogo (#6) |
+| **2. Diagnóstico** | Smells de la zona A (#3) | Calidad externa/interna (#2) · smells de la zona C (#5) · checklist de code review (#7) | Smells de la zona B (#4) · une los smells de los tres en el catálogo (#6) |
 | **3. Refactoring y pruebas** | Pruebas y refactoring de la zona A (#8) · sección SOLID (#11) | Pruebas y refactoring de la zona C (#10) · sección de pruebas (#13) | Pruebas y refactoring de la zona B (#9) · sección de refactorings (#12) |
 | **4. Code review y documentación** | Uso de IA y ZIP (#16) | Conclusiones (#15) | Code review final (#14) |
 | **5. Entrega** | Video (#18) · Revisión integral y PDF (#17) | Participa en el PDF y el video | Participa en el PDF y el video |
 
-En todos los hitos, además, cada una revisa el trabajo de otra (sección 3).
+En todos los hitos, además, cada integrante revisa el trabajo de otro (sección 3).
 
 ## 1. Producto a entregar
 
@@ -25,7 +25,7 @@ En todos los hitos, además, cada una revisa el trabajo de otra (sección 3).
 
 ## 2. Zonas del código
 
-Para repartir el diagnóstico y el refactoring de forma pareja, el código de la versión inicial se divide en tres zonas. Cada integrante es responsable de una zona de punta a punta: diagnostica sus smells, escribe sus pruebas de caracterización, aplica sus refactorings y los documenta. Así cada una puede defender su parte completa: problema, mejora y verificación.
+Para repartir el diagnóstico y el refactoring de forma pareja, el código de la versión inicial se divide en tres zonas. Cada integrante es responsable de una zona de punta a punta: diagnostica sus smells, escribe sus pruebas de caracterización, aplica sus refactorings y los documenta. Así cada integrante puede defender su parte completa: problema, mejora y verificación.
 
 | Zona | Alcance en la versión inicial | Responsable | Refactoring obligatorio asignado |
 |---|---|---|---|
@@ -45,7 +45,7 @@ Los demás refactorings de cada zona se eligen **a partir del diagnóstico**, no
 | **Silvia** | #2 Calidad externa/interna · #5 Diagnóstico zona C · #7 Checklist de code review · #10 Refactoring zona C · #13 Pruebas · #15 Conclusiones | Marina |
 | **Marina** | #4 Diagnóstico zona B · #6 Catálogo de deuda técnica · #9 Refactoring zona B · #12 Documento de refactorings · #14 Code review final | Alex |
 
-**Revisión cruzada rotativa:** Marina revisa lo de Alex, Silvia revisa lo de Marina y Alex revisa lo de Silvia. Los documentos que consolidan aportes de las tres (#6, #7, #15, #16, #17) los revisan las otras dos.
+**Revisión cruzada rotativa:** Marina revisa lo de Alex, Silvia revisa lo de Marina y Alex revisa lo de Silvia. Los documentos que consolidan aportes de los tres (#6, #7, #15, #16, #17) los revisan los otros dos.
 
 ## 4. Hitos y tags
 
@@ -77,11 +77,11 @@ Fechas internas de los hitos 2 y 3:
 
 Las tres zonas tocan `SolicitudController`. Para no pisarnos:
 
-1. **Pruebas de caracterización primero, en paralelo.** Cada una escribe las pruebas de su zona sobre la versión inicial, en un PR solo de pruebas (`src/test`), sin tocar `src/main`. Tienen que pasar en verde sobre el código original: son la red de seguridad.
+1. **Pruebas de caracterización primero, en paralelo.** Cada integrante escribe las pruebas de su zona sobre la versión inicial, en un PR solo de pruebas (`src/test`), sin tocar `src/main`. Tienen que pasar en verde sobre el código original: son la red de seguridad.
 2. **Refactorings: primero A, después B y C en paralelo.** Cada PR de refactoring se abre desde `main` actualizado.
    - A fue primero porque ordena el registro y el manejo de errores, que usan todos los endpoints.
    - B reubica la lógica de estados y C trabaja sobre las consultas y la persistencia. Tocan métodos distintos, así que pueden avanzar a la vez.
-   - La que mergea segunda actualiza su rama con `main`, resuelve los conflictos y vuelve a correr todas las pruebas y la línea base antes de mergear.
+   - El que mergea segundo actualiza su rama con `main`, resuelve los conflictos y vuelve a correr todas las pruebas y la línea base antes de mergear.
    - El plan original era A → B → C en cadena. Se cambió el 6/11 para llegar a la entrega (DT-08).
 3. Mientras una zona refactoriza, las otras avanzan con su documentación.
 
@@ -98,11 +98,11 @@ Las tres zonas tocan `SolicitudController`. Para no pisarnos:
 1. Tomar el issue y moverlo a **In progress** en el Project.
 2. Crear la rama desde `main`: `etapa-N/tema` para documentos o `zona-x/tema` para código (ej.: `zona-a/pruebas`, `zona-a/refactoring`). Cada issue indica el nombre exacto en su sección "Cómo entregar".
 3. Abrir el PR con la plantilla, con `Closes #N`, y mover el issue a **In review**. Si el issue se entrega en más de un PR (las zonas: uno de pruebas y otro de refactoring), los PR anteriores llevan `Refs #N` y solo el último lleva `Closes #N`.
-4. La revisora deja sus observaciones en el PR. En los PR de código se aplica el checklist de code review (#7).
-5. La autora responde punto por punto y sube los ajustes.
-6. Con la aprobación, la autora mergea y el issue pasa a **Done**.
+4. El revisor deja sus observaciones en el PR. En los PR de código se aplica el checklist de code review (#7).
+5. El autor responde punto por punto y sube los ajustes.
+6. Con la aprobación, el autor mergea y el issue pasa a **Done**.
 
-En las tareas donde aportan las tres (#15, #16, #17), quien coordina abre la rama y el PR, y cada una sube su parte con commits propios en esa misma rama.
+En las tareas donde aportan los tres (#15, #16, #17), quien coordina abre la rama y el PR, y cada integrante sube su parte con commits propios en esa misma rama.
 
 **Commits:** en español, con prefijo: `docs:`, `test:`, `refactor:`, `feat:`, `fix:`, `chore:`.
 

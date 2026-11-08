@@ -6,17 +6,17 @@
 
 ## 7.1 Proceso
 
-La revisión se hace PR por PR, aplicando el checklist de la sección 7.2. La revisora deja sus observaciones como comentarios en el PR (archivo y línea cuando corresponda). La autora responde punto por punto y sube los ajustes en commits nuevos. Con la aprobación de la revisora, la autora mergea.
+La revisión se hace PR por PR, aplicando el checklist de la sección 7.2. El revisor deja sus observaciones como comentarios en el PR (archivo y línea cuando corresponda). El autor responde punto por punto y sube los ajustes en commits nuevos. Con la aprobación del revisor, el autor mergea.
 
 Rotación de revisión (según el plan de trabajo):
 
-| Autora del PR | Revisora |
+| Autor del PR | Revisor |
 |---|---|
 | Alex | Marina |
 | Marina | Silvia |
 | Silvia | Alex |
 
-Los documentos que consolidan aportes de las tres (#6, #7, #15, #16, #17) los revisan las otras dos. En los PR de código se aplica el checklist completo; en los PR de documentación, las categorías aplicables (nombres, commits y PR, duplicación).
+Los documentos que consolidan aportes de los tres (#6, #7, #15, #16, #17) los revisan los otros dos. En los PR de código se aplica el checklist completo; en los PR de documentación, las categorías aplicables (nombres, commits y PR, duplicación).
 
 ## 7.2 Checklist técnico
 
@@ -70,7 +70,7 @@ Un PR se aprueba cuando se cumplen todos:
 1. Todas las pruebas automatizadas pasan en verde.
 2. No hay cambios de comportamiento externo no documentados (línea base: 14 de 14 iguales, o los casos distintos documentados como cambio intencional).
 3. Ninguna observación bloqueante queda abierta.
-4. Las observaciones mayores están resueltas o aceptadas por la revisora.
+4. Las observaciones mayores están resueltas o aceptadas por el revisor.
 5. El diff respeta el alcance declarado en el PR (sin cambios no relacionados).
 6. Los commits siguen el formato del equipo y el PR referencia el issue.
 
@@ -181,7 +181,7 @@ No todas las observaciones terminaron en un cambio. En CR-15 la autora explicó 
 
 ### Desvíos del proceso de revisión
 
-Según 7.1, la autora sube los ajustes y mergea con la aprobación de la revisora, y los documentos que consolidan aportes de las tres los revisan las otras dos. En cinco PR la integración se apartó de ese proceso:
+Según 7.1, el autor sube los ajustes y mergea con la aprobación del revisor, y los documentos que consolidan aportes de los tres los revisan los otros dos. En cinco PR la integración se apartó de ese proceso:
 
 | PR | Desvío verificado | Motivo registrado en el PR |
 |---|---|---|
@@ -198,7 +198,7 @@ Las pruebas funcionales y la línea base posteriores (84 de 84 y 14 de 14 sobre 
 - **Pruebas.** Las pruebas de caracterización tienen que fijar valores exactos (códigos, mensajes, orden y límites), y conviene medir su capacidad de detección antes de refactorizar.
 - **Refactoring seguro.** Un commit por refactoring, con pruebas y línea base después de cada uno y merge sin squash, permitió revisar cada cambio por separado. Conservar los defectos encontrados, como el `500` del legajo numérico, fue una decisión explícita: corregirlos habría sido cambiar el comportamiento.
 - **Trazabilidad.** Los identificadores (S, RA/RB/RC, R-xx, CP-xx, CR-xx) vincularon hallazgos, cambios, pruebas y revisiones. Cada renumeración (CP-01 a CP-70 y R-01 a R-18) necesitó una tabla de correspondencia para conservar las referencias anteriores.
-- **Colaboración.** El feedback fue más útil cuando incluyó evidencia y una propuesta concreta, y cuando la autora pudo discutirlo con argumentos. Cuando quien revisa también escribe el cambio, ese cambio queda sin una revisión independiente.
+- **Colaboración.** El feedback fue más útil cuando incluyó evidencia y una propuesta concreta, y cuando el autor pudo discutirlo con argumentos. Cuando quien revisa también escribe el cambio, ese cambio queda sin una revisión independiente.
 
 ### Prácticas para próximos proyectos
 
@@ -210,7 +210,7 @@ Las pruebas funcionales y la línea base posteriores (84 de 84 y 14 de 14 sobre 
 
 **Mejorar:**
 - Aprobar con una revisión formal de GitHub sobre el último commit del PR, no con un comentario.
-- Que la revisora proponga los cambios (por ejemplo, con sugerencias en el PR) en lugar de subirlos a la rama de la autora, y que la autora integre el PR.
+- Que el revisor proponga los cambios (por ejemplo, con sugerencias en el PR) en lugar de subirlos a la rama del autor, y que el autor integre el PR.
 - Configurar la protección de `main` para exigir una aprobación y descartar las aprobaciones anteriores a un commit nuevo.
 - Comprobar que los cambios estén en la rama remota antes de pedir una nueva revisión.
 - Reservar tiempo de revisión en el cronograma.
