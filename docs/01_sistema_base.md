@@ -147,7 +147,7 @@ stateDiagram-v2
 | Documentación de la API | springdoc-openapi (Swagger UI) |
 | Pruebas | JUnit 5 + MockMvc (disponibles; la versión inicial no tiene pruebas) |
 
-Elegimos Spring Boot porque es la tecnología que vimos en Programación y la que usamos en el Trabajo Final, así las tres podemos leer, modificar y defender el código. La justificación completa está en [10_decisiones_tecnicas.md](10_decisiones_tecnicas.md).
+Elegimos Spring Boot porque es la tecnología que vimos en Programación y la que usamos en el Trabajo Final, así los tres podemos leer, modificar y defender el código. La justificación completa está en [10_decisiones_tecnicas.md](10_decisiones_tecnicas.md).
 
 Estructura de la versión inicial (tag `estado-inicial`):
 

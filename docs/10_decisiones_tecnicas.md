@@ -10,7 +10,7 @@ Registro breve de las decisiones que condicionan el trabajo. Cada una indica el 
 
 ## DT-02 – Tecnología: Java 17 + Spring Boot, API REST sin interfaz gráfica
 
-- **Contexto:** la consigna no exige una tecnología. Buscamos una que las tres manejemos y que permita mostrar SOLID con claridad.
+- **Contexto:** la consigna no exige una tecnología. Buscamos una que los tres manejemos y que permita mostrar SOLID con claridad.
 - **Decisión:** Spring Boot 3.3 con Java 17 y Maven; API REST probada con Swagger UI; sin frontend.
 - **Motivo:** Spring Boot es lo que vimos en Programación (unidades 1 a 3) y lo que usamos en el Trabajo Final. Las capas controlador/servicio/repositorio y la inyección de dependencias hacen visibles SRP y DIP. Un frontend agregaría trabajo sin sumar a lo que se evalúa: la consigna aclara que la funcionalidad visible puede ser simple.
 
@@ -23,7 +23,7 @@ Registro breve de las decisiones que condicionan el trabajo. Cada una indica el 
 ## DT-04 – División del código en tres zonas con dueña
 
 - **Contexto:** hay que repartir el trabajo de forma pareja y la cátedra puede pedir defensa individual.
-- **Decisión:** zonas A (registro), B (ciclo de vida) y C (consultas y persistencia), cada una con una responsable de punta a punta (ver el plan de trabajo).
+- **Decisión:** zonas A (registro), B (ciclo de vida) y C (consultas y persistencia), cada una con un responsable de punta a punta (ver el plan de trabajo).
 - **Motivo:** cada integrante puede defender un recorrido completo: diagnóstico, pruebas, refactoring y documentación.
 
 ## DT-05 – Pruebas de caracterización antes de refactorizar y refactorings en secuencia
@@ -47,5 +47,5 @@ Registro breve de las decisiones que condicionan el trabajo. Cada una indica el 
 ## DT-08 – Refactorings de las zonas B y C en paralelo
 
 - **Contexto:** DT-05 preveía refactorizar en cadena (A → B → C) para evitar conflictos. El 6/11, con la zona A mergeada, quedaban dos días para la entrega.
-- **Decisión:** B y C avanzan en paralelo desde `main`. La que mergea segunda actualiza su rama, resuelve los conflictos y vuelve a correr todas las pruebas y la línea base.
+- **Decisión:** B y C avanzan en paralelo desde `main`. El que mergea segundo actualiza su rama, resuelve los conflictos y vuelve a correr todas las pruebas y la línea base.
 - **Motivo:** la zona A ya separó el registro y unificó las respuestas de error, y B y C tocan métodos distintos. Las 69 pruebas de caracterización y la línea base detectan si un merge altera el comportamiento.

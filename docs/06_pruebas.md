@@ -33,7 +33,8 @@ La fecha del día se reemplaza por `<HOY>` para que se puedan comparar corridas 
 |---|---|---|
 | Versión inicial (`estado-inicial`) | `docs/evidencias/pruebas/linea_base_estado_inicial.md` | Referencia |
 | Después del refactoring (`etapa-refactoring`) | `docs/evidencias/pruebas/linea_base_etapa_refactoring.md` | 14 de 14 iguales |
-| Versión final (`estado-refactorizado`) | `docs/evidencias/pruebas/linea_base_estado_refactorizado.md` | _completar_ |
+| Versión final (`50bac22`) | `docs/evidencias/pruebas/linea_base_estado_refactorizado.md` | 14 de 14 iguales |
+| Versión final sobre el tag (`estado-refactorizado`) | `docs/evidencias/pruebas/linea_base_tag_estado_refactorizado.md` | 14 de 14 iguales |
 
 ### Qué significa "antes" y "después"
 
@@ -167,8 +168,9 @@ _Los identificadores CP-43 a CP-63 corresponden a los casos de la zona C – Con
 | Antes (código inicial + pruebas) | `8d97555` (pruebas de las 3 zonas mergeadas, antes del primer refactoring) | 69 | 69 | 0 | Referencia (`linea_base_estado_inicial.md`) | `docs/evidencias/pruebas/etapa-6/` |
 | Después del refactoring | `45f9510` (código igual a `main` con las 3 zonas refactorizadas) | 84 | 84 | 0 | 14 de 14 iguales | `docs/evidencias/pruebas/etapa-6-despues/` |
 | Versión final | `50bac22` (rama del code review final, con `main` integrado; código de producción idéntico al de `45f9510` y al del tag `etapa-refactoring`) | 84 | 84 | 0 | 14 de 14 iguales | `docs/evidencias/pruebas/estado-refactorizado/` y `linea_base_estado_refactorizado.md` |
+| Versión final, sobre el tag | `estado-refactorizado` (`f8c4e30`, merge del PR #47; código de producción idéntico al de `50bac22`) | 84 | 84 | 0 | 14 de 14 iguales | `docs/evidencias/pruebas/estado-refactorizado-tag/` y `linea_base_tag_estado_refactorizado.md` |
 
-La fila "Versión final" se verificó sobre el commit `50bac22` el 7/11. El tag `estado-refactorizado` todavía no existe: queda pendiente crearlo sobre `main` y verificar que su código de producción coincida con el de `50bac22`. Al terminar la corrida, después de registrar los 14 casos, `scripts/linea_base.ps1` dejó el servidor en ejecución en el puerto 8080 y hubo que detenerlo manualmente.
+La versión final se verificó sobre el commit `50bac22` el 7/11. Después del merge del PR #47 se crearon los tags `estado-refactorizado` y `estadorefactorizado` sobre `f8c4e30`, cuyo código de producción es idéntico al de `50bac22`, y el 8/11 se repitió la verificación sobre el tag con el mismo resultado. En los informes de Surefire de las dos corridas se reemplazaron el usuario y las rutas locales por marcadores, sin modificar los casos ni los resultados. En ambas corridas, `scripts/linea_base.ps1` dejó la aplicación en ejecución al terminar y hubo que detenerla manualmente.
 
 ## 6.4 Cómo se verificó que el refactoring no alteró el comportamiento
 

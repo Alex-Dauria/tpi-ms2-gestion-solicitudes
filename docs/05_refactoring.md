@@ -13,7 +13,7 @@ Las extracciones de métodos y clases, los objetos de parámetros y la operació
 
 Se cumplen los mínimos de la consigna sin depender de esa limpieza: **Extract Method** (por ejemplo, R-01 y R-14), **Move Method o reubicación de responsabilidad** (R-10 y R-11) e **Introduce Parameter Object** (R-03 y R-16), con más de cuatro refactorings estructurales documentados.
 
-| ID | Original | Técnica / cambio | Hallazgo relacionado | Principio / práctica | Zona / autora | Commit |
+| ID | Original | Técnica / cambio | Hallazgo relacionado | Principio / práctica | Zona / autor | Commit |
 |---|---|---|---|---|---|---|
 | R-01 | RA-01 | Extract Method (`respuestaError`) | S-02 (SA-02) | DRY, Clean Code (manejo de errores) | A – Alex | [9ccf463](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/9ccf463) |
 | R-02 | RA-02 | Extract Method (`prioridadPorDefecto`) | S-01 (SA-01), S-08 (SA-04) | SRP, funciones que hacen una sola cosa | A – Alex | [ea76173](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/ea76173) |
@@ -40,7 +40,7 @@ Cada ficha conserva su identificador original RA/RB/RC junto al definitivo R y e
 
 Los bloques Antes/Después son extractos históricos: salvo indicación expresa, comparan el padre del commit con ese commit, no todo el proceso con el tag `estado-inicial`. Las métricas y verificaciones pertenecen al momento indicado. Se conservan los resultados históricos de 45 pruebas para RA-01 a RA-08; 69 para RA-09, RA-10, RB-01, RB-02 y RC-01 a RC-03; 82 para RB-03; y 84 para RB-04 y RB-05. Esta consolidación documental no constituye una ejecución nueva de la suite integrada ni de la línea base.
 
-Los campos se presentan como hallazgo relacionado, zona/autora, commit, motivación, antes/después, pasos, verificación histórica, comportamiento externo y beneficio/alcance. Las limitaciones técnicas originales se mantienen.
+Los campos se presentan como hallazgo relacionado, zona/autor, commit, motivación, antes/después, pasos, verificación histórica, comportamiento externo y beneficio/alcance. Las limitaciones técnicas originales se mantienen.
 
 ### 5.2.A Zona A – Registro (Alex)
 
@@ -75,7 +75,7 @@ Después de RA-08 el controlador tenía **más** líneas que al principio: extra
 #### R-01 (original: RA-01) – Extract Method: una sola forma de armar las respuestas de error
 
 - **Hallazgo relacionado:** SA-02 / S-02 (código duplicado en el armado de las respuestas de error).
-- **Zona / autora:** A – Alex.
+- **Zona / autor:** A – Alex.
 - **Commit:** [9ccf463](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/9ccf463); estado anterior: `9ccf463^`.
 - **Motivación:** el mismo par de líneas (mapa con la clave `"error"` + `ResponseEntity`) estaba escrito 22 veces. Es el primer refactoring porque achica todos los bloques que se extraen después.
 
@@ -110,7 +110,7 @@ private ResponseEntity<Object> respuestaError(HttpStatus status, String mensaje)
 #### R-02 (original: RA-02) – Extract Method: prioridad por defecto según el tipo
 
 - **Hallazgo relacionado:** SA-01 / S-01 y SA-04 / S-08.
-- **Zona / autora:** A – Alex.
+- **Zona / autor:** A – Alex.
 - **Commit:** [ea76173](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/ea76173); estado anterior: `ea76173^`.
 - **Motivación:** el `switch` de RN-04 estaba en el medio de las validaciones. Es una función pura (entra el tipo, sale la prioridad), así que es el paso de menor riesgo.
 
@@ -144,7 +144,7 @@ private ResponseEntity<Object> respuestaError(HttpStatus status, String mensaje)
 #### R-03 (original: RA-03) – Introduce Parameter Object: `DatosSolicitud`
 
 - **Hallazgo relacionado:** SA-03 / S-07 (lista larga de parámetros y *Data Clumps*).
-- **Zona / autora:** A – Alex.
+- **Zona / autor:** A – Alex.
 - **Commit:** [0e12ea7](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/0e12ea7); estado anterior: `0e12ea7^`.
 - **Motivación:** siete `String` seguidos en la firma permiten invertir argumentos sin que el compilador avise.
 
@@ -178,7 +178,7 @@ record DatosSolicitud(String legajo, String nombre, String email, String carrera
 #### R-04 (original: RA-04) – Extract Method: una validación por campo
 
 - **Hallazgo relacionado:** SA-01 / S-01 (método largo con responsabilidades mezcladas).
-- **Zona / autora:** A – Alex.
+- **Zona / autor:** A – Alex.
 - **Commit:** [6342a84](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/6342a84); estado anterior: `6342a84^`.
 - **Motivación:** las validaciones ocupaban la mitad del método y mezclaban normalización (`toUpperCase`) con control.
 
@@ -239,7 +239,7 @@ if (error.isPresent()) {
 #### R-05 (original: RA-05) – Extract Method: búsqueda, validación y alta del estudiante
 
 - **Hallazgo relacionado:** SA-05 / S-15 (alta implícita del estudiante dentro del registro).
-- **Zona / autora:** A – Alex.
+- **Zona / autor:** A – Alex.
 - **Commit:** [be52cd0](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/be52cd0); estado anterior: `be52cd0^`.
 - **Motivación:** el bloque rotulado `// buscar estudiante` además validaba y creaba. Extraerlo como un solo método con nombre de consulta habría escondido una escritura.
 
@@ -292,7 +292,7 @@ if (buscarEstudiantePorLegajo(legajo).isEmpty()) {
 #### R-06 (original: RA-06) – Extract Method: solicitud abierta y construcción de la solicitud
 
 - **Hallazgo relacionado:** SA-01 / S-01.
-- **Zona / autora:** A – Alex.
+- **Zona / autor:** A – Alex.
 - **Commit:** [2bbda70](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/2bbda70); estado anterior: `2bbda70^`.
 - **Motivación:** el control de duplicados recorría la lista dentro del método y la construcción ocupaba doce líneas de setters.
 
@@ -346,7 +346,7 @@ BaseDeDatos.guardar();
 #### R-07 (original: RA-07) – Replace Magic Number with Symbolic Constant
 
 - **Hallazgo relacionado:** SA-04 / S-08 (tipos, prioridades y límites escritos como valores sueltos).
-- **Zona / autora:** A – Alex.
+- **Zona / autor:** A – Alex.
 - **Commit:** [df0dbd9](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/df0dbd9); estado anterior: `df0dbd9^`.
 
 - **Motivación:** dar nombre a los límites y valores del registro y compartirlos con los mensajes para evitar desajustes.
@@ -382,7 +382,7 @@ if (descripcion.length() > LARGO_MAXIMO_DESCRIPCION) {
 #### R-08 (original: RA-08) – Remove Dead Code
 
 - **Hallazgo relacionado:** comentarios y código muerto (notas de la zona A para #6).
-- **Zona / autora:** A – Alex.
+- **Zona / autor:** A – Alex.
 - **Commit:** [c69ad8f](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/c69ad8f); estado anterior: `c69ad8f^`.
 - **Motivación:** retirar comentarios obsoletos que ya no describen una acción mantenida o un requisito asignado. Es limpieza de legibilidad, no una reorganización de responsabilidades.
 
@@ -410,7 +410,7 @@ return ResponseEntity.status(HttpStatus.CREATED).body(solicitud);
 #### R-09 (original: RA-09) – Extract Class: las validaciones salen del controlador
 
 - **Hallazgo relacionado:** SA-01 / S-01 (responsabilidades mezcladas en el controlador).
-- **Zona / autora:** A – Alex.
+- **Zona / autor:** A – Alex.
 - **Commit:** [c6ca13c](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/c6ca13c); estado anterior: `c6ca13c^`.
 - **Motivación:** RA-04 separó una validación por método, pero siguieron en `SolicitudController`, que además atiende los pedidos HTTP. Una regla de negocio cambia por motivos distintos que un endpoint.
 
@@ -447,7 +447,7 @@ public static Optional<String> validarSolicitud(DatosSolicitud datos) {
 #### R-10 (original: RA-10) – Move Method: prioridad y creación del estudiante
 
 - **Hallazgo relacionado:** SA-01 / S-01 y SA-05 / S-15.
-- **Zona / autora:** A – Alex.
+- **Zona / autor:** A – Alex.
 - **Commit:** [d7996e3](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/d7996e3); estado anterior: `d7996e3^`.
 - **Motivación:** el cálculo de la prioridad (RN-04) y las reglas para crear un estudiante (RN-05) también son del registro, y no usan nada del controlador.
 
@@ -493,7 +493,7 @@ Cinco refactorings aplicados en `zona-b/refactoring`, uno por commit, sobre la b
 #### R-11 (original: RB-01) – Move Method: validación de transiciones en `Solicitud`
 
 - **Hallazgo relacionado:** SB-01 / S-03, lógica de transiciones ubicada en el controlador. Se reubica la decisión sobre transiciones; el controlador conserva las validaciones necesarias para las respuestas HTTP.
-- **Zona / autora:** B – Marina.
+- **Zona / autor:** B – Marina.
 - **Commit:** [f0e9de8](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/f0e9de8); estado anterior: `f0e9de8^`.
 - **Motivación:** la entidad debe consultar las transiciones usando su propio estado, sin que el controlador concentre esa decisión de negocio.
 
@@ -540,7 +540,7 @@ public boolean permiteTransicionA(String nuevoEstado) {
 #### R-12 (original: RB-02) – Replace Conditional with Lookup Table: tabla de transiciones
 
 - **Hallazgo relacionado:** complementa SB-01 / S-03, simplificando la decisión trasladada en RB-01. No resuelve SB-03 / S-10: los estados siguen siendo `String`.
-- **Zona / autora:** B – Marina.
+- **Zona / autor:** B – Marina.
 - **Commit:** [daedb7b](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/daedb7b); estado anterior: `daedb7b^`.
 - **Motivación:** expresar las transiciones como datos inmutables y separar su definición de la consulta.
 
@@ -580,7 +580,7 @@ public boolean permiteTransicionA(String nuevoEstado) {
 #### R-13 (original: RB-03) – Encapsulación: estado, historial y fecha en una operación
 
 - **Hallazgo relacionado:** SB-04 / S-04, modificación del estado sin protección en la entidad; resolución **parcial**.
-- **Zona / autora:** B – Marina.
+- **Zona / autor:** B – Marina.
 - **Commit:** [c9dc80a](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/c9dc80a); estado anterior: `c9dc80a^`.
 - **Motivación:** reunir las comprobaciones de una transición operativa y sus efectos para evitar cambios de estado sin el historial o la fecha correspondientes.
 
@@ -656,7 +656,7 @@ if (sol.getEstado().equals("PENDIENTE")) {
 #### R-14 (original: RB-04) – Extract Method: búsqueda de solicitudes por ID
 
 - **Hallazgo relacionado:** SB-02 / S-09, búsqueda repetida en `obtener`, `cambiarEstado` y `asignarResponsable`.
-- **Zona / autora:** B – Marina.
+- **Zona / autor:** B – Marina.
 - **Commit:** [8e02326](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/8e02326); estado anterior: `8e02326^`.
 - **Motivación:** centralizar el recorrido y conservar una única forma de encontrar la primera solicitud cuyo ID coincide.
 
@@ -699,7 +699,7 @@ if (sol == null) {
 #### R-15 (original: RB-05) – Replace Magic Number with Named Constant: límite de asignaciones
 
 - **Hallazgo relacionado:** SB-05 / S-11, número mágico para el límite de asignaciones.
-- **Zona / autora:** B – Marina.
+- **Zona / autor:** B – Marina.
 - **Commit:** [4d39d0d](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/4d39d0d); estado anterior: `4d39d0d^`.
 - **Motivación:** nombrar el límite de la RN-12 y evitar que la condición y el mensaje utilicen valores independientes.
 
@@ -746,7 +746,7 @@ Tres refactorings sobre `SolicitudController`, aplicados en la rama `zona-c/refa
 #### R-16 (original: RC-01) – Introduce Parameter Object: `FiltroSolicitudes`
 
 - **Hallazgo relacionado:** S-12 (SC-01 – lista de parámetros larga en `filtrar`).
-- **Zona / autora:** C – Silvia.
+- **Zona / autor:** C – Silvia.
 - **Commit:** [0624db5](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/0624db5); estado anterior: `0624db5^`.
 - **Motivación:** `filtrar` recibía seis parámetros sueltos (cuatro `String`), lo que dificultaba leer la llamada y agregar filtros. Se agrupan en un objeto con nombre.
 
@@ -774,7 +774,7 @@ private List<Solicitud> filtrar(FiltroSolicitudes filtro) {
 #### R-17 (original: RC-02) – Encapsulate Collection: catálogos inmutables
 
 - **Hallazgo relacionado:** S-14 (SC-05 – los catálogos devuelven las listas internas).
-- **Zona / autora:** C – Silvia.
+- **Zona / autor:** C – Silvia.
 - **Commit:** [faf4849](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/faf4849); estado anterior: `faf4849^`.
 - **Motivación:** `estudiantes()` y `responsables()` devolvían la lista interna de `BaseDeDatos`, permitiendo mutar el estado global.
 
@@ -798,7 +798,7 @@ return List.copyOf(BaseDeDatos.estudiantes);
 #### R-18 (original: RC-03) – Extract Class: `PoliticaVencimiento`
 
 - **Hallazgo relacionado:** S-05 (SC-02, regla de vencimiento duplicada en `filtrar` y `resumen`).
-- **Zona / autora:** C – Silvia.
+- **Zona / autor:** C – Silvia.
 - **Commit:** [63d7b64](https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes/commit/63d7b64); estado anterior: `63d7b64^`.
 - **Motivación:** la regla de vencimiento (RN-14) estaba duplicada en `filtrar` y en `resumen`, con plazos distintos por prioridad. Se extrae a una sola clase.
 

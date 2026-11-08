@@ -1,7 +1,5 @@
 # 8. Conclusiones y aprendizaje
 
-**Coordina:** Silvia · **Aportan:** las tres
-
 ## 8.1 Conclusiones grupales
 
 Partimos de un prototipo que funcionaba, pero con casi todas las reglas concentradas en un controlador de 441 líneas. Detectamos 15 code smells, aplicamos 18 refactorings en tres zonas, incluidos los tres obligatorios, y verificamos que el comportamiento externo se conservó: 84 de 84 pruebas en verde y 14 de 14 casos de la línea base iguales. El sistema es más fácil de leer y de cambiar, aunque sigue teniendo deuda técnica que identificamos y dejamos documentada.
