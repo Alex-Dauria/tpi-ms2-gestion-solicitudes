@@ -58,6 +58,6 @@ En este trabajo me ocupé del diagnóstico, las pruebas y los refactorings de la
 
 | Integrante | Etapas y tareas a cargo | Revisiones realizadas | Commits / PR principales |
 |---|---|---|---|
-| Alex Pedro Dauria | Sistema base y plan (#1), diagnóstico y refactoring de la zona A (#3 y #8), SOLID y Clean Code (#11), uso de IA y ZIP (#16), revisión integral y PDF (#17), coordinación del video (#18) | PR #21, #22, #24, #27, #30, #31, #32, #33, #38, #39 y #40 | PR #19, #20, #25, #26, #28, #35 y #42 |
-| Silvia Giardini | Calidad externa e interna (#2), diagnóstico y refactoring de la zona C (#5 y #10), checklist de code review (#7), pruebas (#13), conclusiones (#15) | PR #19, #20, #23, #25, #26, #28, #30, #33 y #41 | PR #21, #22, #27, #31, #38, #39 y #40 |
-| Marina Giselle Cordero | Diagnóstico y refactoring de la zona B (#4 y #9), catálogo de deuda técnica (#6), documento de refactorings (#12), code review final (#14) | PR #19, #20, #25, #26, #28 y #35 | PR #23, #24, #30, #33 y #41 |
+| Alex Pedro Dauria | Sistema base y plan (#1), diagnóstico y refactoring de la zona A (#3 y #8), SOLID y Clean Code (#11), uso de IA y ZIP (#16), revisión integral y PDF (#17), coordinación del video (#18) | PR #21, #22, #24, #27, #30, #31, #32, #33, #38, #39, #40 y #44 | PR #19, #20, #25, #26, #28, #35, #42, #43 y #45 |
+| Silvia Giardini | Calidad externa e interna (#2), diagnóstico y refactoring de la zona C (#5 y #10), checklist de code review (#7), pruebas (#13), conclusiones (#15) | PR #19, #20, #23, #25, #26, #28, #30, #33, #41, #43, #44, #45, #46 y #47 | PR #21, #22, #27, #31, #38, #39 y #40 |
+| Marina Giselle Cordero | Diagnóstico y refactoring de la zona B (#4 y #9), catálogo de deuda técnica (#6), documento de refactorings (#12), code review final (#14), verificación final y anexos en la revisión integral (#17) | PR #19, #20, #25, #26, #28, #35, #42 y #43 | PR #23, #24, #30, #33, #41, #44, #46 y #47; commits propios en el PR #45 |
