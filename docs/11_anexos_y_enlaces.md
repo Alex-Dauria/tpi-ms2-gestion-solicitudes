@@ -7,7 +7,7 @@
 | Recurso | Enlace |
 |---|---|
 | Repositorio | <https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes> |
-| Video de defensa | _Pendiente (#18)_ |
+| Video de defensa | <https://youtu.be/LkxOHGBwQAU> |
 | Tablero de trabajo (GitHub Project) | <https://github.com/users/Alex-Dauria/projects/1> |
 
 ## 11.2 Tags del repositorio

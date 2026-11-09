@@ -120,5 +120,5 @@ entrega/                 Informe PDF final y cómo se arma la entrega
 ## Enlaces
 
 - Tablero de trabajo: <https://github.com/users/Alex-Dauria/projects/1>
-- Video de defensa: _pendiente_
-- Informe PDF: _pendiente_ (quedará en `entrega/`)
+- Video de defensa: <https://youtu.be/LkxOHGBwQAU>
+- Informe PDF y anexo ZIP: se entregan en la plataforma (ver [entrega/README.md](entrega/README.md))

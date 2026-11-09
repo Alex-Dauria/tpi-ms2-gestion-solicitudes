@@ -16,7 +16,7 @@ Tecnicatura Universitaria en Programación a Distancia – Universidad Tecnológ
 |---|---|
 | **Fecha** | 8 de noviembre de 2026 |
 | **Repositorio** | <https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes> |
-| **Video** | _completar_ |
+| **Video** | <https://youtu.be/LkxOHGBwQAU> |
 
 ---
 

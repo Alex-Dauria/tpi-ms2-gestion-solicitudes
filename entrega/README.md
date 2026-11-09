@@ -6,10 +6,10 @@ La consigna considera entregado el TPI cuando están cargados los cuatro recurso
 
 | Recurso | Dónde queda | Issue |
 |---|---|---|
-| Informe PDF único | En la plataforma | #17 |
+| Informe PDF único | `Informe_TPI-Cordero-Giardini-Dauria.pdf`, en la plataforma | #17 |
 | Repositorio GitHub | <https://github.com/Alex-Dauria/tpi-ms2-gestion-solicitudes>, con los seis tags (más el alias `estadorefactorizado`) | #17 |
-| Anexo ZIP | `Anexo_TPI_MSII_Gestion_Solicitudes_Academicas.zip`, solo en la plataforma (se genera desde `docs/evidencias/` y no se versiona) | #16 |
-| Video | Enlace en el PDF, en el README y en la plataforma | #18 |
+| Anexo ZIP | `Anexo_TPI-Cordero-Giardini-Dauria.zip`, solo en la plataforma (se genera desde `docs/evidencias/` y no se versiona) | #16 |
+| Video | <https://youtu.be/LkxOHGBwQAU>: en el PDF, en el README, en el `LEEME.txt` del ZIP y en la plataforma | #18 |
 
 ## 1. Contenido y orden del PDF
 
@@ -45,7 +45,7 @@ El PDF sigue la estructura sugerida por la consigna. Cada parte sale de un archi
 El ZIP se arma al final, cuando ya están las capturas del code review (#14), copiando `docs/evidencias/` y sumando lo que no está en el repo:
 
 ```text
-Anexo_TPI_MSII_Gestion_Solicitudes_Academicas.zip
+Anexo_TPI-Cordero-Giardini-Dauria.zip
 ├── LEEME.txt                ← índice del contenido
 ├── etapa1/                  ← capturas del sistema base
 ├── etapa2/                  ← capturas del análisis de calidad externa
